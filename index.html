@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpacelonX ($SLX) — Memes meet space exploration</title>
+<meta name="description" content="SpacelonX is a community memecoin where memes meet space exploration. NOT affiliated with Musk, SpaceX, Tesla or X Corp. Parody project on Polygon.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0518;
+    --bg-deep: #050211;
+    --violet: #6c3df4;
+    --violet-light: #9b6dff;
+    --violet-glow: rgba(108, 61, 244, 0.4);
+    --pink-accent: #ff4cb8;
+    --text: #eee6ff;
+    --text-dim: #9d8ec7;
+    --warning: #ffb84c;
+    --success: #4cffaf;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  /* Animated starfield background */
+  .stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .stars::before, .stars::after {
+    content: '';
+    position: absolute;
+    width: 2px; height: 2px;
+    background: white;
+    border-radius: 50%;
+    box-shadow:
+      120px 200px white, 240px 600px var(--violet-light), 400px 100px white,
+      550px 800px white, 700px 400px var(--pink-accent), 850px 200px white,
+      1000px 700px white, 1150px 350px var(--violet-light), 1300px 500px white,
+      1450px 100px white, 1600px 750px white, 100px 900px var(--violet-light),
+      300px 1200px white, 500px 1500px white, 700px 1100px var(--pink-accent),
+      900px 1400px white, 1100px 1700px var(--violet-light), 1300px 1300px white,
+      1500px 1900px white, 50px 1800px white, 250px 2100px var(--violet-light),
+      450px 2400px white, 650px 2200px white, 850px 2600px var(--pink-accent),
+      1050px 2300px white, 1250px 2800px var(--violet-light), 1450px 2500px white;
+    animation: twinkle 5s ease-in-out infinite alternate;
+  }
+  .stars::after {
+    animation-delay: -2.5s;
+    transform: translateY(50px);
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+
+  /* Cosmic gradient overlay */
+  .cosmic-glow {
+    position: fixed;
+    top: -20%; left: 50%;
+    transform: translateX(-50%);
+    width: 1200px; height: 1200px;
+    background: radial-gradient(circle, var(--violet-glow) 0%, transparent 60%);
+    z-index: 0;
+    pointer-events: none;
+    animation: float 12s ease-in-out infinite alternate;
+  }
+  @keyframes float {
+    0% { transform: translate(-50%, 0); }
+    100% { transform: translate(-50%, -50px); }
+  }
+
+  /* Lang toggle */
+  .lang-toggle {
+    position: fixed;
+    top: 20px; right: 20px;
+    z-index: 100;
+    display: flex;
+    gap: 0;
+    background: rgba(108, 61, 244, 0.1);
+    border: 1px solid var(--violet);
+    border-radius: 100px;
+    padding: 3px;
+    backdrop-filter: blur(10px);
+  }
+  .lang-toggle button {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 6px 14px;
+    cursor: pointer;
+    border-radius: 100px;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+  }
+  .lang-toggle button.active {
+    background: var(--violet);
+    color: white;
+  }
+
+  /* Header / Hero */
+  header {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 24px 40px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 1px solid var(--violet);
+    background: rgba(108, 61, 244, 0.1);
+    color: var(--violet-light);
+    border-radius: 100px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    animation: fadeUp 0.8s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(48px, 9vw, 130px);
+    font-weight: 800;
+    letter-spacing: -3px;
+    line-height: 0.9;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #fff 0%, var(--violet-light) 50%, var(--pink-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+
+  .ticker {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(14px, 2vw, 18px);
+    color: var(--violet-light);
+    letter-spacing: 8px;
+    margin-bottom: 30px;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  .tagline {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(18px, 2.5vw, 28px);
+    font-weight: 400;
+    color: var(--text);
+    max-width: 700px;
+    margin-bottom: 40px;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  .tagline em {
+    font-style: italic;
+    color: var(--violet-light);
+  }
+
+  .cta-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+
+  .btn {
+    padding: 16px 32px;
+    border-radius: 100px;
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: var(--violet);
+    color: white;
+    border: 2px solid var(--violet);
+    box-shadow: 0 0 30px var(--violet-glow);
+  }
+
+  .btn-primary:hover {
+    background: var(--violet-light);
+    border-color: var(--violet-light);
+    transform: translateY(-2px);
+    box-shadow: 0 0 50px var(--violet-glow);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 2px solid var(--violet);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(108, 61, 244, 0.2);
+    transform: translateY(-2px);
+  }
+
+  /* Sections */
+  section {
+    padding: 80px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    color: var(--violet-light);
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700;
+    letter-spacing: -2px;
+    margin-bottom: 40px;
+    line-height: 1;
+  }
+
+  /* Disclaimer banner */
+  .disclaimer-banner {
+    background: linear-gradient(90deg, rgba(255, 184, 76, 0.1), rgba(255, 76, 184, 0.05));
+    border: 1px solid var(--warning);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 60px auto;
+    max-width: 900px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .disclaimer-banner h3 {
+    color: var(--warning);
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .disclaimer-banner p {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* About section */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; }
+  }
+
+  .about-text {
+    font-size: 16px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  .about-text p { margin-bottom: 16px; }
+
+  .planet-viz {
+    width: 100%;
+    aspect-ratio: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .planet {
+    width: 60%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle at 30% 30%, var(--violet-light), var(--violet) 50%, var(--bg-deep) 100%);
+    border-radius: 50%;
+    box-shadow:
+      0 0 80px var(--violet-glow),
+      inset -30px -30px 60px rgba(0, 0, 0, 0.5);
+    position: relative;
+    animation: rotate 30s linear infinite;
+  }
+
+  .planet::before {
+    content: 'SLX';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(24px, 5vw, 48px);
+    color: white;
+    text-shadow: 0 0 20px var(--violet);
+    letter-spacing: 2px;
+  }
+
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Ring around planet */
+  .planet-viz::after {
+    content: '';
+    position: absolute;
+    width: 90%;
+    aspect-ratio: 3;
+    border: 1px solid rgba(155, 109, 255, 0.3);
+    border-radius: 50%;
+    transform: rotate(20deg);
+    animation: rotate-slow 60s linear infinite;
+  }
+
+  @keyframes rotate-slow {
+    from { transform: rotate(20deg); }
+    to { transform: rotate(380deg); }
+  }
+
+  /* Tokenomics cards */
+  .tokenomics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+  }
+
+  .token-card {
+    background: linear-gradient(135deg, rgba(108, 61, 244, 0.1), rgba(108, 61, 244, 0.02));
+    border: 1px solid rgba(108, 61, 244, 0.3);
+    border-radius: 16px;
+    padding: 28px;
+    transition: all 0.3s;
+  }
+
+  .token-card:hover {
+    border-color: var(--violet);
+    background: linear-gradient(135deg, rgba(108, 61, 244, 0.2), rgba(108, 61, 244, 0.05));
+    transform: translateY(-4px);
+  }
+
+  .token-card .label {
+    color: var(--violet-light);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .token-card .value {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+
+  .token-card .desc {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* Vesting breakdown */
+  .vesting-list {
+    background: rgba(108, 61, 244, 0.05);
+    border: 1px solid rgba(108, 61, 244, 0.2);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+
+  .vesting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(108, 61, 244, 0.15);
+    font-size: 14px;
+  }
+
+  .vesting-row:last-child { border-bottom: none; }
+
+  .vesting-row .pct {
+    color: var(--violet-light);
+    font-weight: 700;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* Roadmap */
+  .roadmap-track {
+    position: relative;
+    padding-left: 32px;
+    margin-top: 40px;
+  }
+
+  .roadmap-track::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--violet), transparent);
+  }
+
+  .roadmap-item {
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .roadmap-item::before {
+    content: '';
+    position: absolute;
+    left: -32px; top: 6px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--violet);
+  }
+
+  .roadmap-item.done::before {
+    background: var(--success);
+    border-color: var(--success);
+    box-shadow: 0 0 16px var(--success);
+  }
+
+  .roadmap-item.current::before {
+    background: var(--violet);
+    box-shadow: 0 0 16px var(--violet);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 16px var(--violet); }
+    50% { box-shadow: 0 0 32px var(--violet); }
+  }
+
+  .roadmap-item h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    margin-bottom: 6px;
+    color: white;
+  }
+
+  .roadmap-item p {
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+
+  .roadmap-item .status {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-left: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(108, 61, 244, 0.2);
+    color: var(--violet-light);
+  }
+
+  .roadmap-item.done .status { background: rgba(76, 255, 175, 0.15); color: var(--success); }
+
+  /* Links section */
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .link-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: rgba(108, 61, 244, 0.05);
+    border: 1px solid rgba(108, 61, 244, 0.2);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.3s;
+  }
+
+  .link-card:hover {
+    border-color: var(--violet);
+    background: rgba(108, 61, 244, 0.15);
+    transform: translateX(4px);
+  }
+
+  .link-card .icon {
+    font-size: 24px;
+    color: var(--violet-light);
+  }
+
+  .link-card .name {
+    font-weight: 700;
+    font-size: 15px;
+    color: white;
+  }
+
+  .link-card .handle {
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* Contract address box */
+  .contract-box {
+    background: var(--bg-deep);
+    border: 1px solid var(--violet);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 24px 0;
+    font-family: 'Space Mono', monospace;
+    word-break: break-all;
+    position: relative;
+  }
+
+  .contract-box .label {
+    color: var(--violet-light);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .contract-box .address {
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .copy-btn {
+    background: var(--violet);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    margin-top: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .copy-btn:hover { background: var(--violet-light); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 60px 24px 40px;
+    border-top: 1px solid rgba(108, 61, 244, 0.2);
+    margin-top: 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer p {
+    color: var(--text-dim);
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  footer .acronyms {
+    color: var(--warning);
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin: 16px 0;
+  }
+
+  footer .made-by {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 24px;
+    letter-spacing: 1px;
+  }
+
+  /* Hide elements based on lang */
+  [data-lang]:not(.active) { display: none; }
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+<div class="cosmic-glow"></div>
+
+<!-- Language toggle -->
+<div class="lang-toggle">
+  <button onclick="setLang('en')" id="btn-en" class="active">EN</button>
+  <button onclick="setLang('fr')" id="btn-fr">FR</button>
+</div>
+
+<!-- HERO -->
+<header>
+  <span class="badge" data-lang="en">⚠ PARODY · NOT MUSK</span>
+  <span class="badge" data-lang="fr">⚠ PARODIE · PAS MUSK</span>
+
+  <h1>SpacelonX</h1>
+  <div class="ticker">$ S L X · P O L Y G O N</div>
+
+  <p class="tagline" data-lang="en">
+    A community memecoin where <em>memes</em> meet <em>space exploration</em>.
+  </p>
+  <p class="tagline" data-lang="fr">
+    Un memecoin communautaire où les <em>mèmes</em> rencontrent l'<em>exploration spatiale</em>.
+  </p>
+
+  <div class="cta-group">
+    <a href="https://t.me/spacelonx_community" target="_blank" class="btn btn-primary">
+      <span data-lang="en">Join Telegram</span>
+      <span data-lang="fr">Rejoindre Telegram</span>
+    </a>
+    <a href="https://x.com/spacelonxslx" target="_blank" class="btn btn-secondary">
+      Follow on X
+    </a>
+  </div>
+</header>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer-banner">
+  <h3>⚠ IMPORTANT DISCLAIMER</h3>
+  <p data-lang="en">
+    SpacelonX is an independent parody/community project. We are <strong>NOT affiliated</strong> with Elon Musk, Tesla, SpaceX, or X Corp. Any resemblance is satirical. This is not financial advice. Always verify the contract address before any transaction. DYOR.
+  </p>
+  <p data-lang="fr">
+    SpacelonX est un projet parodique communautaire indépendant. Nous ne sommes <strong>PAS affiliés</strong> à Elon Musk, Tesla, SpaceX ou X Corp. Toute ressemblance est satirique. Ceci n'est pas un conseil financier. Vérifiez toujours l'adresse du contrat avant toute transaction. Faites vos propres recherches.
+  </p>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <span class="section-label">[ 01 — ABOUT ]</span>
+  <h2 class="section-title" data-lang="en">What is SpacelonX?</h2>
+  <h2 class="section-title" data-lang="fr">Qu'est-ce que SpacelonX ?</h2>
+
+  <div class="about-grid">
+    <div class="about-text">
+      <div data-lang="en">
+        <p>SpacelonX ($SLX) is a community-driven memecoin built on Polygon. We celebrate space exploration, internet culture, and the absurdity of crypto — all at once.</p>
+        <p>We laugh at ourselves before anyone else can. No empty promises, no moonboy hype. Just memes, a transparent smart contract, and a community that vibes.</p>
+        <p>The contract is verified on Polygonscan. 40% of supply is locked in vesting. Taxes are capped at 10% on-chain (currently 2% buy / 3% sell). Everything is visible. Everything is auditable.</p>
+      </div>
+      <div data-lang="fr">
+        <p>SpacelonX ($SLX) est un memecoin communautaire sur Polygon. Nous célébrons l'exploration spatiale, la culture internet, et l'absurdité du crypto — tout à la fois.</p>
+        <p>On rit de nous-mêmes avant que quiconque ne le fasse. Pas de promesses vides, pas de hype moonboy. Juste des mèmes, un smart contract transparent, et une communauté qui kiffe.</p>
+        <p>Le contrat est vérifié sur Polygonscan. 40% du supply est bloqué en vesting. Les taxes sont plafonnées à 10% on-chain (actuellement 2% achat / 3% vente). Tout est visible. Tout est auditable.</p>
+      </div>
+    </div>
+
+    <div class="planet-viz">
+      <div class="planet"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TOKENOMICS -->
+<section id="tokenomics">
+  <span class="section-label">[ 02 — TOKENOMICS ]</span>
+  <h2 class="section-title" data-lang="en">The numbers</h2>
+  <h2 class="section-title" data-lang="fr">Les chiffres</h2>
+
+  <div class="tokenomics-grid">
+    <div class="token-card">
+      <div class="label" data-lang="en">Total Supply</div>
+      <div class="label" data-lang="fr">Supply totale</div>
+      <div class="value">10B</div>
+      <div class="desc">SLX · Fixed · No mint</div>
+    </div>
+
+    <div class="token-card">
+      <div class="label" data-lang="en">Buy Tax</div>
+      <div class="label" data-lang="fr">Taxe achat</div>
+      <div class="value">2%</div>
+      <div class="desc" data-lang="en">Capped at 10% on-chain</div>
+      <div class="desc" data-lang="fr">Plafonné à 10% on-chain</div>
+    </div>
+
+    <div class="token-card">
+      <div class="label" data-lang="en">Sell Tax</div>
+      <div class="label" data-lang="fr">Taxe vente</div>
+      <div class="value">3%</div>
+      <div class="desc" data-lang="en">Capped at 10% on-chain</div>
+      <div class="desc" data-lang="fr">Plafonné à 10% on-chain</div>
+    </div>
+
+    <div class="token-card">
+      <div class="label" data-lang="en">Locked in vesting</div>
+      <div class="label" data-lang="fr">Bloqué en vesting</div>
+      <div class="value">40%</div>
+      <div class="desc" data-lang="en">Team · Treasury · etc.</div>
+      <div class="desc" data-lang="fr">Équipe · Trésor · etc.</div>
+    </div>
+  </div>
+
+  <div class="vesting-list">
+    <h4 style="font-family:'Syne',sans-serif;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--violet-light);margin-bottom:16px">
+      <span data-lang="en">Vesting breakdown</span>
+      <span data-lang="fr">Détail du vesting</span>
+    </h4>
+    <div class="vesting-row">
+      <span data-lang="en">Team · 12mo cliff + 36mo linear</span>
+      <span data-lang="fr">Équipe · cliff 12 mois + 36 mois linéaire</span>
+      <span class="pct">15%</span>
+    </div>
+    <div class="vesting-row">
+      <span data-lang="en">Treasury · 48mo linear</span>
+      <span data-lang="fr">Trésor · 48 mois linéaire</span>
+      <span class="pct">15%</span>
+    </div>
+    <div class="vesting-row">
+      <span data-lang="en">Ecosystem · 6mo cliff + 36mo linear</span>
+      <span data-lang="fr">Écosystème · cliff 6 mois + 36 mois linéaire</span>
+      <span class="pct">5%</span>
+    </div>
+    <div class="vesting-row">
+      <span data-lang="en">Advisors · 6mo cliff + 24mo linear</span>
+      <span data-lang="fr">Conseillers · cliff 6 mois + 24 mois linéaire</span>
+      <span class="pct">5%</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRACT -->
+<section id="contract">
+  <span class="section-label">[ 03 — CONTRACT ]</span>
+  <h2 class="section-title" data-lang="en">Verified on-chain</h2>
+  <h2 class="section-title" data-lang="fr">Vérifié on-chain</h2>
+
+  <div class="contract-box">
+    <div class="label" data-lang="en">SLX Contract · Polygon Amoy testnet</div>
+    <div class="label" data-lang="fr">Contrat SLX · Polygon Amoy testnet</div>
+    <div class="address" id="contract-addr">0xDBF17Cc980Ae4f7db5119e8C9c3E2AD53023aC9E</div>
+    <button class="copy-btn" onclick="copyAddr()" id="copy-btn">
+      <span data-lang="en">Copy address</span>
+      <span data-lang="fr">Copier l'adresse</span>
+    </button>
+    <a href="https://amoy.polygonscan.com/address/0xDBF17Cc980Ae4f7db5119e8C9c3E2AD53023aC9E"
+       target="_blank"
+       class="copy-btn"
+       style="background:transparent;border:1px solid var(--violet);margin-left:8px;text-decoration:none;display:inline-block;">
+      <span data-lang="en">View on Polygonscan ↗</span>
+      <span data-lang="fr">Voir sur Polygonscan ↗</span>
+    </a>
+  </div>
+
+  <p style="color:var(--text-dim);font-size:13px;line-height:1.7">
+    <span data-lang="en">⚠ Currently deployed on <strong>Polygon Amoy testnet</strong> for community building. Mainnet deployment will require: professional audit, locked liquidity, and a strong community foundation. We'll announce it.</span>
+    <span data-lang="fr">⚠ Actuellement déployé sur le <strong>testnet Polygon Amoy</strong> pour construire la communauté. Le déploiement mainnet nécessitera : audit professionnel, liquidité bloquée, et une communauté solide. Nous l'annoncerons.</span>
+  </p>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <span class="section-label">[ 04 — ROADMAP ]</span>
+  <h2 class="section-title" data-lang="en">The journey</h2>
+  <h2 class="section-title" data-lang="fr">Le voyage</h2>
+
+  <div class="roadmap-track">
+    <div class="roadmap-item done">
+      <h4>
+        <span data-lang="en">Phase 0 — Foundations</span>
+        <span data-lang="fr">Phase 0 — Fondations</span>
+        <span class="status" data-lang="en">DONE</span>
+        <span class="status" data-lang="fr">FAIT</span>
+      </h4>
+      <p data-lang="en">Smart contract written, deployed and verified on Polygon Amoy. 40% locked in vesting. Buy/sell tax mechanics tested on-chain.</p>
+      <p data-lang="fr">Smart contract écrit, déployé et vérifié sur Polygon Amoy. 40% bloqué en vesting. Mécanique taxe achat/vente testée on-chain.</p>
+    </div>
+
+    <div class="roadmap-item current">
+      <h4>
+        <span data-lang="en">Phase 1 — Community</span>
+        <span data-lang="fr">Phase 1 — Communauté</span>
+        <span class="status" data-lang="en">CURRENT</span>
+        <span class="status" data-lang="fr">EN COURS</span>
+      </h4>
+      <p data-lang="en">Building the community on Telegram and X. Telegram bot with AI for FAQ. Bilingual content (EN/FR). Memes. Vibes.</p>
+      <p data-lang="fr">Construction de la communauté sur Telegram et X. Bot Telegram avec IA pour la FAQ. Contenu bilingue (EN/FR). Mèmes. Bonnes vibes.</p>
+    </div>
+
+    <div class="roadmap-item">
+      <h4>
+        <span data-lang="en">Phase 2 — Pre-launch</span>
+        <span data-lang="fr">Phase 2 — Pré-lancement</span>
+      </h4>
+      <p data-lang="en">Professional smart contract audit. Whitepaper. Partnerships. Marketing strategy.</p>
+      <p data-lang="fr">Audit professionnel du smart contract. Whitepaper. Partenariats. Stratégie marketing.</p>
+    </div>
+
+    <div class="roadmap-item">
+      <h4>
+        <span data-lang="en">Phase 3 — Mainnet launch</span>
+        <span data-lang="fr">Phase 3 — Lancement mainnet</span>
+      </h4>
+      <p data-lang="en">Deploy on Polygon mainnet. Create Uniswap pool. Lock liquidity. Announce.</p>
+      <p data-lang="fr">Déploiement sur Polygon mainnet. Création du pool Uniswap. Liquidité bloquée. Annonce.</p>
+    </div>
+
+    <div class="roadmap-item">
+      <h4>
+        <span data-lang="en">Phase 4 — Grow</span>
+        <span data-lang="fr">Phase 4 — Croissance</span>
+      </h4>
+      <p data-lang="en">CoinGecko & CMC listings. CEX listings. Partnerships. More memes. To infinity and beyond (responsibly).</p>
+      <p data-lang="fr">Listings CoinGecko et CMC. Listings CEX. Partenariats. Plus de mèmes. Vers l'infini et au-delà (de manière responsable).</p>
+    </div>
+  </div>
+</section>
+
+<!-- LINKS -->
+<section id="links">
+  <span class="section-label">[ 05 — CONNECT ]</span>
+  <h2 class="section-title" data-lang="en">Find us in orbit</h2>
+  <h2 class="section-title" data-lang="fr">Trouve-nous en orbite</h2>
+
+  <div class="links-grid">
+    <a href="https://t.me/spacelonx_community" target="_blank" class="link-card">
+      <span class="icon">◢</span>
+      <div>
+        <div class="name">Telegram</div>
+        <div class="handle">@spacelonx_community</div>
+      </div>
+    </a>
+
+    <a href="https://x.com/spacelonxslx" target="_blank" class="link-card">
+      <span class="icon">𝕏</span>
+      <div>
+        <div class="name">X / Twitter</div>
+        <div class="handle">@spacelonxslx</div>
+      </div>
+    </a>
+
+    <a href="https://amoy.polygonscan.com/address/0xDBF17Cc980Ae4f7db5119e8C9c3E2AD53023aC9E" target="_blank" class="link-card">
+      <span class="icon">⬢</span>
+      <div>
+        <div class="name">Polygonscan</div>
+        <div class="handle">Verified contract</div>
+      </div>
+    </a>
+
+    <a href="https://t.me/SpacelonX_bot" target="_blank" class="link-card">
+      <span class="icon">◆</span>
+      <div>
+        <div class="name">FAQ Bot</div>
+        <div class="handle">@SpacelonX_bot</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p data-lang="en">SpacelonX is a parody/community project.</p>
+  <p data-lang="fr">SpacelonX est un projet parodique/communautaire.</p>
+  <p data-lang="en">NOT affiliated with Elon Musk · SpaceX · Tesla · X Corp.</p>
+  <p data-lang="fr">PAS affilié à Elon Musk · SpaceX · Tesla · X Corp.</p>
+  <p class="acronyms">NFA · DYOR</p>
+  <p data-lang="en">Not Financial Advice · Do Your Own Research</p>
+  <p data-lang="fr">Pas un conseil financier · Faites vos propres recherches</p>
+  <p class="made-by">© 2026 SpacelonX Community · Built with memes 🚀</p>
+</footer>
+
+<script>
+  // Language switcher
+  function setLang(lang) {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      el.classList.toggle('active', el.dataset.lang === lang);
+    });
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-fr').classList.toggle('active', lang === 'fr');
+    localStorage.setItem('slx-lang', lang);
+  }
+
+  // Show all 'en' elements on load
+  document.querySelectorAll('[data-lang="en"]').forEach(el => el.classList.add('active'));
+
+  // Restore saved lang
+  const savedLang = localStorage.getItem('slx-lang');
+  if (savedLang) setLang(savedLang);
+
+  // Copy address
+  function copyAddr() {
+    const addr = document.getElementById('contract-addr').textContent;
+    navigator.clipboard.writeText(addr).then(() => {
+      const btn = document.getElementById('copy-btn');
+      const original = btn.innerHTML;
+      btn.innerHTML = '✓ Copied!';
+      setTimeout(() => btn.innerHTML = original, 1500);
+    });
+  }
+</script>
+
+</body>
+</html>
