@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://silversurfer239.github.io/spacelonx-site/sitemap.xml
