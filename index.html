@@ -434,77 +434,71 @@
     font-family: 'Space Mono', monospace;
   }
 
-  /* Roadmap */
-  .roadmap-track {
-    position: relative;
-    padding-left: 32px;
-    margin-top: 40px;
-  }
+<!-- ROADMAP -->
+<section id="roadmap">
+  <span class="section-label">[ 04 — ROADMAP ]</span>
+  <h2 class="section-title" data-lang="en">The journey</h2>
+  <h2 class="section-title" data-lang="fr">Le voyage</h2>
 
-  .roadmap-track::before {
-    content: '';
-    position: absolute;
-    left: 8px; top: 0; bottom: 0;
-    width: 2px;
-    background: linear-gradient(180deg, var(--violet), transparent);
-  }
+  <div class="roadmap-track">
 
-  .roadmap-item {
-    margin-bottom: 32px;
-    position: relative;
-  }
+    <div class="roadmap-item done">
+      <h4>
+        <span data-lang="en">Phase 0 — Foundations</span>
+        <span data-lang="fr">Phase 0 — Fondations</span>
+        <span class="status" data-lang="en">DONE</span>
+        <span class="status" data-lang="fr">FAIT</span>
+      </h4>
+      <p data-lang="en">Smart contract written, deployed and verified on Polygon Amoy testnet. Initial tokenomics, tax mechanics and vesting logic prepared.</p>
+      <p data-lang="fr">Smart contract rédigé, déployé et vérifié sur le testnet Polygon Amoy. Tokenomics, mécanisme de taxes et logique de vesting préparés.</p>
+    </div>
 
-  .roadmap-item::before {
-    content: '';
-    position: absolute;
-    left: -32px; top: 6px;
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: var(--bg);
-    border: 2px solid var(--violet);
-  }
+    <div class="roadmap-item done">
+      <h4>
+        <span data-lang="en">Phase 1 — Community</span>
+        <span data-lang="fr">Phase 1 — Communauté</span>
+        <span class="status" data-lang="en">DONE</span>
+        <span class="status" data-lang="fr">FAIT</span>
+      </h4>
+      <p data-lang="en">Telegram community launched, X/Twitter account connected, FAQ bot deployed, bilingual website created and SpacelonX Journal activated.</p>
+      <p data-lang="fr">Communauté Telegram lancée, compte X/Twitter connecté, bot FAQ déployé, site bilingue créé et SpacelonX Journal activé.</p>
+    </div>
 
-  .roadmap-item.done::before {
-    background: var(--success);
-    border-color: var(--success);
-    box-shadow: 0 0 16px var(--success);
-  }
+    <div class="roadmap-item done">
+      <h4>
+        <span data-lang="en">Phase 2 — Pre-launch</span>
+        <span data-lang="fr">Phase 2 — Pré-lancement</span>
+        <span class="status" data-lang="en">DONE</span>
+        <span class="status" data-lang="fr">FAIT</span>
+      </h4>
+      <p data-lang="en">Whitepaper published, preliminary smart contract audit prepared, SEO sitemap submitted, Google Search Console connected, and automated content pipeline deployed.</p>
+      <p data-lang="fr">Whitepaper publié, audit préliminaire du smart contract préparé, sitemap SEO soumis, Google Search Console connecté et pipeline de contenu automatisé déployé.</p>
+    </div>
 
-  .roadmap-item.current::before {
-    background: var(--violet);
-    box-shadow: 0 0 16px var(--violet);
-    animation: pulse 2s ease-in-out infinite;
-  }
+    <div class="roadmap-item current">
+      <h4>
+        <span data-lang="en">Phase 3 — Mainnet preparation</span>
+        <span data-lang="fr">Phase 3 — Préparation mainnet</span>
+        <span class="status" data-lang="en">CURRENT</span>
+        <span class="status" data-lang="fr">EN COURS</span>
+      </h4>
+      <p data-lang="en">Professional audit, liquidity strategy, community growth, token launch preparation, DEX listing planning and final mainnet deployment checks.</p>
+      <p data-lang="fr">Audit professionnel, stratégie de liquidité, croissance communautaire, préparation du lancement du token, planification du listing DEX et dernières vérifications avant mainnet.</p>
+    </div>
 
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 16px var(--violet); }
-    50% { box-shadow: 0 0 32px var(--violet); }
-  }
+    <div class="roadmap-item">
+      <h4>
+        <span data-lang="en">Phase 4 — Grow</span>
+        <span data-lang="fr">Phase 4 — Croissance</span>
+        <span class="status" data-lang="en">NEXT</span>
+        <span class="status" data-lang="fr">À VENIR</span>
+      </h4>
+      <p data-lang="en">CoinGecko and CoinMarketCap applications, CEX discussions, partnerships, media visibility, community campaigns and long-term SLX ecosystem expansion.</p>
+      <p data-lang="fr">Demandes CoinGecko et CoinMarketCap, échanges avec des CEX, partenariats, visibilité média, campagnes communautaires et développement long terme de l’écosystème SLX.</p>
+    </div>
 
-  .roadmap-item h4 {
-    font-family: 'Syne', sans-serif;
-    font-size: 18px;
-    margin-bottom: 6px;
-    color: white;
-  }
-
-  .roadmap-item p {
-    font-size: 14px;
-    color: var(--text-dim);
-  }
-
-  .roadmap-item .status {
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-left: 12px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: rgba(108, 61, 244, 0.2);
-    color: var(--violet-light);
-  }
-
-  .roadmap-item.done .status { background: rgba(76, 255, 175, 0.15); color: var(--success); }
+  </div>
+</section>
 
   /* Links section */
   .links-grid {
