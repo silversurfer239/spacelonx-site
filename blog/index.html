@@ -107,6 +107,8 @@ margin-bottom:30px;
 </head>
 <body>
 
+<div class="reading-progress" id="readingProgress"></div>
+
 <a class="back" href="/">← Back to SpacelonX</a>
 
 <h1>SpacelonX Journal</h1>
@@ -176,6 +178,33 @@ Space Infrastructure and the future of decentralized finance.
     Read article →
   </a>
 </div>
+
+  <script>
+window.addEventListener('scroll', function () {
+  const progressBar = document.getElementById('readingProgress');
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+  progressBar.style.width = progress + '%';
+});
+
+const fadeElements = document.querySelectorAll('.fade-in');
+
+function revealOnScroll() {
+  fadeElements.forEach(function (element) {
+    const elementTop = element.getBoundingClientRect().top;
+    const windowHeight = window.innerHeight;
+
+    if (elementTop < windowHeight - 100) {
+      element.classList.add('visible');
+    }
+  });
+}
+
+window.addEventListener('scroll', revealOnScroll);
+window.addEventListener('load', revealOnScroll);
+</script>
 
 </body>
 </html>
