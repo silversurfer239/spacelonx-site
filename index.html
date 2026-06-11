@@ -162,6 +162,51 @@
     animation: fadeUp 0.8s ease 0.1s both;
   }
 
+  .hero-buttons {
+    margin-top: 28px;
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  .btn-buy,
+  .btn-chart,
+  .btn-contract {
+    display: inline-block;
+    padding: 14px 28px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.8px;
+    transition: 0.3s ease;
+  }
+
+  .btn-buy {
+    background: linear-gradient(135deg, var(--violet-light), var(--pink-accent));
+    color: white;
+  }
+
+  .btn-chart {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.18);
+  }
+
+  .btn-contract {
+    background: transparent;
+    color: var(--violet-light);
+    border: 1px solid var(--violet-light);
+  }
+
+  .btn-buy:hover,
+  .btn-chart:hover,
+  .btn-contract:hover {
+    transform: translateY(-3px);
+  }
+
   .ticker {
     font-family: 'Space Mono', monospace;
     font-size: clamp(14px, 2vw, 18px);
@@ -569,17 +614,37 @@
   <span class="badge" data-lang="en">⚠ PARODY · NOT MUSK</span>
   <span class="badge" data-lang="fr">⚠ PARODIE · PAS MUSK</span>
 
-  <h1>SpacelonX</h1>
-  <div class="ticker">$ S L X · P O L Y G O N</div>
+ <h1>SpacelonX</h1>
+<div class="ticker">$ S L X · P O L Y G O N</div>
 
-  <p class="tagline" data-lang="en">
-    A community memecoin where <em>memes</em> meet <em>space exploration</em>.
-  </p>
-  <p class="tagline" data-lang="fr">
-    Un memecoin communautaire où les <em>mèmes</em> rencontrent l'<em>exploration spatiale</em>.
-  </p>
+<p class="tagline" data-lang="en">
+  A community memecoin where <em>memes</em> meet <em>space exploration</em>.
+</p>
+<p class="tagline" data-lang="fr">
+  Un memecoin communautaire où les <em>mèmes</em> rencontrent l'<em>exploration spatiale</em>.
+</p>
 
-  <div class="cta-group">
+<div class="hero-buttons">
+  <a href="https://quickswap.exchange/"
+     target="_blank"
+     class="btn-buy">
+     BUY SLX
+  </a>
+
+  <a href="https://dexscreener.com/polygon/0x837c80c5f4f0165110a36ef0e10dd95f2579eed4"
+     target="_blank"
+     class="btn-chart">
+     VIEW CHART
+  </a>
+
+  <a href="https://polygonscan.com/token/0xcAC47b268787a280816b50e7F9b679e81B8a179e"
+     target="_blank"
+     class="btn-contract">
+     CONTRACT
+  </a>
+</div>
+
+<div class="cta-group">
     <a href="https://t.me/spacelonx_community" target="_blank" class="btn btn-primary">
       <span data-lang="en">Join Telegram</span>
       <span data-lang="fr">Rejoindre Telegram</span>
@@ -587,7 +652,8 @@
     <a href="https://x.com/spacelonxslx" target="_blank" class="btn btn-secondary">
       Follow on X
     </a>
-  </div>
+  
+ </div>
 </header>
 
 <!-- DISCLAIMER -->
