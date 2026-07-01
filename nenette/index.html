@@ -3,17 +3,65 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Nénette AI V7 Web3 Terminal</title>
-  <meta http-equiv="refresh" content="0; url=./nenette/">
+  <title>Nénette AI V7.1 Clean Deploy</title>
+  <link rel="stylesheet" href="./assets/css/v7.css">
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
 </head>
-<body style="background:#050816;color:white;font-family:Arial,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;">
-  <div style="text-align:center;">
-    <h1>Nénette AI</h1>
-    <p>Loading V7 Web3 Terminal...</p>
-    <p><a href="./nenette/" style="color:#f5c542;">Open Nénette AI V7</a></p>
-  </div>
+<body>
+  <button id="mobile-menu" class="mobile-menu-btn">☰ Menu</button>
+  <div class="v7-badge ultimate-badge">V7.1 CLEAN DEPLOY</div>
+  <div class="cosmos"></div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="orb">SLX</div>
+      <div>
+        <h1>Nénette AI</h1>
+        <p>V7 Web3 Terminal</p>
+      </div>
+    </div>
+
+    <nav id="nav">
+      <button data-route="dashboard" class="active">⌁ Dashboard</button>
+      <button data-route="terminal">🛰 Web3 Terminal</button>
+      <button data-route="market">📈 Market</button>
+      <button data-route="blockchain">⬢ Blockchain</button>
+      <button data-route="holders">👥 Holders</button>
+      <button data-route="portfolio">💼 Portfolio</button>
+      <button data-route="staking">💎 Staking</button>
+      <button data-route="security">🛡 Security</button>
+      <button data-route="governance">🗳 Governance</button>
+      <button data-route="ai">🤖 AI</button>
+      <button data-route="ecosystem">🌌 Ecosystem</button>
+    </nav>
+
+    <div class="status-pill"><span></span> Polygon Mainnet</div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <small>SpacelonX Web3 Intelligence</small>
+        <h2>Nénette AI Premium Terminal</h2>
+        <p>Clean deploy Web3 terminal for the SpacelonX ecosystem.</p>
+      </div>
+      <div class="actions">
+        <button id="refresh">Refresh</button>
+        <button id="wallet">Connect Wallet</button>
+      </div>
+    </header>
+
+    <section id="view"></section>
+
+    <footer>Nénette AI V7.1 Clean Deploy · Independent Build · SpacelonX</footer>
+  </main>
+
+  <script type="module" src="./assets/js/app.js"></script>
+
   <script>
-    window.location.replace("./nenette/");
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+    }
   </script>
 </body>
 </html>
