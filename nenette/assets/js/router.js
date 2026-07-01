@@ -6,9 +6,11 @@ import { renderHolders } from "../../modules/holders/holders.js";
 import { renderPortfolio } from "../../modules/portfolio/portfolio.js";
 import { renderStaking } from "../../modules/staking/staking.js";
 import { renderSecurity } from "../../modules/security/security.js";
+import { renderAlerts } from "../../modules/alerts/alerts.js";
 import { renderGovernance } from "../../modules/governance/governance.js";
 import { renderAI } from "../../modules/ai/ai.js";
 import { renderEcosystem } from "../../modules/ecosystem/ecosystem.js";
+import { renderSettings } from "../../modules/settings/settings.js";
 
 const routes = {
   dashboard: renderDashboard,
@@ -18,10 +20,12 @@ const routes = {
   holders: renderHolders,
   portfolio: renderPortfolio,
   staking: renderStaking,
+  alerts: renderAlerts,
   security: renderSecurity,
   governance: renderGovernance,
   ai: renderAI,
-  ecosystem: renderEcosystem
+  ecosystem: renderEcosystem,
+  settings: renderSettings
 };
 
 export async function navigate(route) {

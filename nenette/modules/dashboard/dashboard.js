@@ -35,8 +35,8 @@ export async function renderDashboard(container) {
       </div>
 
       <div class="command-copy">
-        <div class="pill">● V7 WEB3 TERMINAL</div>
-        <h3>SpacelonX Web3 Command Interface</h3>
+        <div class="pill">● V7.2 INTERNAL FUNCTIONS</div>
+        <h3>SpacelonX Internal Web3 Terminal</h3>
         <p>
           Nénette AI becomes the strategic control layer for SLX: market intelligence,
           Polygon blockchain health, LP trust, staking simulation and portfolio analysis.
@@ -87,7 +87,7 @@ export async function renderDashboard(container) {
       </div>
       <div>
         <div class="section-title">
-          <div><h2>Nénette AI Strategic Brief</h2><p>V7 Ultimate deployment summary.</p></div>
+          <div><h2>Nénette AI Strategic Brief</h2><p>V7.2 internal functions summary.</p></div>
           <span>AI COMMAND</span>
         </div>
         <div class="brief-grid ultimate-brief">

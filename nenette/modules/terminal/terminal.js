@@ -5,7 +5,7 @@ import { terminalReadiness, dexScreenerEmbedUrl, deploymentChecklist, WEB3_LIMIT
 import { usd, fmt, shortTime } from "../../services/format.js";
 
 export async function renderTerminal(container) {
-  container.innerHTML = `<section class="card"><div class="section-title"><div><h2>Web3 Terminal</h2><p>Loading live terminal state...</p></div><span>WEB3</span></div></section>`;
+  container.innerHTML = `<section class="card"><div class="section-title"><div><h2>Web3 Terminal V7.2</h2><p>Loading live terminal state...</p></div><span>WEB3</span></div></section>`;
 
   const market = await getMarketData();
   let blockchain = null;
@@ -19,13 +19,13 @@ export async function renderTerminal(container) {
   container.innerHTML = `
     <section class="web3-command">
       <div>
-        <div class="pill">● WEEKEND RELEASE</div>
-        <h2>SpacelonX Web3 Terminal</h2>
+        <div class="pill">● INTERNAL FUNCTIONS</div>
+        <h2>SpacelonX Web3 Terminal V7.2</h2>
         <p>Production-oriented control screen for SLX market, Polygon health, LP lock, wallet readiness and deployment status.</p>
       </div>
       <div class="terminal-readiness">
         <div class="ring" style="--score:${readiness.score}"><strong>${readiness.score}</strong><span>/100</span></div>
-        <p>Weekend deployment readiness</p>
+        <p>Internal readiness</p>
       </div>
     </section>
 
@@ -67,7 +67,7 @@ export async function renderTerminal(container) {
 
     <section class="card">
       <div class="section-title">
-        <div><h2>Weekend Deployment Checklist</h2><p>Steps to put Nénette on SpacelonX.</p></div>
+        <div><h2>Deployment Checklist</h2><p>Steps to put Nénette on SpacelonX.</p></div>
         <span>DEPLOY</span>
       </div>
       <ol class="deploy-list">${checklist.map(item => `<li>${item}</li>`).join("")}</ol>

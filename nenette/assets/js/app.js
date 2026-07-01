@@ -35,5 +35,21 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+
+  let currentRoute = "dashboard";
+  document.querySelectorAll("#nav button").forEach(button => {
+    button.addEventListener("click", () => currentRoute = button.dataset.route);
+  });
+
+  window.nenetteAutoRefreshTimer = setInterval(async () => {
+    try {
+      const { getSettings } = await import("../../services/storage.js");
+      const settings = getSettings();
+      if (settings.autoRefresh && ["dashboard", "market", "terminal", "alerts"].includes(currentRoute)) {
+        await navigate(currentRoute);
+      }
+    } catch {}
+  }, 30000);
+
   await navigate("dashboard");
 });

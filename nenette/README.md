@@ -1,50 +1,30 @@
-# Nénette AI V7.1 Clean Deploy
+# Nénette AI V7.2 Internal Functions
 
-Version propre destinée à remplacer la structure provisoire :
+Version fonctionnelle améliorée pour SpacelonX.
 
-`/nenette/nenette/`
+## Ajouts V7.2
 
-par une structure propre :
-
-`/nenette/`
-
-## Structure finale attendue
-
-```text
-spacelonx-site/
-  nenette/
-    index.html
-    assets/
-    config/
-    docs/
-    modules/
-    services/
-    manifest.json
-    service-worker.js
-    README.md
-```
-
-## Mauvaise structure à éviter
-
-```text
-spacelonx-site/
-  nenette/
-    nenette/
-      index.html
-```
+- Market engine amélioré : DexScreener pair API + token API + fallback.
+- Portfolio multi-wallet local.
+- Staking avec projections annuelle, mensuelle et quotidienne.
+- Alerts locales : prix et liquidité.
+- Settings locales : auto-refresh, pool par défaut, wallets sauvegardés.
+- Assistant Nénette enrichi.
+- Auto-refresh léger sur Dashboard / Market / Terminal / Alerts.
+- Structure propre pour `/nenette/`.
 
 ## Test local
 
 ```bash
-py -m http.server 9020
+py -m http.server 9030
 ```
 
-Puis ouvrir :
+Puis :
 
 ```text
-http://127.0.0.1:9020/index.html
+http://127.0.0.1:9030/index.html
 ```
 
 ## Badge attendu
 
-`V7.1 CLEAN DEPLOY`
+`V7.2 INTERNAL FUNCTIONS`
