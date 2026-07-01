@@ -1,0 +1,10 @@
+{
+  "name": "Nénette AI V7 Web3 Terminal",
+  "short_name": "Nénette AI",
+  "description": "Weekend deployable Web3 terminal for SpacelonX SLX.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#050816",
+  "theme_color": "#050816",
+  "icons": []
+}
