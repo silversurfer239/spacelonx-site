@@ -793,3 +793,112 @@ body::before {
 @media(max-width:900px){
   .small-danger{width:100%;min-height:40px}
 }
+
+
+/* V7.3 AI STRATEGIC BRIEF */
+.ai-brief-card .quick-prompts {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:14px 0 22px;
+}
+
+.ai-brief-card .quick-prompts button,
+.brief-actions button {
+  border:1px solid rgba(245,197,66,.35);
+  background:rgba(245,197,66,.10);
+  color:#f8fafc;
+  border-radius:14px;
+  padding:10px 14px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.brief-shell {
+  margin-top:20px;
+  padding:22px;
+  border-radius:28px;
+  border:1px solid rgba(56,217,255,.22);
+  background:linear-gradient(180deg,rgba(15,23,42,.86),rgba(2,6,23,.72));
+  box-shadow:0 24px 80px rgba(0,0,0,.28);
+}
+
+.brief-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:18px;
+}
+
+.brief-header h3 {
+  margin:0;
+  font-size:28px;
+}
+
+.brief-header p {
+  margin:7px 0 0;
+  color:#9aa8bd;
+}
+
+.brief-score {
+  min-width:116px;
+  height:116px;
+  border-radius:28px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.05);
+}
+
+.brief-score strong {
+  font-size:34px;
+  line-height:1;
+}
+
+.brief-score span {
+  font-size:12px;
+  font-weight:1000;
+  letter-spacing:1.3px;
+}
+
+.brief-low { box-shadow:0 0 45px rgba(53,242,159,.28); color:#bbf7d0; }
+.brief-moderate { box-shadow:0 0 45px rgba(245,197,66,.26); color:#fde68a; }
+.brief-elevated { box-shadow:0 0 45px rgba(251,146,60,.26); color:#fed7aa; }
+.brief-high { box-shadow:0 0 45px rgba(244,63,94,.28); color:#fecdd3; }
+
+.brief-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+  margin-top:18px;
+}
+
+.brief-grid article {
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04);
+  border-radius:22px;
+  padding:18px;
+}
+
+.brief-grid h4 {
+  margin:0 0 12px;
+  color:#f5c542;
+}
+
+.brief-grid p {
+  color:#cbd5e1;
+  margin:8px 0;
+  line-height:1.45;
+}
+
+.strategic-answer {
+  border-left:3px solid #f5c542;
+}
+
+@media(max-width:900px){
+  .brief-header{align-items:flex-start;flex-direction:column}
+  .brief-score{width:100%;height:auto;min-height:88px}
+  .brief-grid{grid-template-columns:1fr}
+  .ai-brief-card .quick-prompts button{width:100%}
+}

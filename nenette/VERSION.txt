@@ -1,4 +1,4 @@
-Nénette AI V7.2 Internal Functions
+Nénette AI V7.3 AI Strategic Brief
 Target path: /nenette/
-Expected badge: V7.2 INTERNAL FUNCTIONS
-Core upgrades: market fallback engine, portfolio multi-wallet, staking projections, alerts, settings.
+Expected badge: V7.3 AI STRATEGIC BRIEF
+Core upgrade: automated local AI strategic brief with risk level, recommendation, scores, risk flags and actions.

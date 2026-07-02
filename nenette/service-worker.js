@@ -1,4 +1,4 @@
-const CACHE_NAME = "nenette-v7-1-clean-deploy-v1";
+const CACHE_NAME = "nenette-v7-3-ai-strategic-brief-v1";
 const ASSETS = ["./", "./index.html", "./assets/css/v7.css", "./assets/js/app.js", "./assets/js/router.js"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)).catch(() => null));

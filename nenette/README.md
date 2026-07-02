@@ -1,30 +1,49 @@
-# Nénette AI V7.2 Internal Functions
+# Nénette AI V7.3 AI Strategic Brief
 
-Version fonctionnelle améliorée pour SpacelonX.
+Version améliorée pour SpacelonX avec génération automatique d'un brief stratégique local.
 
-## Ajouts V7.2
+## Ajouts V7.3
 
-- Market engine amélioré : DexScreener pair API + token API + fallback.
-- Portfolio multi-wallet local.
-- Staking avec projections annuelle, mensuelle et quotidienne.
-- Alerts locales : prix et liquidité.
-- Settings locales : auto-refresh, pool par défaut, wallets sauvegardés.
-- Assistant Nénette enrichi.
-- Auto-refresh léger sur Dashboard / Market / Terminal / Alerts.
-- Structure propre pour `/nenette/`.
+- Onglet AI renforcé.
+- Bouton `Generate Strategic Brief`.
+- Synthèse automatique :
+  - Market
+  - Liquidity
+  - Blockchain
+  - LP lock
+  - Staking
+  - Portfolio readiness
+  - Security / trust
+  - Risk level
+  - Recommended actions
+- Export du brief en Markdown.
+- Copie du brief dans le presse-papiers.
+- Aucune clé API privée.
+- Aucun backend.
+- Fonctionne sur GitHub Pages.
 
 ## Test local
 
 ```bash
-py -m http.server 9030
+py -m http.server 9040
 ```
 
-Puis :
+Puis ouvrir :
 
 ```text
-http://127.0.0.1:9030/index.html
+http://127.0.0.1:9040/index.html
 ```
 
 ## Badge attendu
 
-`V7.2 INTERNAL FUNCTIONS`
+`V7.3 AI STRATEGIC BRIEF`
+
+## Déploiement GitHub
+
+Envoyer le contenu de cette archive directement dans :
+
+```text
+spacelonx-site / nenette /
+```
+
+Ne pas envoyer le dossier autour.
