@@ -2,41 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Nénette AI V7.3 AI Strategic Brief</title>
-  <link rel="stylesheet" href="./assets/css/v7.css">
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#070510">
+  <title>Nénette AI V7.4 — AI Memory & Investor Intelligence</title>
+  <style>
+    :root{
+      --bg:#070510;--bg2:#0c0820;--panel:rgba(255,255,255,.055);--panel2:rgba(255,255,255,.085);
+      --line:rgba(255,255,255,.12);--line2:rgba(248,196,83,.28);--text:#f7f1ff;--muted:#a99bc5;
+      --gold:#f5c84b;--gold2:#ffdf82;--blue:#5f7cff;--cyan:#70e7ff;--green:#53f29c;--red:#ff6077;--orange:#ffb14a;
+      --shadow:0 22px 70px rgba(0,0,0,.42);--radius:22px;
+      --side:292px;
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:
+      radial-gradient(circle at 20% -10%,rgba(245,200,75,.19),transparent 31%),
+      radial-gradient(circle at 90% 0%,rgba(95,124,255,.22),transparent 33%),
+      linear-gradient(145deg,var(--bg),#05030c 55%,#090414);color:var(--text);font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;overflow-x:hidden}
+    button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:var(--gold);text-decoration:none}.cosmos:before,.cosmos:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0}.cosmos:before{background-image:radial-gradient(#fff 1px,transparent 1px);background-size:58px 58px;opacity:.045}.cosmos:after{background:linear-gradient(90deg,transparent,rgba(245,200,75,.04),transparent);animation:scan 7s linear infinite}@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+    .mobile-menu-btn{display:none;position:fixed;top:14px;left:14px;z-index:40;border:1px solid var(--line2);background:rgba(6,4,15,.84);backdrop-filter:blur(14px);color:var(--gold);border-radius:999px;padding:10px 14px;font-weight:900;box-shadow:var(--shadow)}
+    .v-badge{position:fixed;top:18px;right:18px;z-index:30;border:1px solid rgba(245,200,75,.5);background:linear-gradient(135deg,rgba(245,200,75,.22),rgba(95,124,255,.16));box-shadow:0 0 34px rgba(245,200,75,.18);color:var(--gold2);border-radius:999px;padding:10px 14px;font-weight:950;letter-spacing:.08em;font-size:11px;text-transform:uppercase;backdrop-filter:blur(16px)}
+    .sidebar{position:fixed;z-index:20;left:0;top:0;width:var(--side);height:100vh;padding:22px;background:linear-gradient(180deg,rgba(9,6,22,.94),rgba(6,4,15,.88));border-right:1px solid var(--line);backdrop-filter:blur(18px);display:flex;flex-direction:column;gap:18px;overflow:auto}.brand{display:flex;gap:14px;align-items:center}.orb{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,var(--gold2),#b66a1b 50%,#331305 100%);box-shadow:0 0 36px rgba(245,200,75,.25);color:#170d03;font-weight:1000}.brand h1{font-size:23px;margin:0}.brand p{margin:3px 0 0;color:var(--muted);font-size:13px}.version-note{border:1px solid var(--line2);background:rgba(245,200,75,.07);border-radius:18px;padding:12px;color:#f5df9a;font-size:12px;line-height:1.45}.nav{display:flex;flex-direction:column;gap:8px}.nav button{width:100%;border:1px solid transparent;background:transparent;color:#d9cffa;padding:12px 13px;border-radius:15px;text-align:left;transition:.18s;font-weight:780}.nav button:hover,.nav button.active{background:linear-gradient(135deg,rgba(245,200,75,.16),rgba(95,124,255,.11));border-color:var(--line2);color:#fff;transform:translateX(2px)}.status-pill{margin-top:auto;border:1px solid rgba(83,242,156,.32);background:rgba(83,242,156,.075);border-radius:999px;padding:10px 12px;color:#b7ffd7;display:flex;gap:8px;align-items:center;font-size:12px}.status-pill span{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 18px var(--green)}
+    .main{position:relative;z-index:1;margin-left:var(--side);min-height:100vh;padding:34px;max-width:1500px}.topbar{border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.035));border-radius:30px;padding:28px;box-shadow:var(--shadow);display:flex;gap:24px;justify-content:space-between;align-items:flex-start}.topbar small{color:var(--gold);font-weight:950;letter-spacing:.13em;text-transform:uppercase}.topbar h2{font-size:clamp(30px,5vw,56px);line-height:.98;margin:10px 0 12px}.topbar p{color:var(--muted);max-width:760px;margin:0;line-height:1.6}.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.btn,button.primary,.actions button,.form button{border:1px solid rgba(245,200,75,.36);border-radius:999px;background:linear-gradient(135deg,rgba(245,200,75,.23),rgba(95,124,255,.13));color:#fff;padding:11px 15px;font-weight:900;box-shadow:0 12px 40px rgba(0,0,0,.22)}.btn.secondary,button.secondary{border-color:var(--line);background:rgba(255,255,255,.055)}button.danger{border-color:rgba(255,96,119,.35);background:rgba(255,96,119,.11)}
+    #view{margin-top:22px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}.card{grid-column:span 12;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.074),rgba(255,255,255,.035));border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}.span-3{grid-column:span 3}.span-4{grid-column:span 4}.span-5{grid-column:span 5}.span-6{grid-column:span 6}.span-7{grid-column:span 7}.span-8{grid-column:span 8}.section-title{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}.section-title h3,.section-title h2{margin:0 0 7px}.section-title p{margin:0;color:var(--muted);line-height:1.55}.section-title span,.tag{border:1px solid var(--line2);background:rgba(245,200,75,.08);color:var(--gold2);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:950;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}.metric{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:18px;padding:16px}.metric span{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.09em;font-weight:900}.metric b{display:block;font-size:24px;margin-top:8px;word-break:break-word}.metric small{color:var(--muted)}.score-ring{width:138px;height:138px;border-radius:50%;display:grid;place-items:center;margin:auto;background:conic-gradient(var(--gold) var(--angle),rgba(255,255,255,.1) 0);position:relative;box-shadow:0 0 45px rgba(245,200,75,.16)}.score-ring:after{content:"";position:absolute;inset:12px;border-radius:50%;background:#0b0719}.score-ring div{position:relative;z-index:2;text-align:center}.score-ring strong{font-size:38px}.score-ring span{display:block;color:var(--muted);font-size:11px;font-weight:900;letter-spacing:.09em}.progress{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px}.progress i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--gold));width:0}.answer,.notice{border:1px solid var(--line2);background:rgba(245,200,75,.075);border-radius:18px;padding:15px;line-height:1.58;color:#f8e9b6}.notice.blue{border-color:rgba(95,124,255,.34);background:rgba(95,124,255,.08);color:#dce3ff}.notice.green{border-color:rgba(83,242,156,.28);background:rgba(83,242,156,.075);color:#c7ffdf}.notice.red{border-color:rgba(255,96,119,.35);background:rgba(255,96,119,.085);color:#ffd1d8}.form{display:flex;gap:10px;flex-wrap:wrap}.form input,.form textarea,.form select{border:1px solid var(--line);background:rgba(0,0,0,.19);border-radius:16px;color:var(--text);padding:12px 13px;outline:none;min-width:190px}.form input:focus,.form textarea:focus{border-color:rgba(245,200,75,.55)}.form textarea{width:100%;min-height:118px;resize:vertical}.form .grow{flex:1}.list{display:grid;gap:10px}.item{border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:16px;padding:13px;display:flex;gap:12px;justify-content:space-between;align-items:flex-start}.item strong{display:block}.item p{margin:4px 0 0;color:var(--muted);line-height:1.5}.pill{border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.055);padding:6px 9px;color:var(--muted);font-size:12px;font-weight:900}.quick{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.quick button{padding:9px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.055);color:#efe9ff}.brief-shell{border:1px solid rgba(245,200,75,.32);background:linear-gradient(145deg,rgba(245,200,75,.08),rgba(95,124,255,.06));border-radius:24px;padding:20px;margin-top:16px}.brief-head{display:flex;gap:16px;justify-content:space-between;align-items:center;margin-bottom:15px}.brief-score{min-width:106px;height:106px;border-radius:28px;display:grid;place-items:center;background:rgba(0,0,0,.2);border:1px solid var(--line2);text-align:center}.brief-score strong{font-size:34px}.brief-score span{display:block;font-size:11px;color:var(--muted);font-weight:900}.mini-table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:14px}.mini-table td,.mini-table th{border-bottom:1px solid var(--line);padding:10px;text-align:left}.mini-table th{color:var(--gold);font-size:12px;text-transform:uppercase;letter-spacing:.08em}.mini-table td:last-child{text-align:right}.footer{margin-top:22px;color:var(--muted);font-size:12px;text-align:center}.loading{display:flex;align-items:center;gap:14px}.loader-orb{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,var(--gold2),#714208);color:#170d03;font-weight:1000;animation:pulse 1.2s ease infinite}@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 18px rgba(245,200,75,.24)}50%{transform:scale(1.05);box-shadow:0 0 34px rgba(245,200,75,.42)}}.hidden{display:none!important}
+    @media(max-width:1120px){.span-3,.span-4,.span-5,.span-6,.span-7,.span-8{grid-column:span 12}.topbar{flex-direction:column}.actions{justify-content:flex-start}.metric b{font-size:21px}}
+    @media(max-width:840px){.mobile-menu-btn{display:block}.v-badge{top:14px;right:12px;font-size:9px;max-width:190px;text-align:center}.sidebar{transform:translateX(-105%);transition:.22s;width:min(88vw,320px);box-shadow:var(--shadow)}.sidebar.mobile-open{transform:translateX(0)}.main{margin-left:0;padding:76px 14px 22px}.topbar{padding:20px;border-radius:24px}.card{padding:17px;border-radius:20px}.section-title{flex-direction:column}.form{flex-direction:column}.form input,.form textarea,.form select,.form button,.actions button{width:100%}.item{flex-direction:column}.brief-head{flex-direction:column;align-items:flex-start}.brief-score{width:100%;height:auto;padding:16px}.grid{gap:13px}}
+  </style>
 </head>
 <body>
-  <button id="mobile-menu" class="mobile-menu-btn">☰ Menu</button>
-  <div class="v7-badge ultimate-badge">V7.3 AI STRATEGIC BRIEF</div>
   <div class="cosmos"></div>
+  <button id="mobileMenu" class="mobile-menu-btn">☰ Menu</button>
+  <div class="v-badge">V7.4 AI MEMORY · INVESTOR INTELLIGENCE</div>
 
-  <aside class="sidebar">
+  <aside id="sidebar" class="sidebar">
     <div class="brand">
       <div class="orb">SLX</div>
-      <div>
-        <h1>Nénette AI</h1>
-        <p>V7.3 AI Strategic Brief</p>
-      </div>
+      <div><h1>Nénette AI</h1><p>V7.4 Memory & Intelligence</p></div>
     </div>
-
-    <nav id="nav">
-      <button data-route="dashboard" class="active">⌁ Dashboard</button>
-      <button data-route="terminal">🛰 Web3 Terminal</button>
+    <div class="version-note">Local memory, investor score, strategic brief history, project status, exports and premium SLX decision support.</div>
+    <nav class="nav" id="nav">
+      <button class="active" data-route="dashboard">⌁ Dashboard</button>
       <button data-route="market">📈 Market</button>
-      <button data-route="blockchain">⬢ Blockchain</button>
-      <button data-route="holders">👥 Holders</button>
+      <button data-route="intelligence">🏦 Investor Intelligence</button>
+      <button data-route="memory">🧠 AI Memory</button>
       <button data-route="portfolio">💼 Portfolio</button>
       <button data-route="staking">💎 Staking</button>
       <button data-route="alerts">🔔 Alerts</button>
       <button data-route="security">🛡 Security</button>
-      <button data-route="governance">🗳 Governance</button>
-      <button data-route="ai">🤖 AI</button>
-      <button data-route="ecosystem">🌌 Ecosystem</button>
+      <button data-route="ai">🤖 AI Brief</button>
       <button data-route="settings">⚙ Settings</button>
     </nav>
-
     <div class="status-pill"><span></span> Polygon Mainnet</div>
   </aside>
 
@@ -45,25 +58,315 @@
       <div>
         <small>SpacelonX Web3 Intelligence</small>
         <h2>Nénette AI Premium Terminal</h2>
-        <p>Strategic Web3 terminal with automated AI brief for market, liquidity, staking, security and deployment readiness.</p>
+        <p>V7.4 adds local AI memory, investor intelligence scoring, strategic brief history and exportable reports for SLX.</p>
       </div>
       <div class="actions">
-        <button id="refresh">Refresh</button>
-        <button id="wallet">Connect Wallet</button>
+        <button id="refreshBtn">Refresh</button>
+        <button id="connectBtn">Connect Wallet</button>
       </div>
     </header>
-
     <section id="view"></section>
-
-    <footer>Nénette AI V7.3 AI Strategic Brief · Independent Build · SpacelonX</footer>
+    <div class="footer">Nénette AI V7.4 — AI Memory & Investor Intelligence · Independent Build · SpacelonX</div>
   </main>
 
-  <script type="module" src="./assets/js/app.js"></script>
+<script>
+(() => {
+  const VERSION = "V7.4 AI Memory & Investor Intelligence";
+  const PAIR_ENDPOINT = "https://api.dexscreener.com/latest/dex/search?q=SLX%20POL";
+  const TOKEN_SYMBOL = "SLX";
+  const STORAGE_KEY = "nenette_v74_memory";
+  const SETTINGS_KEY = "nenette_v74_settings";
+  const fallbackMarket = {
+    source:"Fallback", priceUsd:0, liquidityUsd:0, volume24h:0, change24h:0,
+    pair:"SLX / POL", dex:"QuickSwap", status:"Fallback mode", url:""
+  };
+  const defaultMemory = { briefs:[], decisions:[], wallets:[], alerts:[], notes:"", events:[] };
+  const defaultSettings = { autoRefresh:true, refreshSeconds:45, conservativeMode:true, publicMode:false, tokenAddress:"", pairAddress:"" };
+  let currentRoute = "dashboard";
+  let lastMarket = null;
+  let walletAddress = "";
 
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
-    }
-  </script>
+  const $ = (s,root=document) => root.querySelector(s);
+  const $$ = (s,root=document) => [...root.querySelectorAll(s)];
+  const view = $("#view");
+  const usd = v => Number(v||0) >= 1 ? Number(v||0).toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}) : "$" + Number(v||0).toLocaleString("en-US",{maximumFractionDigits:10});
+  const num = (v,d=2) => Number(v||0).toLocaleString("en-US",{maximumFractionDigits:d});
+  const pct = v => `${Number(v||0).toFixed(2)}%`;
+  const now = () => new Date().toISOString();
+  const safe = s => String(s ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+
+  function loadMemory(){try{return {...defaultMemory,...JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}")} }catch{return {...defaultMemory}}}
+  function saveMemory(memory){localStorage.setItem(STORAGE_KEY, JSON.stringify(memory));}
+  function loadSettings(){try{return {...defaultSettings,...JSON.parse(localStorage.getItem(SETTINGS_KEY)||"{}")} }catch{return {...defaultSettings}}}
+  function saveSettings(settings){localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));}
+  function addEvent(type, text){const memory=loadMemory();memory.events.unshift({type,text,at:now()});memory.events=memory.events.slice(0,40);saveMemory(memory);}
+
+  async function getMarketData(){
+    try{
+      const res = await fetch(PAIR_ENDPOINT, { cache:"no-store" });
+      if(!res.ok) throw new Error("Market API unavailable");
+      const data = await res.json();
+      const pairs = Array.isArray(data.pairs) ? data.pairs : [];
+      const pair = pairs.find(p => String(p.chainId).toLowerCase().includes("polygon") && (String(p.baseToken?.symbol).toUpperCase()==="SLX" || String(p.quoteToken?.symbol).toUpperCase()==="SLX")) || pairs[0];
+      if(!pair) throw new Error("No SLX pair returned");
+      return {
+        source:"Live DexScreener", priceUsd:Number(pair.priceUsd||0), liquidityUsd:Number(pair.liquidity?.usd||0), volume24h:Number(pair.volume?.h24||0), change24h:Number(pair.priceChange?.h24||0),
+        pair:`${pair.baseToken?.symbol||"SLX"} / ${pair.quoteToken?.symbol||"POL"}`, dex:pair.dexId||"DEX", status:"Live API", url:pair.url||"", pairAddress:pair.pairAddress||""
+      };
+    }catch(e){return {...fallbackMarket, error:e.message}}
+  }
+
+  function projectStatus(){
+    return [
+      {name:"Public website", status:"Live", score:95, note:"SpacelonX site published on GitHub Pages."},
+      {name:"Whitepaper", status:"V1.2 Premium Gold", score:95, note:"PDF and Word links active."},
+      {name:"Nénette terminal", status:"V7.4 ready", score:92, note:"Memory and investor intelligence package."},
+      {name:"LP lock", status:"Displayed", score:86, note:"Local trust module displays lock posture; verify source before investor claims."},
+      {name:"Market data", status:lastMarket?.status || "Pending", score:lastMarket?.source==="Live DexScreener"?82:52, note:lastMarket?.source==="Live DexScreener"?"Live DEX API available.":"Fallback active or waiting for refresh."},
+      {name:"Holder analytics", status:"Indexer required", score:45, note:"Real whale tracking still requires third-party indexer/backend."}
+    ];
+  }
+
+  function clamp(v){return Math.max(0,Math.min(100,Math.round(Number(v||0))))}
+  function scoreMarket(m){
+    if(!m || m.status!=="Live API") return 42;
+    let s=45;
+    if(m.liquidityUsd>500) s+=10; if(m.liquidityUsd>2500) s+=10; if(m.liquidityUsd>10000) s+=10;
+    if(m.volume24h>100) s+=7; if(m.volume24h>1000) s+=8;
+    if(m.change24h>-15) s+=5; if(m.change24h>-5) s+=5;
+    return clamp(s);
+  }
+  function scoreTrust(memory){
+    let s=58;
+    s+=12; // whitepaper published
+    s+=10; // audit docs present on site
+    s+=memory.wallets.length ? 5 : 0;
+    s+=memory.briefs.length ? 5 : 0;
+    s-=memory.alerts.filter(a=>a.active).length>5 ? 3 : 0;
+    return clamp(s);
+  }
+  function scoreProduct(memory){
+    let s=78;
+    if(memory.briefs.length) s+=5;
+    if(memory.decisions.length) s+=5;
+    if(memory.notes?.trim()) s+=5;
+    return clamp(s);
+  }
+  function scoreSecurity(){ return 82; }
+  function scoreCommunity(memory){ return clamp(60 + Math.min(20, memory.events.length)); }
+  function investorScore(market=lastMarket, memory=loadMemory()){
+    const scores = { market:scoreMarket(market), trust:scoreTrust(memory), security:scoreSecurity(), product:scoreProduct(memory), community:scoreCommunity(memory) };
+    const global = clamp(scores.market*.25 + scores.trust*.22 + scores.security*.2 + scores.product*.2 + scores.community*.13);
+    const risk = global>=80?"LOW":global>=65?"MODERATE":global>=45?"ELEVATED":"HIGH";
+    return { global, risk, scores };
+  }
+  function scoreCard(label,value,note){return `<div class="metric"><span>${safe(label)}</span><b>${safe(value)}</b>${note?`<small>${safe(note)}</small>`:""}</div>`}
+  function progress(label, score){return `<div class="metric"><span>${safe(label)}</span><b>${score}/100</b><div class="progress"><i style="width:${score}%"></i></div></div>`}
+
+  async function renderDashboard(){
+    lastMarket = await getMarketData();
+    const memory=loadMemory(); const inv=investorScore(lastMarket,memory);
+    view.innerHTML = `
+      <div class="grid">
+        <section class="card span-4">
+          <div class="section-title"><div><h3>Investor Score</h3><p>Consolidated SLX readiness score.</p></div><span>${inv.risk}</span></div>
+          <div class="score-ring" style="--angle:${inv.global*3.6}deg"><div><strong>${inv.global}</strong><span>/100</span></div></div>
+        </section>
+        <section class="card span-8">
+          <div class="section-title"><div><h3>Live Market Snapshot</h3><p>${safe(lastMarket.status)} · ${safe(lastMarket.source)}</p></div><span>${safe(lastMarket.dex)}</span></div>
+          <div class="grid">
+            ${scoreCard("Pair", lastMarket.pair)}
+            ${scoreCard("Price", usd(lastMarket.priceUsd))}
+            ${scoreCard("Liquidity", usd(lastMarket.liquidityUsd))}
+            ${scoreCard("24H Volume", usd(lastMarket.volume24h))}
+            ${scoreCard("24H Change", pct(lastMarket.change24h))}
+            ${scoreCard("Memory Briefs", memory.briefs.length)}
+          </div>
+        </section>
+        <section class="card span-7">
+          <div class="section-title"><div><h3>Project Status</h3><p>Operational readiness tracked by Nénette.</p></div><span>V7.4</span></div>
+          <div class="list">${projectStatus().map(x=>`<div class="item"><div><strong>${safe(x.name)} — ${safe(x.status)}</strong><p>${safe(x.note)}</p></div><span class="pill">${x.score}/100</span></div>`).join("")}</div>
+        </section>
+        <section class="card span-5">
+          <div class="section-title"><div><h3>AI Memory</h3><p>Local, private browser memory.</p></div><span>LOCAL</span></div>
+          <div class="grid">
+            ${scoreCard("Saved Wallets", memory.wallets.length)}
+            ${scoreCard("Strategic Briefs", memory.briefs.length)}
+            ${scoreCard("Decisions", memory.decisions.length)}
+            ${scoreCard("Alerts", memory.alerts.length)}
+          </div>
+          <div class="notice blue" style="margin-top:14px">Memory is stored only in this browser using localStorage. It is not a backend database.</div>
+        </section>
+      </div>`;
+  }
+
+  async function renderMarket(){
+    lastMarket = await getMarketData();
+    view.innerHTML = `<div class="grid"><section class="card">
+      <div class="section-title"><div><h2>Market</h2><p>Live market endpoint with safe fallback.</p></div><span>${safe(lastMarket.source)}</span></div>
+      <div class="grid">
+        ${scoreCard("Pair", lastMarket.pair)}${scoreCard("DEX", lastMarket.dex)}${scoreCard("Price", usd(lastMarket.priceUsd))}${scoreCard("Liquidity", usd(lastMarket.liquidityUsd))}${scoreCard("24H Volume", usd(lastMarket.volume24h))}${scoreCard("24H Change", pct(lastMarket.change24h))}
+      </div>
+      ${lastMarket.url?`<p style="margin-top:16px"><a class="btn" href="${safe(lastMarket.url)}" target="_blank" rel="noopener">Open pair on DexScreener</a></p>`:""}
+      ${lastMarket.error?`<div class="notice red" style="margin-top:14px">${safe(lastMarket.error)}. Fallback mode is active; avoid live price claims until the API is available.</div>`:""}
+    </section></div>`;
+  }
+
+  function renderIntelligence(){
+    const memory=loadMemory(); const inv=investorScore(lastMarket,memory);
+    view.innerHTML = `<div class="grid">
+      <section class="card span-4"><div class="section-title"><div><h2>Investor Intelligence</h2><p>Automated readiness assessment.</p></div><span>${inv.risk}</span></div><div class="score-ring" style="--angle:${inv.global*3.6}deg"><div><strong>${inv.global}</strong><span>/100</span></div></div><div class="notice" style="margin-top:16px">${safe(recommendation(inv,lastMarket,memory))}</div></section>
+      <section class="card span-8"><div class="section-title"><div><h3>Score Breakdown</h3><p>Market, security, trust, product and community.</p></div><span>SCORING</span></div><div class="grid">${progress("Market",inv.scores.market)}${progress("Trust",inv.scores.trust)}${progress("Security",inv.scores.security)}${progress("Product",inv.scores.product)}${progress("Community",inv.scores.community)}</div></section>
+      <section class="card"><div class="section-title"><div><h3>Investor Risk Flags</h3><p>Items Nénette would not overclaim publicly.</p></div><span>RISK</span></div><div class="list">${riskFlags(lastMarket,memory).map(x=>`<div class="item"><div><strong>${safe(x.title)}</strong><p>${safe(x.note)}</p></div><span class="pill">${safe(x.level)}</span></div>`).join("")}</div></section>
+    </div>`;
+  }
+  function riskFlags(m,memory){
+    const out=[];
+    if(!m || m.status!=="Live API") out.push({level:"MEDIUM",title:"Market fallback",note:"DexScreener live data is not currently confirmed."});
+    if(m && Number(m.liquidityUsd)<5000) out.push({level:"HIGH",title:"Thin liquidity",note:"Low liquidity can produce high slippage and sharp volatility."});
+    out.push({level:"MEDIUM",title:"Holder indexer required",note:"Real whale and holder tracking needs a backend or third-party indexer."});
+    out.push({level:"LOW",title:"Staking simulator",note:"Current staking projections are informational and not an on-chain staking contract."});
+    if(!memory.briefs.length) out.push({level:"LOW",title:"No brief history",note:"Generate and save briefs to build a decision history."});
+    return out.length?out:[{level:"LOW",title:"No major local flag",note:"No critical issue detected by local modules."}];
+  }
+  function recommendation(inv,m,memory){
+    if(inv.global>=80) return "Strong operational posture: continue growth, keep claims conservative, and monitor liquidity.";
+    if(inv.global>=65) return "Controlled investor posture: product and trust stack are improving, but liquidity and holder analytics should remain monitored.";
+    if(!m || m.status!=="Live API") return "Pause public live-market claims until market API data is confirmed.";
+    return "Risk-first posture: improve liquidity, holder analytics and source verification before broader promotion.";
+  }
+
+  function renderMemory(){
+    const memory=loadMemory();
+    view.innerHTML = `<div class="grid">
+      <section class="card span-5"><div class="section-title"><div><h2>AI Memory</h2><p>Private local memory for Nénette.</p></div><span>LOCAL</span></div>
+        <div class="grid">${scoreCard("Briefs",memory.briefs.length)}${scoreCard("Decisions",memory.decisions.length)}${scoreCard("Events",memory.events.length)}${scoreCard("Wallets",memory.wallets.length)}</div>
+        <div class="form" style="margin-top:14px"><textarea id="notes" placeholder="Project notes for Nénette...">${safe(memory.notes||"")}</textarea><button id="saveNotes">Save Notes</button><button id="exportMemory" class="secondary">Export Memory JSON</button><button id="clearMemory" class="danger">Clear Memory</button></div>
+      </section>
+      <section class="card span-7"><div class="section-title"><div><h3>Decisions</h3><p>Save project decisions for future briefs.</p></div><span>LOG</span></div>
+        <div class="form"><input id="decision" class="grow" placeholder="Example: Publish V7.4 after mobile test"><button id="addDecision">Add Decision</button></div>
+        <div class="list" style="margin-top:14px">${memory.decisions.slice(0,10).map((d,i)=>`<div class="item"><div><strong>${safe(d.text)}</strong><p>${new Date(d.at).toLocaleString()}</p></div><button class="secondary" data-del-decision="${i}">Delete</button></div>`).join("") || `<div class="notice blue">No decision saved yet.</div>`}</div>
+      </section>
+      <section class="card"><div class="section-title"><div><h3>Strategic Brief History</h3><p>Last saved AI briefs.</p></div><span>${memory.briefs.length}</span></div><div class="list">${memory.briefs.slice(0,8).map((b,i)=>`<div class="item"><div><strong>${safe(b.version)} — ${b.globalScore}/100 — ${safe(b.risk)}</strong><p>${new Date(b.generatedAt).toLocaleString()} · ${safe(b.recommendation)}</p></div><button class="secondary" data-open-brief="${i}">Open</button></div>`).join("") || `<div class="notice blue">No saved strategic brief yet.</div>`}</div><div id="openedBrief"></div></section>
+    </div>`;
+    $("#saveNotes").onclick=()=>{const m=loadMemory();m.notes=$("#notes").value;saveMemory(m);addEvent("notes","Project notes updated");renderMemory()};
+    $("#addDecision").onclick=()=>{const v=$("#decision").value.trim();if(!v)return;const m=loadMemory();m.decisions.unshift({text:v,at:now()});saveMemory(m);addEvent("decision",v);renderMemory()};
+    $("#exportMemory").onclick=()=>download("nenette-v74-memory.json",JSON.stringify(loadMemory(),null,2),"application/json");
+    $("#clearMemory").onclick=()=>{if(confirm("Clear all local Nénette memory on this browser?")){localStorage.removeItem(STORAGE_KEY);renderMemory()}};
+    $$('[data-del-decision]').forEach(btn=>btn.onclick=()=>{const m=loadMemory();m.decisions.splice(Number(btn.dataset.delDecision),1);saveMemory(m);renderMemory()});
+    $$('[data-open-brief]').forEach(btn=>btn.onclick=()=>{$("#openedBrief").innerHTML=renderBrief(loadMemory().briefs[Number(btn.dataset.openBrief)], true)});
+  }
+
+  function renderPortfolio(){
+    const memory=loadMemory();
+    view.innerHTML=`<div class="grid"><section class="card"><div class="section-title"><div><h2>Portfolio</h2><p>Local wallet watchlist. No funds are moved.</p></div><span>${memory.wallets.length} WALLET(S)</span></div>
+      <div class="form"><input id="walletInput" class="grow" placeholder="0x... wallet address or label"><button id="saveWallet">Save Wallet</button></div>
+      <div class="list" style="margin-top:16px">${memory.wallets.map((w,i)=>`<div class="item"><div><strong>${safe(w.label||"Wallet")}</strong><p>${safe(w.address)} · saved ${new Date(w.at).toLocaleDateString()}</p></div><button class="secondary" data-del-wallet="${i}">Delete</button></div>`).join("")||`<div class="notice blue">No wallet saved. Add one to enrich future AI briefs.</div>`}</div>
+      ${walletAddress?`<div class="notice green" style="margin-top:14px">Connected wallet: ${safe(walletAddress)}</div>`:""}
+    </section></div>`;
+    $("#saveWallet").onclick=()=>{const v=$("#walletInput").value.trim();if(!v)return;const m=loadMemory();m.wallets.unshift({address:v,label:v.startsWith("0x")?"Polygon wallet":"Label",at:now()});saveMemory(m);addEvent("wallet",`Wallet saved: ${v}`);renderPortfolio()};
+    $$('[data-del-wallet]').forEach(btn=>btn.onclick=()=>{const m=loadMemory();m.wallets.splice(Number(btn.dataset.delWallet),1);saveMemory(m);renderPortfolio()});
+  }
+
+  function renderStaking(){
+    view.innerHTML=`<div class="grid"><section class="card span-5"><div class="section-title"><div><h2>Staking Simulator</h2><p>Informational projection only.</p></div><span>SIMULATOR</span></div>
+      <div class="form"><input id="stakeAmount" type="number" value="100000" min="0"><select id="stakeApr"><option value="8">Conservative 8% APR</option><option value="15">Growth 15% APR</option><option value="28">High risk 28% APR</option></select><button id="calcStake">Calculate</button></div><div id="stakeResult" style="margin-top:16px"></div></section>
+      <section class="card span-7"><div class="section-title"><div><h3>Important</h3><p>Clear investor-facing language.</p></div><span>DISCLOSURE</span></div><div class="notice red">This module is a simulator. Do not present it as an on-chain staking contract unless a verified staking contract exists and is audited.</div></section></div>`;
+    $("#calcStake").onclick=()=>{const a=Number($("#stakeAmount").value||0), apr=Number($("#stakeApr").value||0);const yearly=a*apr/100;$("#stakeResult").innerHTML=`<div class="grid">${scoreCard("Annual",`${num(yearly,2)} SLX`)}${scoreCard("Monthly",`${num(yearly/12,2)} SLX`)}${scoreCard("Daily",`${num(yearly/365,2)} SLX`)}</div>`};$("#calcStake").click();
+  }
+
+  function renderAlerts(){
+    const memory=loadMemory();
+    view.innerHTML=`<div class="grid"><section class="card"><div class="section-title"><div><h2>Alerts</h2><p>Local watch rules stored in browser memory.</p></div><span>${memory.alerts.length}</span></div>
+      <div class="form"><select id="alertType"><option>Liquidity below</option><option>Price above</option><option>Price below</option><option>Volume above</option><option>Manual reminder</option></select><input id="alertValue" class="grow" placeholder="Value or note"><button id="addAlert">Add Alert</button></div>
+      <div class="list" style="margin-top:16px">${memory.alerts.map((a,i)=>`<div class="item"><div><strong>${safe(a.type)} — ${safe(a.value)}</strong><p>${new Date(a.at).toLocaleString()} · ${a.active?"Active":"Paused"}</p></div><div class="form"><button class="secondary" data-toggle-alert="${i}">${a.active?"Pause":"Activate"}</button><button class="danger" data-del-alert="${i}">Delete</button></div></div>`).join("")||`<div class="notice blue">No alert saved yet.</div>`}</div>
+    </section></div>`;
+    $("#addAlert").onclick=()=>{const m=loadMemory();m.alerts.unshift({type:$("#alertType").value,value:$("#alertValue").value.trim()||"N/A",active:true,at:now()});saveMemory(m);addEvent("alert","Alert created");renderAlerts()};
+    $$('[data-toggle-alert]').forEach(btn=>btn.onclick=()=>{const m=loadMemory();m.alerts[Number(btn.dataset.toggleAlert)].active=!m.alerts[Number(btn.dataset.toggleAlert)].active;saveMemory(m);renderAlerts()});
+    $$('[data-del-alert]').forEach(btn=>btn.onclick=()=>{const m=loadMemory();m.alerts.splice(Number(btn.dataset.delAlert),1);saveMemory(m);renderAlerts()});
+  }
+
+  function renderSecurity(){
+    view.innerHTML=`<div class="grid"><section class="card span-6"><div class="section-title"><div><h2>Security & Trust</h2><p>Investor-facing trust stack.</p></div><span>TRUST</span></div>
+      <div class="list">
+        <div class="item"><div><strong>Whitepaper V1.2 Premium Gold</strong><p>Public PDF and Word version are published.</p></div><a class="btn secondary" href="/spacelonx-site/whitepaper.html" target="_blank">Open</a></div>
+        <div class="item"><div><strong>Audit documents</strong><p>Smart contract audit PDF/DOCX are present in the site docs directory.</p></div><span class="pill">DOCS</span></div>
+        <div class="item"><div><strong>LP lock posture</strong><p>Displayed as locked in the project narrative. Verify source before external claims.</p></div><span class="pill">VERIFY</span></div>
+      </div></section>
+      <section class="card span-6"><div class="section-title"><div><h3>Public Language Guardrails</h3><p>Safe wording for communication.</p></div><span>COMPLIANCE</span></div><div class="notice">Avoid guaranteed returns, official affiliation claims, staking promises, or live market claims when API data is in fallback mode.</div></section></div>`;
+  }
+
+  function buildBrief(){
+    const memory=loadMemory(); const inv=investorScore(lastMarket,memory); const m=lastMarket||fallbackMarket;
+    return {
+      version:VERSION, generatedAt:now(), globalScore:inv.global, risk:inv.risk, scores:inv.scores,
+      recommendation:recommendation(inv,m,memory),
+      market:{source:m.source,status:m.status,pair:m.pair,priceUsd:m.priceUsd,liquidityUsd:m.liquidityUsd,volume24h:m.volume24h,change24h:m.change24h},
+      memory:{briefs:memory.briefs.length,decisions:memory.decisions.length,wallets:memory.wallets.length,alerts:memory.alerts.length,notes:memory.notes||""},
+      riskFlags:riskFlags(m,memory),
+      actions:[
+        "Keep public communication conservative and source-based.",
+        "Use the published whitepaper and audit files as the trust baseline.",
+        "Add real holder/whale indexing before claiming whale analytics.",
+        "Continue improving liquidity monitoring and investor score history.",
+        "Treat staking projections as simulator output only."
+      ],
+      nextBuild:"V7.5 should add Wallet Connect, real wallet balances, and optional third-party holder indexing."
+    };
+  }
+  function briefMarkdown(b){return `# ${b.version}\n\nGenerated: ${new Date(b.generatedAt).toLocaleString()}\n\n## Global Investor Score\nScore: ${b.globalScore}/100\nRisk: ${b.risk}\nRecommendation: ${b.recommendation}\n\n## Market\n- Source: ${b.market.source}\n- Status: ${b.market.status}\n- Pair: ${b.market.pair}\n- Price: ${usd(b.market.priceUsd)}\n- Liquidity: ${usd(b.market.liquidityUsd)}\n- 24H volume: ${usd(b.market.volume24h)}\n- 24H change: ${pct(b.market.change24h)}\n\n## Scores\n- Market: ${b.scores.market}/100\n- Trust: ${b.scores.trust}/100\n- Security: ${b.scores.security}/100\n- Product: ${b.scores.product}/100\n- Community: ${b.scores.community}/100\n\n## Memory\n- Briefs: ${b.memory.briefs}\n- Decisions: ${b.memory.decisions}\n- Wallets: ${b.memory.wallets}\n- Alerts: ${b.memory.alerts}\n\n## Risk Flags\n${b.riskFlags.map(x=>`- ${x.level}: ${x.title} — ${x.note}`).join("\n")}\n\n## Recommended Actions\n${b.actions.map(x=>`- ${x}`).join("\n")}\n\n## Next Build\n${b.nextBuild}\n`;}
+  function renderBrief(b, compact=false){return `<div class="brief-shell"><div class="brief-head"><div><h3>${safe(b.version)}</h3><p>${new Date(b.generatedAt).toLocaleString()}</p></div><div class="brief-score"><div><strong>${b.globalScore}</strong><span>${safe(b.risk)}</span></div></div></div><div class="answer"><strong>Recommendation:</strong> ${safe(b.recommendation)}</div><div class="grid" style="margin-top:14px">${progress("Market",b.scores.market)}${progress("Trust",b.scores.trust)}${progress("Security",b.scores.security)}${progress("Product",b.scores.product)}${progress("Community",b.scores.community)}</div><div class="grid" style="margin-top:14px">${scoreCard("Price",usd(b.market.priceUsd))}${scoreCard("Liquidity",usd(b.market.liquidityUsd))}${scoreCard("Volume 24H",usd(b.market.volume24h))}${scoreCard("Saved Wallets",b.memory.wallets)}${scoreCard("Alerts",b.memory.alerts)}${scoreCard("Next Build","V7.5")}</div><h4>Risk Flags</h4><div class="list">${b.riskFlags.map(x=>`<div class="item"><div><strong>${safe(x.title)}</strong><p>${safe(x.note)}</p></div><span class="pill">${safe(x.level)}</span></div>`).join("")}</div>${compact?"":`<h4>Recommended Actions</h4><div class="list">${b.actions.map(x=>`<div class="item"><div><strong>${safe(x)}</strong></div></div>`).join("")}</div>`}</div>`}
+
+  function renderAI(){
+    view.innerHTML=`<div class="grid"><section class="card"><div class="section-title"><div><h2>Nénette AI Brief V7.4</h2><p>Ask questions, generate investor briefs and save them into local memory.</p></div><span>AI MEMORY</span></div>
+      <div class="form"><input id="question" class="grow" placeholder="Ask Nénette..."><button id="askBtn">Ask</button><button id="briefBtn">Generate Investor Brief</button></div>
+      <div class="quick"><button data-prompt="What is the investor risk?">Investor risk</button><button data-prompt="What should we improve next?">Next actions</button><button data-prompt="Can we promote SLX publicly?">Public claims</button><button data-prompt="Explain Nénette V7.4 memory">Memory</button></div>
+      <div id="answerBox"></div><div id="briefBox"></div>
+    </section></div>`;
+    const ask = q => {$("#answerBox").innerHTML=`<div class="answer">${assistantAnswer(q)}</div>`};
+    $("#askBtn").onclick=()=>ask($("#question").value.trim());
+    $$('[data-prompt]').forEach(b=>b.onclick=()=>{ $("#question").value=b.dataset.prompt; ask(b.dataset.prompt); });
+    $("#briefBtn").onclick=async()=>{ $("#briefBox").innerHTML=`<section class="loading card"><div class="loader-orb">AI</div><div><h2>Generating V7.4 investor brief...</h2><p>Reading market, memory, settings and trust indicators.</p></div></section>`; lastMarket=await getMarketData(); const b=buildBrief(); const m=loadMemory(); m.briefs.unshift(b); m.briefs=m.briefs.slice(0,20); saveMemory(m); addEvent("brief",`Investor brief saved with score ${b.globalScore}/100`); const md=briefMarkdown(b); $("#briefBox").innerHTML=`<div class="form" style="margin-top:14px"><button id="copyBrief">Copy Brief</button><button id="downloadMd">Download Markdown</button><button id="downloadJson">Download JSON</button></div>${renderBrief(b)}`; $("#copyBrief").onclick=()=>navigator.clipboard.writeText(md).then(()=>$("#answerBox").innerHTML='<div class="answer">Brief copied.</div>'); $("#downloadMd").onclick=()=>download("nenette-v74-investor-brief.md",md,"text/markdown"); $("#downloadJson").onclick=()=>download("nenette-v74-investor-brief.json",JSON.stringify(b,null,2),"application/json"); };
+  }
+  function assistantAnswer(q){
+    q=String(q||"").toLowerCase(); const memory=loadMemory(); const inv=investorScore(lastMarket,memory);
+    if(!q) return "Ask a question or generate an investor brief. V7.4 can use local memory, saved wallets, decisions, alerts and market status.";
+    if(q.includes("risk")||q.includes("promote")||q.includes("public")) return `Current investor score is <strong>${inv.global}/100</strong> with <strong>${inv.risk}</strong> risk. Use conservative language, avoid guaranteed return claims, and do not overclaim live market data if fallback mode is active.`;
+    if(q.includes("memory")) return `V7.4 memory is local to this browser. It currently contains ${memory.briefs.length} brief(s), ${memory.decisions.length} decision(s), ${memory.wallets.length} wallet(s) and ${memory.alerts.length} alert(s).`;
+    if(q.includes("next")||q.includes("improve")) return "Next priority: V7.5 Wallet Connect and real portfolio balances, then holder/whale indexing through a reliable API or backend.";
+    if(q.includes("staking")) return "The staking module is only a simulator. Keep this disclosure clear until an audited on-chain staking contract exists.";
+    return "Nénette V7.4 recommends a source-based, conservative investor posture: published whitepaper, verified docs, live market when available, and no overclaiming on staking or holders without backend verification.";
+  }
+
+  function renderSettings(){
+    const settings=loadSettings(); const memory=loadMemory();
+    view.innerHTML=`<div class="grid"><section class="card span-6"><div class="section-title"><div><h2>Settings</h2><p>Local terminal preferences.</p></div><span>LOCAL</span></div>
+      <div class="form"><label class="notice blue"><input type="checkbox" id="autoRefresh" ${settings.autoRefresh?"checked":""}> Auto-refresh market/dashboard</label><label class="notice blue"><input type="checkbox" id="conservativeMode" ${settings.conservativeMode?"checked":""}> Conservative public wording</label><input id="tokenAddress" class="grow" placeholder="SLX token contract" value="${safe(settings.tokenAddress)}"><button id="saveSettings">Save Settings</button></div></section>
+      <section class="card span-6"><div class="section-title"><div><h3>Version</h3><p>Deployment verification.</p></div><span>V7.4</span></div><div class="notice green">If this badge appears, the published site is running Nénette AI V7.4 — AI Memory & Investor Intelligence.</div><table class="mini-table"><tr><th>Item</th><th>Status</th></tr><tr><td>Brief history</td><td>${memory.briefs.length}</td></tr><tr><td>Local memory key</td><td>${STORAGE_KEY}</td></tr><tr><td>Service worker</td><td>v7.4 cache</td></tr></table></section></div>`;
+    $("#saveSettings").onclick=()=>{saveSettings({...settings,autoRefresh:$("#autoRefresh").checked,conservativeMode:$("#conservativeMode").checked,tokenAddress:$("#tokenAddress").value.trim()});addEvent("settings","Settings updated");renderSettings()};
+  }
+
+  function download(filename,content,type="text/plain"){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
+
+  async function connectWallet(){
+    if(window.ethereum){try{const accounts=await window.ethereum.request({method:"eth_requestAccounts"});walletAddress=accounts?.[0]||"";addEvent("wallet_connect",`Wallet connected: ${walletAddress}`);navigate("portfolio");}catch(e){alert("Wallet connection cancelled or unavailable.")}}
+    else {alert("No injected wallet detected. You can still save wallet addresses manually in Portfolio.");navigate("portfolio");}
+  }
+
+  const routes={dashboard:renderDashboard,market:renderMarket,intelligence:renderIntelligence,memory:renderMemory,portfolio:renderPortfolio,staking:renderStaking,alerts:renderAlerts,security:renderSecurity,ai:renderAI,settings:renderSettings};
+  async function navigate(route){currentRoute=route;$$('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.route===route));view.innerHTML='<section class="card loading"><div class="loader-orb">SLX</div><div><h2>Loading...</h2><p>Nénette is reading local intelligence.</p></div></section>';try{await (routes[route]||routes.dashboard)();}catch(e){view.innerHTML=`<section class="card"><h2>Module error</h2><div class="notice red">${safe(e.message||e)}</div></section>`}sidebar.classList.remove('mobile-open');mobileMenu.classList.remove('active');}
+
+  const sidebar=$("#sidebar"), mobileMenu=$("#mobileMenu");
+  $$('#nav button').forEach(b=>b.onclick=()=>navigate(b.dataset.route));
+  $("#refreshBtn").onclick=()=>navigate(currentRoute);
+  $("#connectBtn").onclick=connectWallet;
+  mobileMenu.onclick=()=>sidebar.classList.toggle('mobile-open');
+  document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!mobileMenu.contains(e.target))sidebar.classList.remove('mobile-open')});
+  setInterval(()=>{const s=loadSettings(); if(s.autoRefresh && ['dashboard','market','intelligence'].includes(currentRoute)) navigate(currentRoute)},45000);
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{})}
+  addEvent("open","Nénette V7.4 opened");
+  navigate('dashboard');
+})();
+</script>
 </body>
 </html>
