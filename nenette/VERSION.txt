@@ -11,3 +11,4 @@ Adds:
 - Wallet readiness score
 - Portfolio JSON/CSV export
 - Strategic Brief and Investor Intelligence wallet context
+Force deploy V7.5 retry
