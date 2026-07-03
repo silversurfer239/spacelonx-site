@@ -1,7 +1,7 @@
 {
-  "name": "Nénette AI V7.3 Strategic Brief",
+  "name": "Nénette AI V7.4.1 Full Terminal",
   "short_name": "Nénette AI",
-  "description": "Strategic Web3 terminal for SpacelonX SLX with automated local AI brief.",
+  "description": "Full SpacelonX Web3 terminal with local AI memory and investor intelligence.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#050816",

@@ -1,5 +1,6 @@
 import { askNenette } from "../../services/ai.js";
 import { generateStrategicBrief, briefToMarkdown } from "../../services/brief.js";
+import { addBrief } from "../../services/memory.js";
 
 function badgeClass(risk) {
   if (risk === "LOW") return "brief-low";
@@ -34,7 +35,7 @@ function renderBrief(brief) {
         <div class="metric"><span>Market</span><b>${brief.metrics.marketStatus}</b></div>
         <div class="metric"><span>Latest Block</span><b>${brief.metrics.latestBlock}</b></div>
         <div class="metric"><span>Saved Wallets</span><b>${brief.metrics.savedWallets}</b></div>
-        <div class="metric"><span>Next Build</span><b>V7.4</b></div>
+        <div class="metric"><span>Next Build</span><b>V7.5</b></div>
       </div>
 
       <div class="brief-grid">
@@ -83,8 +84,8 @@ export function renderAI(container) {
     <section class="card ai-brief-card">
       <div class="section-title">
         <div>
-          <h2>Nénette AI Strategic Brief V7.3</h2>
-          <p>Local assistant + automated operational brief for SLX.</p>
+          <h2>Nénette AI Strategic Brief V7.4.1</h2>
+          <p>Local assistant + automated operational brief with AI Memory persistence.</p>
         </div>
         <span>AI BRIEF</span>
       </div>
@@ -93,6 +94,7 @@ export function renderAI(container) {
         <input id="question" placeholder="Ask Nénette...">
         <button id="ask">Ask</button>
         <button id="brief">Generate Strategic Brief</button>
+        <button id="open-memory" type="button">Open Memory</button>
       </div>
 
       <div class="quick-prompts">
@@ -121,27 +123,39 @@ export function renderAI(container) {
     });
   });
 
+
+  const openMemory = container.querySelector("#open-memory");
+  if (openMemory) {
+    openMemory.addEventListener("click", () => document.querySelector('[data-route="memory"]')?.click());
+  }
+
   container.querySelector("#brief").addEventListener("click", async () => {
     result.innerHTML = `<section class="loading ultimate-loader"><div class="orb">AI</div><div><h2>Generating strategic brief...</h2><p>Reading market, blockchain, trust, staking and local settings.</p></div></section>`;
 
     try {
       const brief = await generateStrategicBrief();
       const markdown = briefToMarkdown(brief);
+      addBrief(brief);
       result.innerHTML = `
         <div class="form brief-actions">
           <button id="copy-brief">Copy Brief</button>
           <button id="download-brief">Download Markdown</button>
+          <button id="download-json">Download JSON</button>
         </div>
         ${renderBrief(brief)}
       `;
 
       result.querySelector("#copy-brief").addEventListener("click", async () => {
         await navigator.clipboard.writeText(markdown);
-        answer.innerHTML = `<div class="answer">Strategic brief copied to clipboard.</div>`;
+        answer.innerHTML = `<div class="answer">Strategic brief copied to clipboard and saved to AI Memory.</div>`;
       });
 
       result.querySelector("#download-brief").addEventListener("click", () => {
-        downloadText("nenette-ai-strategic-brief.md", markdown);
+        downloadText("nenette-ai-v7-4-1-strategic-brief.md", markdown);
+      });
+
+      result.querySelector("#download-json").addEventListener("click", () => {
+        downloadText("nenette-ai-v7-4-1-strategic-brief.json", JSON.stringify(brief, null, 2));
       });
     } catch (error) {
       result.innerHTML = `<div class="answer">Strategic brief error: ${error.message || error}</div>`;

@@ -1,49 +1,18 @@
-# Nénette AI V7.3 AI Strategic Brief
+# Nénette AI V7.4.1 Full Terminal
 
-Version améliorée pour SpacelonX avec génération automatique d'un brief stratégique local.
+This package keeps the complete V7.3 left-menu terminal structure and adds V7.4 intelligence features.
 
-## Ajouts V7.3
+## Added
 
-- Onglet AI renforcé.
-- Bouton `Generate Strategic Brief`.
-- Synthèse automatique :
-  - Market
-  - Liquidity
-  - Blockchain
-  - LP lock
-  - Staking
-  - Portfolio readiness
-  - Security / trust
-  - Risk level
-  - Recommended actions
-- Export du brief en Markdown.
-- Copie du brief dans le presse-papiers.
-- Aucune clé API privée.
-- Aucun backend.
-- Fonctionne sur GitHub Pages.
+- Investor Intelligence module
+- AI Memory module
+- Strategic brief history
+- Decision log
+- Local notes
+- JSON export
+- Project status readiness scoring
+- AI brief persistence
 
-## Test local
+## Deployment
 
-```bash
-py -m http.server 9040
-```
-
-Puis ouvrir :
-
-```text
-http://127.0.0.1:9040/index.html
-```
-
-## Badge attendu
-
-`V7.3 AI STRATEGIC BRIEF`
-
-## Déploiement GitHub
-
-Envoyer le contenu de cette archive directement dans :
-
-```text
-spacelonx-site / nenette /
-```
-
-Ne pas envoyer le dossier autour.
+Upload all extracted files and folders into `spacelonx-site/nenette/`, replacing existing files.

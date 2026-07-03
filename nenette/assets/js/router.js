@@ -9,6 +9,8 @@ import { renderSecurity } from "../../modules/security/security.js";
 import { renderAlerts } from "../../modules/alerts/alerts.js";
 import { renderGovernance } from "../../modules/governance/governance.js";
 import { renderAI } from "../../modules/ai/ai.js";
+import { renderInvestor } from "../../modules/investor/investor.js";
+import { renderMemory } from "../../modules/memory/memory.js";
 import { renderEcosystem } from "../../modules/ecosystem/ecosystem.js";
 import { renderSettings } from "../../modules/settings/settings.js";
 
@@ -24,6 +26,8 @@ const routes = {
   security: renderSecurity,
   governance: renderGovernance,
   ai: renderAI,
+  investor: renderInvestor,
+  memory: renderMemory,
   ecosystem: renderEcosystem,
   settings: renderSettings
 };

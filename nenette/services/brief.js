@@ -81,11 +81,11 @@ export async function generateStrategicBrief() {
   const marketScore = clamp(getMarketScore(market));
   const chainScore = blockchain ? clamp(blockchainScore(blockchain)) : 0;
   const trust = holders ? clamp(trustScore(holders)) : 0;
-  const productScore = 85;
+  const productScore = 90;
   const globalScore = clamp((marketScore + chainScore + trust + productScore) / 4);
 
   const brief = {
-    version: "V7.3 AI Strategic Brief",
+    version: "Nénette AI V7.4.1 Full Terminal Strategic Brief",
     generatedAt: new Date().toISOString(),
     globalScore,
     riskLevel: riskFromScore(globalScore),
@@ -115,7 +115,7 @@ export async function generateStrategicBrief() {
     },
     riskFlags: buildFlags({ market, blockchain, holders }),
     actions: buildActions({ market, blockchain, holders, settings }),
-    nextBuild: "V7.4 should add real holder indexing, whale movement detection and a stronger backend/API layer."
+    nextBuild: "V7.5 should add Web3 Wallet Connect enhancements, real holder indexing, whale movement detection and a stronger backend/API layer."
   };
 
   return brief;

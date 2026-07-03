@@ -6,7 +6,7 @@ export function renderSettings(container) {
   container.innerHTML = `
     <section class="card">
       <div class="section-title">
-        <div><h2>Settings V7.2</h2><p>Local preferences stored only in this browser.</p></div>
+        <div><h2>Settings V7.4.1</h2><p>Local preferences stored only in this browser.</p></div>
         <span>SETTINGS</span>
       </div>
       <div class="data-grid">
@@ -40,7 +40,7 @@ export function renderSettings(container) {
 
   container.querySelector("#clear-local").addEventListener("click", () => {
     if (confirm("Clear Nénette local settings and saved wallets?")) {
-      Object.keys(localStorage).filter(k => k.startsWith("nenette.v7_2.")).forEach(k => localStorage.removeItem(k));
+      Object.keys(localStorage).filter(k => k.startsWith("nenette.v7_2.") || k.startsWith("nenette.v7_4_1.")).forEach(k => localStorage.removeItem(k));
       document.querySelector('[data-route="settings"]').click();
     }
   });
