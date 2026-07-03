@@ -44,6 +44,14 @@ function communityScore() {
   return 64;
 }
 
+function walletScore(settings) {
+  let score = 45;
+  if (settings.savedWallets?.length) score += 25;
+  if (settings.savedWallets?.length >= 2) score += 10;
+  if (settings.lastConnectedWallet) score += 15;
+  return clamp(score);
+}
+
 function weighted(scores) {
   return clamp(
     scores.market * 0.20 +
@@ -51,12 +59,13 @@ function weighted(scores) {
     scores.blockchain * 0.15 +
     scores.trust * 0.17 +
     scores.product * 0.14 +
-    scores.memory * 0.10 +
-    scores.community * 0.08
+    scores.memory * 0.09 +
+    scores.wallet * 0.08 +
+    scores.community * 0.07
   );
 }
 
-function flags({ market, blockchain, holders, memory }) {
+function flags({ market, blockchain, holders, memory, settings }) {
   const items = [];
   if (market.status !== "Live API") items.push({ level: "HIGH", title: "Market fallback", note: "DexScreener live data is not confirmed. Avoid public live-price claims until the Market module is live again." });
   if (Number(market.liquidityUsd || 0) < 1000) items.push({ level: "ELEVATED", title: "Thin liquidity", note: "Liquidity remains below the preferred public-readiness threshold." });
@@ -65,6 +74,7 @@ function flags({ market, blockchain, holders, memory }) {
   if (blockchain && !blockchain.contractDetected) items.push({ level: "HIGH", title: "Contract detection", note: "SLX contract detection did not pass the local read check." });
   if (!holders?.lpLocked) items.push({ level: "ELEVATED", title: "LP lock verification", note: "LP lock is not confirmed by the local trust module." });
   if (!memory.briefs.length) items.push({ level: "LOW", title: "No saved brief", note: "Generate and save at least one strategic brief to create an audit trail." });
+  if (!settings.savedWallets?.length) items.push({ level: "LOW", title: "No saved wallet", note: "Use Wallet Center or Portfolio to save a Polygon wallet and improve portfolio readiness." });
   if (!items.length) items.push({ level: "LOW", title: "No major local flag", note: "Nénette did not detect a major local risk flag in this run." });
   return items;
 }
@@ -74,20 +84,21 @@ function actions({ market, holders, settings, memory }) {
   if (market.status !== "Live API") items.push("Check market endpoints before publishing screenshots or price statements.");
   if (Number(market.liquidityUsd || 0) < 5000) items.push("Keep liquidity language conservative and monitor slippage risk.");
   if (!holders?.lpLocked) items.push("Verify LP lock evidence before investor-facing communication.");
-  if (!settings.savedWallets?.length) items.push("Save at least one Polygon wallet in Portfolio to enrich future briefs.");
+  if (!settings.savedWallets?.length) items.push("Use Wallet Center to connect or save at least one Polygon wallet for portfolio readiness.");
   if (!memory.decisions.length) items.push("Record key project decisions in AI Memory for continuity.");
   items.push("Keep staking language clear: the current staking module is a simulator, not an on-chain staking contract.");
   return items;
 }
 
-function projectStatus({ market, blockchain, holders, memory }) {
+function projectStatus({ market, blockchain, holders, memory, settings }) {
   return [
     { name: "Website", status: "Live", score: 95, note: "SpacelonX site and whitepaper page are published." },
     { name: "Whitepaper", status: "V1.2 Premium Gold", score: 95, note: "PDF and Word documents are live on the website." },
-    { name: "Nénette", status: "V7.4.1 Full Terminal", score: 93, note: "Full terminal structure preserved with AI Memory and Investor Intelligence." },
+    { name: "Nénette", status: "V7.5 Wallet Connect", score: 93, note: "Full terminal structure preserved with AI Memory and Investor Intelligence." },
     { name: "Market", status: market.status, score: getMarketScore(market), note: marketSignal(market) },
     { name: "Blockchain", status: blockchain ? "Readable" : "Unavailable", score: blockchain ? blockchainScore(blockchain) : 0, note: blockchain ? "Polygon read checks are operational." : "RPC/contract read unavailable." },
     { name: "LP / Trust", status: holders?.lpLocked ? "LP lock displayed" : "Verification required", score: holders ? trustScore(holders) : 0, note: holders?.lpLocked ? "LP lock is shown by the local trust module." : "Trust source requires verification." },
+    { name: "Wallet Connect", status: settings.lastConnectedWallet ? "Connected once" : "Not connected", score: walletScore(settings), note: `${settings.savedWallets?.length || 0} saved wallet(s) in local Portfolio.` },
     { name: "Memory", status: `${memory.briefs.length} saved brief(s)`, score: memoryScore(memory), note: "Local browser memory creates continuity for briefs, notes and decisions." }
   ];
 }
@@ -108,13 +119,14 @@ export async function buildInvestorIntelligence() {
     trust: holders ? clamp(trustScore(holders)) : 0,
     product: productScore(memory),
     memory: memoryScore(memory),
-    community: communityScore()
+    community: communityScore(),
+    wallet: walletScore(settings)
   };
   const globalScore = weighted(scores);
   const riskLevel = riskFromScore(globalScore);
 
   return {
-    version: "Nénette AI V7.4.1 Investor Intelligence",
+    version: "Nénette AI V7.5 Investor Intelligence",
     generatedAt: new Date().toISOString(),
     globalScore,
     riskLevel,
@@ -132,12 +144,13 @@ export async function buildInvestorIntelligence() {
       marketStatus: market.status,
       latestBlock: blockchain ? fmt(blockchain.latestBlock, 0) : "N/A",
       savedWallets: settings.savedWallets?.length || 0,
+      lastConnectedWallet: settings.lastConnectedWallet ? `${settings.lastConnectedWallet.slice(0,6)}...${settings.lastConnectedWallet.slice(-4)}` : "N/A",
       savedBriefs: memory.briefs.length,
       decisions: memory.decisions.length
     },
     scores,
-    riskFlags: flags({ market, blockchain, holders, memory }),
+    riskFlags: flags({ market, blockchain, holders, memory, settings }),
     actions: actions({ market, holders, settings, memory }),
-    projectStatus: projectStatus({ market, blockchain, holders, memory })
+    projectStatus: projectStatus({ market, blockchain, holders, memory, settings })
   };
 }

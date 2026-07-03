@@ -35,7 +35,7 @@ function renderBrief(brief) {
         <div class="metric"><span>Market</span><b>${brief.metrics.marketStatus}</b></div>
         <div class="metric"><span>Latest Block</span><b>${brief.metrics.latestBlock}</b></div>
         <div class="metric"><span>Saved Wallets</span><b>${brief.metrics.savedWallets}</b></div>
-        <div class="metric"><span>Next Build</span><b>V7.5</b></div>
+        <div class="metric"><span>Next Build</span><b>V7.6</b></div>
       </div>
 
       <div class="brief-grid">
@@ -84,7 +84,7 @@ export function renderAI(container) {
     <section class="card ai-brief-card">
       <div class="section-title">
         <div>
-          <h2>Nénette AI Strategic Brief V7.4.1</h2>
+          <h2>Nénette AI Strategic Brief V7.5</h2>
           <p>Local assistant + automated operational brief with AI Memory persistence.</p>
         </div>
         <span>AI BRIEF</span>

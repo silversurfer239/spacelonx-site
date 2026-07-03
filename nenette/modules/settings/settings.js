@@ -6,7 +6,7 @@ export function renderSettings(container) {
   container.innerHTML = `
     <section class="card">
       <div class="section-title">
-        <div><h2>Settings V7.4.1</h2><p>Local preferences stored only in this browser.</p></div>
+        <div><h2>Settings V7.5</h2><p>Local preferences stored only in this browser.</p></div>
         <span>SETTINGS</span>
       </div>
       <div class="data-grid">

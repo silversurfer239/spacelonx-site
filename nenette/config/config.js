@@ -1,5 +1,5 @@
 export const CONFIG = {
-  version: "7.3.0-ai-brief",
+  version: "7.5.0-wallet-connect",
   ticker: "SLX",
   chainName: "Polygon Mainnet",
   chainId: 137,

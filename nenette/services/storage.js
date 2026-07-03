@@ -21,7 +21,8 @@ export function getSettings() {
     defaultPool: "Diamond",
     priceAlertUsd: "",
     liquidityAlertUsd: "",
-    savedWallets: []
+    savedWallets: [],
+    lastConnectedWallet: ""
   });
 }
 
@@ -45,4 +46,29 @@ export function removeWallet(address) {
   settings.savedWallets = settings.savedWallets.filter(w => w.address.toLowerCase() !== address.toLowerCase());
   saveSettings(settings);
   return settings.savedWallets;
+}
+
+
+export function updateWalletLabel(address, label = "") {
+  const settings = getSettings();
+  settings.savedWallets = settings.savedWallets.map(wallet =>
+    wallet.address.toLowerCase() === address.toLowerCase() ? { ...wallet, label: String(label || "").trim() || wallet.label } : wallet
+  );
+  saveSettings(settings);
+  return settings.savedWallets;
+}
+
+export function setLastConnectedWallet(address) {
+  const settings = getSettings();
+  settings.lastConnectedWallet = address || "";
+  saveSettings(settings);
+  return settings;
+}
+
+export function exportSettings() {
+  return {
+    exportedAt: new Date().toISOString(),
+    version: "Nénette AI V7.5 Wallet Connect",
+    settings: getSettings()
+  };
 }

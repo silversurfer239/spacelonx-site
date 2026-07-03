@@ -106,7 +106,7 @@ export function clearMemory() {
 export function exportMemory() {
   return {
     exportedAt: now(),
-    version: "Nénette AI V7.4.1 Full Terminal",
+    version: "Nénette AI V7.5 Wallet Connect",
     memory: loadMemory()
   };
 }

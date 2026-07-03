@@ -962,3 +962,32 @@ body::before {
   .memory-item{flex-direction:column}
   .memory-item button{width:100%}
 }
+
+/* V7.5 Wallet Connect additions */
+.wallet-command .brief-actions,
+.wallet-center-card .brief-actions {
+  margin-top: 18px;
+}
+.wallet-center-card .btn,
+.wallet-command .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(56,217,255,.42);
+  background: rgba(56,217,255,.13);
+  color: #e0f2fe;
+  text-decoration: none;
+  border-radius: 18px;
+  padding: 14px 20px;
+  font-weight: 1000;
+}
+.wallet-command .metric p,
+.wallet-center-card .metric p {
+  margin: 8px 0;
+  color: #b7c5d9;
+  font-size: 13px;
+}
+@media(max-width:900px){
+  .wallet-center-card .btn,
+  .wallet-command .btn { width: 100%; }
+}

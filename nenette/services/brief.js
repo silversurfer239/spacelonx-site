@@ -55,7 +55,7 @@ function buildActions({ market, blockchain, holders, settings }) {
   }
 
   if (holders?.holders === "Indexer required") {
-    actions.push("For V7.4, add a holder indexer or third-party API before claiming whale tracking.");
+    actions.push("For V7.6, add a holder indexer or third-party API before claiming whale tracking.");
   }
 
   if (settings.savedWallets?.length) {
@@ -81,11 +81,11 @@ export async function generateStrategicBrief() {
   const marketScore = clamp(getMarketScore(market));
   const chainScore = blockchain ? clamp(blockchainScore(blockchain)) : 0;
   const trust = holders ? clamp(trustScore(holders)) : 0;
-  const productScore = 90;
+  const productScore = 92;
   const globalScore = clamp((marketScore + chainScore + trust + productScore) / 4);
 
   const brief = {
-    version: "Nénette AI V7.4.1 Full Terminal Strategic Brief",
+    version: "Nénette AI V7.5 Wallet Connect Strategic Brief",
     generatedAt: new Date().toISOString(),
     globalScore,
     riskLevel: riskFromScore(globalScore),
@@ -105,7 +105,8 @@ export async function generateStrategicBrief() {
       latestBlock: blockchain ? fmt(blockchain.latestBlock, 0) : "N/A",
       circulatingSupply: blockchain ? `${fmt(blockchain.circulatingSupply, 0)} ${blockchain.symbol}` : "N/A",
       stakingPools: stakingPools.map(pool => `${pool.name} ${pool.apr}% APR`).join(" · "),
-      savedWallets: settings.savedWallets?.length || 0
+      savedWallets: settings.savedWallets?.length || 0,
+      lastConnectedWallet: settings.lastConnectedWallet ? `${settings.lastConnectedWallet.slice(0,6)}...${settings.lastConnectedWallet.slice(-4)}` : "N/A"
     },
     scores: {
       market: marketScore,
@@ -115,7 +116,7 @@ export async function generateStrategicBrief() {
     },
     riskFlags: buildFlags({ market, blockchain, holders }),
     actions: buildActions({ market, blockchain, holders, settings }),
-    nextBuild: "V7.5 should add Web3 Wallet Connect enhancements, real holder indexing, whale movement detection and a stronger backend/API layer."
+    nextBuild: "V7.6 should add optional backend/indexer support for holder analytics, whale movement detection and richer historical charts."
   };
 
   return brief;
@@ -144,6 +145,7 @@ ${brief.executiveSummary.map(item => `- ${item}`).join("\n")}
 - Circulating supply: ${brief.metrics.circulatingSupply}
 - Staking pools: ${brief.metrics.stakingPools}
 - Saved wallets: ${brief.metrics.savedWallets}
+- Last connected wallet: ${brief.metrics.lastConnectedWallet}
 
 ## Scores
 - Market: ${brief.scores.market}/100

@@ -4,6 +4,7 @@ import { renderMarket } from "../../modules/market/market.js";
 import { renderBlockchain } from "../../modules/blockchain/blockchain.js";
 import { renderHolders } from "../../modules/holders/holders.js";
 import { renderPortfolio } from "../../modules/portfolio/portfolio.js";
+import { renderWalletCenter } from "../../modules/walletcenter/walletcenter.js";
 import { renderStaking } from "../../modules/staking/staking.js";
 import { renderSecurity } from "../../modules/security/security.js";
 import { renderAlerts } from "../../modules/alerts/alerts.js";
@@ -21,6 +22,7 @@ const routes = {
   blockchain: renderBlockchain,
   holders: renderHolders,
   portfolio: renderPortfolio,
+  walletcenter: renderWalletCenter,
   staking: renderStaking,
   alerts: renderAlerts,
   security: renderSecurity,

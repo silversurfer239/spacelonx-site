@@ -6,7 +6,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 
   document.getElementById("refresh").addEventListener("click", () => navigate("dashboard"));
-  document.getElementById("wallet").addEventListener("click", () => navigate("portfolio"));
+  document.getElementById("wallet").addEventListener("click", () => navigate("walletcenter"));
 
 
   const mobileMenu = document.getElementById("mobile-menu");

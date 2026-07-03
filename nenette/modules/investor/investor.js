@@ -23,7 +23,7 @@ export async function renderInvestor(container) {
     <section class="card investor-command">
       <div class="section-title">
         <div>
-          <h2>Investor Intelligence V7.4.1</h2>
+          <h2>Investor Intelligence V7.5</h2>
           <p>Consolidated readiness score for SLX based on market, liquidity, blockchain, trust, product and AI memory.</p>
         </div>
         <span>${intel.riskLevel}</span>
@@ -39,6 +39,8 @@ export async function renderInvestor(container) {
         ${metric("24H Change", intel.metrics.change24h)}
         ${metric("Saved Briefs", intel.metrics.savedBriefs)}
         ${metric("Project Decisions", intel.metrics.decisions)}
+        ${metric("Saved Wallets", intel.metrics.savedWallets)}
+        ${metric("Last Connected", intel.metrics.lastConnectedWallet)}
       </div>
     </section>
 
@@ -51,6 +53,7 @@ export async function renderInvestor(container) {
         ${progress("Trust", intel.scores.trust)}
         ${progress("Product", intel.scores.product)}
         ${progress("AI Memory", intel.scores.memory)}
+        ${progress("Wallet Connect", intel.scores.wallet)}
       </div>
     </section>
 

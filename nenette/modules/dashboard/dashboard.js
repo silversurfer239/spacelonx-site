@@ -35,14 +35,15 @@ export async function renderDashboard(container) {
       </div>
 
       <div class="command-copy">
-        <div class="pill">● V7.4.1 FULL TERMINAL</div>
+        <div class="pill">● V7.5 WALLET CONNECT</div>
         <h3>SpacelonX AI Strategic Terminal</h3>
         <p>
-          Nénette keeps the full Web3 terminal and adds AI Memory, Investor Intelligence, strategic brief history and project status readiness.
+          Nénette keeps the full Web3 terminal and adds Wallet Connect, AI Memory, Investor Intelligence, strategic brief history and project status readiness.
         </p>
         <div class="hero-actions">
           <button data-target="terminal">Open Web3 Terminal</button>
           <button data-target="portfolio">Read Portfolio</button>
+          <button data-target="walletcenter">Wallet Center</button>
           <button data-target="staking" class="outline">Open Staking</button>
           <button data-target="ai" class="outline">Generate AI Brief</button>
           <button data-target="investor" class="outline">Investor Intelligence</button>
@@ -88,7 +89,7 @@ export async function renderDashboard(container) {
       </div>
       <div>
         <div class="section-title">
-          <div><h2>Nénette AI Full Terminal</h2><p>V7.4.1 summary with memory and investor intelligence.</p></div>
+          <div><h2>Nénette AI Full Terminal</h2><p>V7.5 summary with wallet connect, memory and investor intelligence.</p></div>
           <span>AI COMMAND</span>
         </div>
         <div class="brief-grid ultimate-brief">
@@ -104,6 +105,7 @@ export async function renderDashboard(container) {
   container.querySelector('[data-target="terminal"]').addEventListener("click", () => document.querySelector('[data-route="terminal"]').click());
   container.querySelector('[data-target="portfolio"]').addEventListener("click", () => document.querySelector('[data-route="portfolio"]').click());
   container.querySelector('[data-target="staking"]').addEventListener("click", () => document.querySelector('[data-route="staking"]').click());
+  container.querySelector('[data-target="walletcenter"]')?.addEventListener("click", () => document.querySelector('[data-route="walletcenter"]').click());
   container.querySelector('[data-target="ai"]')?.addEventListener("click", () => document.querySelector('[data-route="ai"]').click());
   container.querySelector('[data-target="investor"]')?.addEventListener("click", () => document.querySelector('[data-route="investor"]').click());
 }
