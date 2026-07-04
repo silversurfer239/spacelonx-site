@@ -1036,6 +1036,6 @@ body::before {
 }
 
 
-/* V7.6.2 Data Integrity */
+/* V7.6.3 On-Chain Price */
 .metric small{display:block;margin-top:6px;color:#94a3b8;font-size:11px;line-height:1.35;font-weight:600}
 .wallet-command .brief-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}

@@ -35,7 +35,7 @@ export async function renderDashboard(container) {
       </div>
 
       <div class="command-copy">
-        <div class="pill">● V7.6.2 DATA INTEGRITY</div>
+        <div class="pill">● V7.6.3 ON-CHAIN PRICE</div>
         <h3>SpacelonX AI Strategic Terminal</h3>
         <p>
           Nénette keeps the full Web3 terminal and adds Multi-Wallet, AI Memory, Investor Intelligence, strategic brief history and project status readiness.
@@ -89,11 +89,11 @@ export async function renderDashboard(container) {
       </div>
       <div>
         <div class="section-title">
-          <div><h2>Nénette AI Full Terminal</h2><p>V7.6.2 summary with multi-wallet connection, memory and investor intelligence.</p></div>
+          <div><h2>Nénette AI Full Terminal</h2><p>V7.6.3 summary with multi-wallet connection, memory and investor intelligence.</p></div>
           <span>AI COMMAND</span>
         </div>
         <div class="brief-grid ultimate-brief">
-          <div><h4>Market</h4><p>${market.status === "Live API" ? "Live data is active." : "Fallback market mode is active."}</p></div>
+          <div><h4>Market</h4><p>${market.status === "Live API" ? "DexScreener live data is active." : market.status === "On-chain Pool" ? "QuickSwap reserve pricing is active." : "Fallback market mode is active."}</p></div>
           <div><h4>Blockchain</h4><p>${blockchain?.contractDetected ? "SLX contract detected on Polygon." : "Blockchain check pending."}</p></div>
           <div><h4>Trust</h4><p>${holders?.lpLocked ? "LP lock is displayed and monitored." : "Indexer required for full holder metrics."}</p></div>
           <div><h4>Staking</h4><p>Bronze, Silver, Gold and Diamond simulations are ready.</p></div>

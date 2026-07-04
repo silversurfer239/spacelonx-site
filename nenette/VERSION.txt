@@ -1,12 +1,17 @@
-Nénette AI V7.6.2 — Network Refresh & Data Integrity
-Build: V7.6.2
+Nénette AI V7.6.3 — QuickSwap On-Chain Price Engine
+Build: V7.6.3
 Date: 2026-07-04
 
-Fixes:
-- Confirms Polygon after wallet connection
-- Refreshes active network and last connected wallet
-- Labels fallback USD valuation as an estimate
-- Caps fallback readiness at PROVISIONAL
-- Labels Diamond values as a 20% APR simulation
-- Updates footer, badge, manifest and service-worker cache
-Retry deployment V7.6.2 final
+Adds:
+- QuickSwap V2 reserve-based SLX spot price
+- Dynamic token0/token1 and decimals detection
+- Chainlink POL/USD conversion with CoinGecko backup
+- On-chain pool liquidity and FDV calculation
+- N/A labels for unavailable historical metrics
+- On-chain source details in Market and Wallet Center
+
+Preserves:
+- MetaMask, Rabby, Coinbase Wallet and WalletConnect
+- Polygon Mainnet confirmation
+- Fallback estimate labeling
+- Diamond simulation labeling

@@ -65,6 +65,21 @@ function renderProviderCards(wallets) {
 
 function renderSnapshot(snapshot, connection = {}) {
   const health = walletHealth(snapshot);
+  const isApi = snapshot.market.priceMode === "api";
+  const isOnChain = snapshot.market.priceMode === "onchain";
+  const valueLabel = isApi ? "SLX Value (Live API)" : isOnChain ? "SLX Value (On-chain Spot)" : "SLX Value (Estimate)";
+  const valueNote = isApi
+    ? "DexScreener live price"
+    : isOnChain
+      ? `QuickSwap reserves · ${snapshot.market.quotePriceSource || "POL/USD reference"}`
+      : `Fallback price: $${Number(snapshot.market.priceUsd || 0).toFixed(9)}`;
+  const sourceLabel = isApi ? "DexScreener Live API" : isOnChain ? "QuickSwap On-chain" : "Fallback / Estimated";
+  const integrityText = isApi
+    ? "USD valuation uses live DexScreener market data."
+    : isOnChain
+      ? "USD valuation uses the current QuickSwap V2 reserve ratio and a POL/USD reference. It is a pool spot price, not a guaranteed execution price."
+      : "USD valuation is an estimate calculated from the configured fallback price.";
+
   return `
     <section class="brief-shell wallet-command">
       <div class="brief-header">
@@ -79,9 +94,11 @@ function renderSnapshot(snapshot, connection = {}) {
       </div>
       <div class="data-grid">
         <div class="metric"><span>SLX Balance</span><b>${fmt(snapshot.slxNumber)} ${snapshot.slx.symbol}</b></div>
-        <div class="metric"><span>${snapshot.marketIsLive ? "SLX Value (Live)" : "SLX Value (Estimate)"}</span><b>${usd(snapshot.slxValue)}</b><small>${snapshot.marketIsLive ? "DexScreener live price" : `Fallback price: $${Number(snapshot.market.priceUsd || 0).toFixed(9)}`}</small></div>
+        <div class="metric"><span>${valueLabel}</span><b>${usd(snapshot.slxValue)}</b><small>${valueNote}</small></div>
         <div class="metric"><span>POL Balance</span><b>${fmt(snapshot.polNumber, 6)} POL</b></div>
-        <div class="metric"><span>Market Source</span><b>${snapshot.marketIsLive ? "Live API" : "Fallback / Estimated"}</b><small>${snapshot.market.source || "N/A"}</small></div>
+        <div class="metric"><span>Market Source</span><b>${sourceLabel}</b><small>${snapshot.market.source || "N/A"}</small></div>
+        ${isOnChain ? `<div class="metric"><span>Pool Liquidity</span><b>${usd(snapshot.market.liquidityUsd)}</b><small>Calculated from both QuickSwap reserves</small></div>` : ""}
+        ${isOnChain ? `<div class="metric"><span>Pool Block</span><b>${snapshot.market.blockNumber || "N/A"}</b><small>${snapshot.market.rpc || "Polygon RPC"}</small></div>` : ""}
         <div class="metric"><span>Diamond Simulation · Yearly</span><b>${fmt(snapshot.diamondYearly)} SLX</b><small>${(snapshot.diamondApr * 100).toFixed(0)}% APR scenario</small></div>
         <div class="metric"><span>Diamond Simulation · Monthly</span><b>${fmt(snapshot.diamondMonthly)} SLX</b><small>Projection only</small></div>
       </div>
@@ -89,7 +106,7 @@ function renderSnapshot(snapshot, connection = {}) {
         <article><h4>Wallet Readiness</h4>${health.flags.map(flag => `<p>• ${flag}</p>`).join("")}</article>
         <article>
           <h4>Data Integrity</h4>
-          <p>• ${snapshot.marketIsLive ? "USD valuation uses live DexScreener data." : "USD valuation is an estimate calculated from the configured fallback price."}</p>
+          <p>• ${integrityText}</p>
           <p>• Diamond values are simulations at ${(snapshot.diamondApr * 100).toFixed(0)}% APR.</p>
           <p>• Simulated values are not staking rewards read from a smart contract.</p>
         </article>
@@ -121,7 +138,7 @@ function bindSnapshotActions(result, snapshot, connection) {
     event.currentTarget.textContent = "Saved";
   });
   result.querySelector("#export-wallet-md")?.addEventListener("click", () => {
-    downloadText("nenette-v762-wallet-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8");
+    downloadText("nenette-v763-wallet-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8");
   });
 }
 
@@ -180,7 +197,7 @@ export async function renderWalletCenter(container) {
     <section class="card wallet-center-card">
       <div class="section-title">
         <div>
-          <h2>Wallet Center V7.6.2</h2>
+          <h2>Wallet Center V7.6.3</h2>
           <p>Explicit MetaMask, Rabby, Coinbase Wallet and WalletConnect QR connections with mobile-ready Polygon portfolio reading.</p>
         </div>
         <span>MULTI-WALLET</span>

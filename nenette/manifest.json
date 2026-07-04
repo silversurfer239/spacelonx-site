@@ -1,7 +1,7 @@
 {
-  "name": "Nénette AI V7.6.2 Data Integrity",
+  "name": "Nénette AI V7.6.3 On-Chain Price",
   "short_name": "Nénette AI",
-  "description": "SpacelonX Web3 terminal with MetaMask, Rabby, Coinbase Wallet and WalletConnect QR through Reown AppKit.",
+  "description": "SpacelonX Web3 terminal with multi-wallet access and a QuickSwap V2 on-chain SLX price engine on Polygon.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

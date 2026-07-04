@@ -1,4 +1,4 @@
-const CACHE_NAME = "nenette-v7-6-2-data-integrity-v1";
+const CACHE_NAME = "nenette-v7-6-3-onchain-price-v1";
 const ASSETS = [
   "./",
   "./index.html",
@@ -16,6 +16,7 @@ const ASSETS = [
   "./services/investor.js",
   "./services/brief.js",
   "./modules/walletcenter/walletcenter.js",
+  "./modules/market/market.js",
   "./modules/portfolio/portfolio.js",
   "./modules/investor/investor.js",
   "./modules/memory/memory.js"

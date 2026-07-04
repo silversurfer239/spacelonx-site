@@ -1,5 +1,5 @@
 export const CONFIG = {
-  version: "7.6.2-data-integrity",
+  version: "7.6.3-onchain-price",
   ticker: "SLX",
   chainName: "Polygon Mainnet",
   chainId: 137,
@@ -15,6 +15,9 @@ export const CONFIG = {
   lpLockUrl: "https://app.uncx.network/lockers/univ2/chain/137/address/0x837c80C5F4f0165110A36eF0e10DD95F2579EeD4/lock/0",
   lpUnlockDate: "2027-06-16T14:15:00Z",
   diamondApr: 0.20,
+  chainlinkPolUsdFeed: "0xAB594600376Ec9fD91F8e885dADF0CE036862dE0",
+  maxOracleAgeSeconds: 86400,
+  coingeckoPolUrl: "https://api.coingecko.com/api/v3/simple/price?ids=polygon-ecosystem-token,matic-network&vs_currencies=usd",
   fallback: {
     pair: "SLX / WPOL",
     priceUsd: 0.000005978,

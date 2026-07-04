@@ -68,7 +68,7 @@ export function setLastConnectedWallet(address) {
 export function exportSettings() {
   return {
     exportedAt: new Date().toISOString(),
-    version: "Nénette AI V7.6.2 Data Integrity",
+    version: "Nénette AI V7.6.3 On-Chain Price",
     settings: getSettings()
   };
 }

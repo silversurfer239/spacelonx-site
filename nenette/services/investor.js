@@ -1,4 +1,4 @@
-import { getMarketData, getMarketScore, marketSignal } from "./market.js";
+import { getMarketData, getMarketScore, marketSignal, isMarketPriceLive } from "./market.js";
 import { getBlockchainStats, blockchainScore } from "./blockchain.js";
 import { getHolderStats, trustScore } from "./holders.js";
 import { getSettings } from "./storage.js";
@@ -18,7 +18,7 @@ export function riskFromScore(score) {
 
 function liquidityScore(market) {
   const liq = Number(market?.liquidityUsd || 0);
-  if (market?.status !== "Live API") return 35;
+  if (!isMarketPriceLive(market)) return 35;
   if (liq >= 25000) return 92;
   if (liq >= 10000) return 82;
   if (liq >= 5000) return 72;
@@ -67,7 +67,8 @@ function weighted(scores) {
 
 function flags({ market, blockchain, holders, memory, settings }) {
   const items = [];
-  if (market.status !== "Live API") items.push({ level: "HIGH", title: "Market fallback", note: "DexScreener live data is not confirmed. Avoid public live-price claims until the Market module is live again." });
+  if (!isMarketPriceLive(market)) items.push({ level: "HIGH", title: "Market fallback", note: "DexScreener and on-chain QuickSwap pricing are unavailable. Avoid public live-price claims until a live source returns." });
+  if (market.status === "On-chain Pool") items.push({ level: "LOW", title: "On-chain spot mode", note: "Price and liquidity come from QuickSwap reserves. Volume and 24H change remain unavailable." });
   if (Number(market.liquidityUsd || 0) < 1000) items.push({ level: "ELEVATED", title: "Thin liquidity", note: "Liquidity remains below the preferred public-readiness threshold." });
   if (Number(market.change24h || 0) <= -10) items.push({ level: "ELEVATED", title: "24H drawdown", note: "The 24H change indicates material volatility." });
   if (!blockchain) items.push({ level: "HIGH", title: "Blockchain unavailable", note: "Polygon RPC or contract reads are not currently available." });
@@ -81,7 +82,8 @@ function flags({ market, blockchain, holders, memory, settings }) {
 
 function actions({ market, holders, settings, memory }) {
   const items = [];
-  if (market.status !== "Live API") items.push("Check market endpoints before publishing screenshots or price statements.");
+  if (!isMarketPriceLive(market)) items.push("Check DexScreener, QuickSwap pool reads and POL/USD references before publishing price statements.");
+  if (market.status === "On-chain Pool") items.push("Present the SLX price as a QuickSwap on-chain spot price and do not imply that 24H volume or change data are available.");
   if (Number(market.liquidityUsd || 0) < 5000) items.push("Keep liquidity language conservative and monitor slippage risk.");
   if (!holders?.lpLocked) items.push("Verify LP lock evidence before investor-facing communication.");
   if (!settings.savedWallets?.length) items.push("Use Wallet Center to connect or save at least one Polygon wallet for portfolio readiness.");
@@ -94,7 +96,7 @@ function projectStatus({ market, blockchain, holders, memory, settings }) {
   return [
     { name: "Website", status: "Live", score: 95, note: "SpacelonX site and whitepaper page are published." },
     { name: "Whitepaper", status: "V1.2 Premium Gold", score: 95, note: "PDF and Word documents are live on the website." },
-    { name: "Nénette", status: "V7.6.2 Data Integrity", score: 93, note: "Full terminal structure preserved with AI Memory and Investor Intelligence." },
+    { name: "Nénette", status: "V7.6.3 On-Chain Price", score: 94, note: "QuickSwap reserve pricing added while preserving Multi-Wallet, AI Memory and Investor Intelligence." },
     { name: "Market", status: market.status, score: getMarketScore(market), note: marketSignal(market) },
     { name: "Blockchain", status: blockchain ? "Readable" : "Unavailable", score: blockchain ? blockchainScore(blockchain) : 0, note: blockchain ? "Polygon read checks are operational." : "RPC/contract read unavailable." },
     { name: "LP / Trust", status: holders?.lpLocked ? "LP lock displayed" : "Verification required", score: holders ? trustScore(holders) : 0, note: holders?.lpLocked ? "LP lock is shown by the local trust module." : "Trust source requires verification." },
@@ -126,7 +128,7 @@ export async function buildInvestorIntelligence() {
   const riskLevel = riskFromScore(globalScore);
 
   return {
-    version: "Nénette AI V7.6.2 Investor Intelligence",
+    version: "Nénette AI V7.6.3 On-Chain Price Investor Intelligence",
     generatedAt: new Date().toISOString(),
     globalScore,
     riskLevel,
@@ -139,8 +141,8 @@ export async function buildInvestorIntelligence() {
     metrics: {
       price: usd(market.priceUsd),
       liquidity: usd(market.liquidityUsd),
-      volume24h: usd(market.volume24h),
-      change24h: `${fmt(market.change24h)}%`,
+      volume24h: market.metricsLive ? usd(market.volume24h) : "N/A",
+      change24h: market.metricsLive ? `${fmt(market.change24h)}%` : "N/A",
       marketStatus: market.status,
       latestBlock: blockchain ? fmt(blockchain.latestBlock, 0) : "N/A",
       savedWallets: settings.savedWallets?.length || 0,

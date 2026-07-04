@@ -1,6 +1,6 @@
 import { CONFIG } from "../config/config.js";
 import { readTokenBalance, readNativeBalance } from "./blockchain.js";
-import { getMarketData } from "./market.js";
+import { getMarketData, isMarketPriceLive } from "./market.js";
 import { fmt, usd } from "./format.js";
 
 export function getWalletProvider() {
@@ -104,7 +104,7 @@ export async function buildWalletSnapshot(address) {
   const slxNumber = Number(slx.balance || 0);
   const polNumber = Number(pol.balance || 0);
   const price = Number(market.priceUsd || 0);
-  const marketIsLive = market.status === "Live API";
+  const marketIsLive = isMarketPriceLive(market);
   const slxValue = slxNumber * price;
   const diamondApr = Number(CONFIG.diamondApr || 0.20);
   const diamondYearly = slxNumber * diamondApr;
@@ -118,7 +118,8 @@ export async function buildWalletSnapshot(address) {
     pol,
     market,
     marketIsLive,
-    slxValueIsEstimate: !marketIsLive,
+    marketIsOnChain: market.priceMode === "onchain",
+    slxValueIsEstimate: market.priceMode === "fallback",
     slxNumber,
     polNumber,
     slxValue,
@@ -135,17 +136,20 @@ export async function buildWalletSnapshot(address) {
 export function walletHealth(snapshot) {
   let score = 45;
   const flags = [];
-  const marketIsLive = snapshot.market.status === "Live API";
+  const marketIsLive = snapshot.marketIsLive ?? isMarketPriceLive(snapshot.market);
 
   if (snapshot.slxNumber > 0) score += 20; else flags.push("No SLX balance detected.");
   if (snapshot.polNumber > 0.02) score += 15; else flags.push("Low POL balance for network fees.");
 
   if (marketIsLive) {
-    score += 10;
+    score += snapshot.market.priceMode === "onchain" ? 8 : 10;
     if (snapshot.slxValue > 10) score += 10;
+    if (snapshot.market.priceMode === "onchain") {
+      flags.push("USD valuation uses the live QuickSwap pool spot price. Large trades can execute at a different price because of slippage.");
+    }
   } else {
     score = Math.min(score, 75);
-    flags.push("Live market data is unavailable: the USD value uses the configured fallback price and is only an estimate.");
+    flags.push("Live API and on-chain pool pricing are unavailable: the USD value uses the configured fallback price and is only an estimate.");
   }
 
   flags.push(`Diamond figures are a simulation at ${(snapshot.diamondApr * 100).toFixed(0)}% APR, not rewards read from a staking contract.`);
@@ -161,6 +165,10 @@ export function walletHealth(snapshot) {
 
 export function snapshotToMarkdown(snapshot) {
   const health = walletHealth(snapshot);
-  const valueLabel = snapshot.marketIsLive ? "Live market value" : "Estimated value using fallback price";
-  return `# Nénette AI V7.6.2 Wallet Snapshot\n\nGenerated: ${new Date(snapshot.generatedAt).toLocaleString()}\nWallet: ${snapshot.address}\n\n## Balances\n- SLX: ${fmt(snapshot.slxNumber)} ${snapshot.slx.symbol}\n- POL: ${fmt(snapshot.polNumber, 6)} POL\n- ${valueLabel}: ${usd(snapshot.slxValue)}\n- Price source: ${snapshot.market.status} (${snapshot.market.source || "N/A"})\n\n## Diamond Simulation (${(snapshot.diamondApr * 100).toFixed(0)}% APR)\n- Yearly simulation: ${fmt(snapshot.diamondYearly)} SLX\n- Monthly simulation: ${fmt(snapshot.diamondMonthly)} SLX\n- Daily simulation: ${fmt(snapshot.diamondDaily)} SLX\n- These figures are projections only and are not on-chain accrued rewards.\n\n## Wallet Health\n- Score: ${health.score}/100\n- Status: ${health.status}\n${health.flags.map(flag => `- ${flag}`).join("\n")}\n\n## Sources\n- Market status: ${snapshot.market.status}\n- Market source: ${snapshot.market.source || "N/A"}\n- RPC source: ${snapshot.slx.rpc || snapshot.pol.rpc || "N/A"}\n`;
+  const valueLabel = snapshot.market.priceMode === "api"
+    ? "Live market value"
+    : snapshot.market.priceMode === "onchain"
+      ? "On-chain QuickSwap spot value"
+      : "Estimated value using fallback price";
+  return `# Nénette AI V7.6.3 Wallet Snapshot\n\nGenerated: ${new Date(snapshot.generatedAt).toLocaleString()}\nWallet: ${snapshot.address}\n\n## Balances\n- SLX: ${fmt(snapshot.slxNumber)} ${snapshot.slx.symbol}\n- POL: ${fmt(snapshot.polNumber, 6)} POL\n- ${valueLabel}: ${usd(snapshot.slxValue)}\n- Price source: ${snapshot.market.status} (${snapshot.market.source || "N/A"})\n\n## Diamond Simulation (${(snapshot.diamondApr * 100).toFixed(0)}% APR)\n- Yearly simulation: ${fmt(snapshot.diamondYearly)} SLX\n- Monthly simulation: ${fmt(snapshot.diamondMonthly)} SLX\n- Daily simulation: ${fmt(snapshot.diamondDaily)} SLX\n- These figures are projections only and are not on-chain accrued rewards.\n\n## Wallet Health\n- Score: ${health.score}/100\n- Status: ${health.status}\n${health.flags.map(flag => `- ${flag}`).join("\n")}\n\n## Sources\n- Market status: ${snapshot.market.status}\n- Market source: ${snapshot.market.source || "N/A"}\n- Pair address: ${snapshot.market.pairAddress || "N/A"}\n- Pool block: ${snapshot.market.blockNumber || "N/A"}\n- RPC source: ${snapshot.market.rpc || snapshot.slx.rpc || snapshot.pol.rpc || "N/A"}\n`;
 }

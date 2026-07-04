@@ -1,4 +1,4 @@
-import { getMarketData, getMarketScore, marketSignal } from "./market.js";
+import { getMarketData, getMarketScore, marketSignal, isMarketPriceLive } from "./market.js";
 import { getBlockchainStats, blockchainScore } from "./blockchain.js";
 import { getHolderStats, trustScore } from "./holders.js";
 import { getSettings } from "./storage.js";
@@ -18,7 +18,8 @@ function riskFromScore(score) {
 
 function recommendationFor({ market, blockchain, holders, globalScore }) {
   if (!blockchain) return "Pause any external claim until Polygon RPC and contract status are readable again.";
-  if (market.status !== "Live API") return "Keep communication conservative: market API fallback is active, so avoid live price claims.";
+  if (!isMarketPriceLive(market)) return "Keep communication conservative: both API and on-chain pool pricing are unavailable, so avoid live price claims.";
+  if (market.status === "On-chain Pool") return "On-chain QuickSwap spot pricing is active. Price and liquidity can be shown, but volume and 24H change should remain marked unavailable.";
   if (Number(market.liquidityUsd) < 1000) return "Priority: strengthen liquidity and keep users informed that liquidity remains thin.";
   if (!holders?.lpLocked) return "Priority: verify LP lock status before any investor-facing communication.";
   if (globalScore >= 80) return "Operational: continue growth, community updates and product iteration while monitoring liquidity.";
@@ -29,7 +30,8 @@ function recommendationFor({ market, blockchain, holders, globalScore }) {
 function buildFlags({ market, blockchain, holders }) {
   const flags = [];
 
-  if (market.status !== "Live API") flags.push("Market data is in fallback mode.");
+  if (!isMarketPriceLive(market)) flags.push("Market data is in full fallback mode: DexScreener and QuickSwap reserve pricing are unavailable.");
+  if (market.status === "On-chain Pool") flags.push("Market price uses the QuickSwap pool spot ratio; volume and historical change metrics are unavailable.");
   if (Number(market.liquidityUsd) < 1000) flags.push("Liquidity is below the preferred 1,000 USD minimum.");
   if (Number(market.change24h) <= -10) flags.push("24H price change shows a material drawdown.");
   if (!blockchain) flags.push("Blockchain stats are unavailable.");
@@ -44,8 +46,10 @@ function buildFlags({ market, blockchain, holders }) {
 function buildActions({ market, blockchain, holders, settings }) {
   const actions = [];
 
-  if (market.status !== "Live API") {
-    actions.push("Check DexScreener pair and token endpoints before publishing market screenshots.");
+  if (!isMarketPriceLive(market)) {
+    actions.push("Check DexScreener, QuickSwap pool reads and POL/USD references before publishing market screenshots.");
+  } else if (market.status === "On-chain Pool") {
+    actions.push("Use the Market module for the current QuickSwap spot price and pool liquidity; keep volume and change metrics marked unavailable.");
   } else {
     actions.push("Use the Market module as the live source for SLX price, liquidity and 24H activity.");
   }
@@ -85,7 +89,7 @@ export async function generateStrategicBrief() {
   const globalScore = clamp((marketScore + chainScore + trust + productScore) / 4);
 
   const brief = {
-    version: "Nénette AI V7.6.2 Data Integrity Strategic Brief",
+    version: "Nénette AI V7.6.3 On-Chain Price Strategic Brief",
     generatedAt: new Date().toISOString(),
     globalScore,
     riskLevel: riskFromScore(globalScore),
@@ -99,8 +103,8 @@ export async function generateStrategicBrief() {
     metrics: {
       price: usd(market.priceUsd),
       liquidity: usd(market.liquidityUsd),
-      volume24h: usd(market.volume24h),
-      change24h: `${fmt(market.change24h)}%`,
+      volume24h: market.metricsLive ? usd(market.volume24h) : "N/A",
+      change24h: market.metricsLive ? `${fmt(market.change24h)}%` : "N/A",
       marketStatus: market.status,
       latestBlock: blockchain ? fmt(blockchain.latestBlock, 0) : "N/A",
       circulatingSupply: blockchain ? `${fmt(blockchain.circulatingSupply, 0)} ${blockchain.symbol}` : "N/A",
