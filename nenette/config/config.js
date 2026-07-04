@@ -1,5 +1,5 @@
 export const CONFIG = {
-  version: "7.6.0-multi-wallet",
+  version: "7.6.1-metamask-fix",
   ticker: "SLX",
   chainName: "Polygon Mainnet",
   chainId: 137,

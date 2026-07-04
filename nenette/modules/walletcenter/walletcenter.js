@@ -169,7 +169,7 @@ export async function renderWalletCenter(container) {
     <section class="card wallet-center-card">
       <div class="section-title">
         <div>
-          <h2>Wallet Center V7.6</h2>
+          <h2>Wallet Center V7.6.1</h2>
           <p>Explicit MetaMask, Rabby, Coinbase Wallet and WalletConnect QR connections with mobile-ready Polygon portfolio reading.</p>
         </div>
         <span>MULTI-WALLET</span>
@@ -191,8 +191,17 @@ export async function renderWalletCenter(container) {
 
   providerList.querySelectorAll("[data-wallet-provider]").forEach(button => {
     button.addEventListener("click", async () => {
-      try { await connectAndRead(container, button.dataset.walletProvider); }
-      catch (error) { container.querySelector("#wallet-center-result").innerHTML = `<div class="answer">Wallet error: ${error.message || error}</div>`; }
+      const originalLabel = button.textContent;
+      button.disabled = true;
+      button.textContent = "Connecting...";
+      try {
+        await connectAndRead(container, button.dataset.walletProvider);
+      } catch (error) {
+        container.querySelector("#wallet-center-result").innerHTML = `<div class="answer"><strong>Wallet error:</strong> ${error.message || error}<br><small>For MetaMask, unlock the extension and check its icon for a pending request.</small></div>`;
+      } finally {
+        button.disabled = false;
+        button.textContent = originalLabel;
+      }
     });
   });
 
