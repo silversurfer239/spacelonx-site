@@ -1,5 +1,5 @@
 export const CONFIG = {
-  version: "7.6.1-metamask-fix",
+  version: "7.6.2-data-integrity",
   ticker: "SLX",
   chainName: "Polygon Mainnet",
   chainId: 137,
@@ -14,6 +14,7 @@ export const CONFIG = {
   polygonscanUrl: "https://polygonscan.com/token/0xcAC47b268787a280816b50e7F9b679e81B8a179e",
   lpLockUrl: "https://app.uncx.network/lockers/univ2/chain/137/address/0x837c80C5F4f0165110A36eF0e10DD95F2579EeD4/lock/0",
   lpUnlockDate: "2027-06-16T14:15:00Z",
+  diamondApr: 0.20,
   fallback: {
     pair: "SLX / WPOL",
     priceUsd: 0.000005978,

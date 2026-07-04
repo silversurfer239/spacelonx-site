@@ -94,7 +94,7 @@ function projectStatus({ market, blockchain, holders, memory, settings }) {
   return [
     { name: "Website", status: "Live", score: 95, note: "SpacelonX site and whitepaper page are published." },
     { name: "Whitepaper", status: "V1.2 Premium Gold", score: 95, note: "PDF and Word documents are live on the website." },
-    { name: "Nénette", status: "V7.6 Multi-Wallet Provider", score: 93, note: "Full terminal structure preserved with AI Memory and Investor Intelligence." },
+    { name: "Nénette", status: "V7.6.2 Data Integrity", score: 93, note: "Full terminal structure preserved with AI Memory and Investor Intelligence." },
     { name: "Market", status: market.status, score: getMarketScore(market), note: marketSignal(market) },
     { name: "Blockchain", status: blockchain ? "Readable" : "Unavailable", score: blockchain ? blockchainScore(blockchain) : 0, note: blockchain ? "Polygon read checks are operational." : "RPC/contract read unavailable." },
     { name: "LP / Trust", status: holders?.lpLocked ? "LP lock displayed" : "Verification required", score: holders ? trustScore(holders) : 0, note: holders?.lpLocked ? "LP lock is shown by the local trust module." : "Trust source requires verification." },
@@ -126,7 +126,7 @@ export async function buildInvestorIntelligence() {
   const riskLevel = riskFromScore(globalScore);
 
   return {
-    version: "Nénette AI V7.6 Investor Intelligence",
+    version: "Nénette AI V7.6.2 Investor Intelligence",
     generatedAt: new Date().toISOString(),
     globalScore,
     riskLevel,

@@ -85,7 +85,7 @@ export async function generateStrategicBrief() {
   const globalScore = clamp((marketScore + chainScore + trust + productScore) / 4);
 
   const brief = {
-    version: "Nénette AI V7.6 Multi-Wallet Provider Strategic Brief",
+    version: "Nénette AI V7.6.2 Data Integrity Strategic Brief",
     generatedAt: new Date().toISOString(),
     globalScore,
     riskLevel: riskFromScore(globalScore),

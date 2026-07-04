@@ -79,14 +79,20 @@ function renderSnapshot(snapshot, connection = {}) {
       </div>
       <div class="data-grid">
         <div class="metric"><span>SLX Balance</span><b>${fmt(snapshot.slxNumber)} ${snapshot.slx.symbol}</b></div>
-        <div class="metric"><span>SLX Value</span><b>${usd(snapshot.slxValue)}</b></div>
+        <div class="metric"><span>${snapshot.marketIsLive ? "SLX Value (Live)" : "SLX Value (Estimate)"}</span><b>${usd(snapshot.slxValue)}</b><small>${snapshot.marketIsLive ? "DexScreener live price" : `Fallback price: $${Number(snapshot.market.priceUsd || 0).toFixed(9)}`}</small></div>
         <div class="metric"><span>POL Balance</span><b>${fmt(snapshot.polNumber, 6)} POL</b></div>
-        <div class="metric"><span>Market Source</span><b>${snapshot.market.status}</b></div>
-        <div class="metric"><span>Diamond Yearly</span><b>${fmt(snapshot.diamondYearly)} SLX</b></div>
-        <div class="metric"><span>Diamond Monthly</span><b>${fmt(snapshot.diamondMonthly)} SLX</b></div>
+        <div class="metric"><span>Market Source</span><b>${snapshot.marketIsLive ? "Live API" : "Fallback / Estimated"}</b><small>${snapshot.market.source || "N/A"}</small></div>
+        <div class="metric"><span>Diamond Simulation · Yearly</span><b>${fmt(snapshot.diamondYearly)} SLX</b><small>${(snapshot.diamondApr * 100).toFixed(0)}% APR scenario</small></div>
+        <div class="metric"><span>Diamond Simulation · Monthly</span><b>${fmt(snapshot.diamondMonthly)} SLX</b><small>Projection only</small></div>
       </div>
       <div class="brief-grid">
         <article><h4>Wallet Readiness</h4>${health.flags.map(flag => `<p>• ${flag}</p>`).join("")}</article>
+        <article>
+          <h4>Data Integrity</h4>
+          <p>• ${snapshot.marketIsLive ? "USD valuation uses live DexScreener data." : "USD valuation is an estimate calculated from the configured fallback price."}</p>
+          <p>• Diamond values are simulations at ${(snapshot.diamondApr * 100).toFixed(0)}% APR.</p>
+          <p>• Simulated values are not staking rewards read from a smart contract.</p>
+        </article>
         <article>
           <h4>Security</h4>
           <p>• Read-only balance analysis.</p>
@@ -115,11 +121,11 @@ function bindSnapshotActions(result, snapshot, connection) {
     event.currentTarget.textContent = "Saved";
   });
   result.querySelector("#export-wallet-md")?.addEventListener("click", () => {
-    downloadText("nenette-v76-wallet-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8");
+    downloadText("nenette-v762-wallet-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8");
   });
 }
 
-async function connectAndRead(container, walletId) {
+async function connectAndRead(container, walletId, wallets) {
   const result = container.querySelector("#wallet-center-result");
   const label = walletId === "walletconnect" ? "WalletConnect QR" : walletId === "metamask" ? "MetaMask" : walletId === "rabby" ? "Rabby" : walletId === "coinbase" ? "Coinbase Wallet" : "wallet";
   result.innerHTML = `<section class="loading ultimate-loader"><div class="orb">W</div><div><h2>Connecting ${label}...</h2><p>${walletId === "walletconnect" ? "Loading Reown AppKit and waiting for mobile approval." : "Requesting browser wallet access and Polygon Mainnet."}</p></div></section>`;
@@ -127,6 +133,7 @@ async function connectAndRead(container, walletId) {
   const connection = walletId === "walletconnect" ? await connectWalletConnect() : await connectInjectedWallet(walletId);
   if (connection.provider && connection.method === "injected") await ensurePolygon(connection.provider);
   setLastConnectedWallet(connection.address);
+  await renderConnectionStatus(container, wallets, connection.provider, connection.address, connection.walletName, connection.method);
   const snapshot = await buildWalletSnapshot(connection.address);
   addEvent("wallet", `${connection.walletName} connected: ${snapshot.short}`);
   result.innerHTML = renderSnapshot(snapshot, connection);
@@ -147,20 +154,24 @@ async function readManual(container) {
   bindSnapshotActions(result, snapshot, connection);
 }
 
-async function renderConnectionStatus(container, wallets) {
+async function renderConnectionStatus(container, wallets, activeProvider = null, activeAddress = "", walletName = "", method = "") {
   const result = container.querySelector("#connection-status");
   const settings = getSettings();
   const appKit = getAppKitStatus();
   let chain = { chainName: "No injected wallet", isPolygon: false };
-  try { chain = await getChainStatus(wallets[0]?.provider); } catch {}
+  if (method === "walletconnect") {
+    chain = { chainName: "Polygon Mainnet (WalletConnect)", isPolygon: true };
+  } else {
+    try { chain = await getChainStatus(activeProvider || wallets[0]?.provider); } catch {}
+  }
   result.innerHTML = `
     <div class="data-grid">
       <div class="metric"><span>Injected Wallets</span><b>${wallets.length}</b></div>
       <div class="metric"><span>WalletConnect</span><b>${appKit.projectIdReady ? "Ready" : "Not configured"}</b></div>
-      <div class="metric"><span>Injected Network</span><b>${chain.chainName}</b></div>
-      <div class="metric"><span>Polygon Ready</span><b>${chain.isPolygon ? "Yes" : "Select after connect"}</b></div>
+      <div class="metric"><span>Active Network</span><b>${chain.chainName}</b></div>
+      <div class="metric"><span>Polygon Ready</span><b>${chain.isPolygon ? "Yes" : "Switch required"}</b></div>
       <div class="metric"><span>Saved Wallets</span><b>${settings.savedWallets?.length || 0}</b></div>
-      <div class="metric"><span>Last Connected</span><b>${settings.lastConnectedWallet ? `${settings.lastConnectedWallet.slice(0,6)}...${settings.lastConnectedWallet.slice(-4)}` : "N/A"}</b></div>
+      <div class="metric"><span>Last Connected</span><b>${activeAddress ? `${activeAddress.slice(0,6)}...${activeAddress.slice(-4)}` : settings.lastConnectedWallet ? `${settings.lastConnectedWallet.slice(0,6)}...${settings.lastConnectedWallet.slice(-4)}` : "N/A"}</b><small>${walletName || ""}</small></div>
     </div>`;
 }
 
@@ -169,7 +180,7 @@ export async function renderWalletCenter(container) {
     <section class="card wallet-center-card">
       <div class="section-title">
         <div>
-          <h2>Wallet Center V7.6.1</h2>
+          <h2>Wallet Center V7.6.2</h2>
           <p>Explicit MetaMask, Rabby, Coinbase Wallet and WalletConnect QR connections with mobile-ready Polygon portfolio reading.</p>
         </div>
         <span>MULTI-WALLET</span>
@@ -195,7 +206,7 @@ export async function renderWalletCenter(container) {
       button.disabled = true;
       button.textContent = "Connecting...";
       try {
-        await connectAndRead(container, button.dataset.walletProvider);
+        await connectAndRead(container, button.dataset.walletProvider, wallets);
       } catch (error) {
         container.querySelector("#wallet-center-result").innerHTML = `<div class="answer"><strong>Wallet error:</strong> ${error.message || error}<br><small>For MetaMask, unlock the extension and check its icon for a pending request.</small></div>`;
       } finally {

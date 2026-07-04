@@ -1,4 +1,4 @@
-const CACHE_NAME = "nenette-v7-6-1-metamask-fix-v1";
+const CACHE_NAME = "nenette-v7-6-2-data-integrity-v1";
 const ASSETS = [
   "./",
   "./index.html",

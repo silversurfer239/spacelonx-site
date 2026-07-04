@@ -1,29 +1,19 @@
-# Nénette AI V7.6 Multi-Wallet Provider
+# Nénette AI V7.6.2 — Network Refresh & Data Integrity
 
-V7.6 keeps the complete V7.5 terminal and adds a true wallet selector.
+This release keeps the V7.6.1 MetaMask connection fix and corrects the remaining wallet display issues.
 
-## Wallet options
-- MetaMask (explicit injected provider)
-- Rabby Wallet (explicit injected provider)
-- Coinbase Wallet (explicit injected provider)
-- WalletConnect QR through Reown AppKit for mobile wallets
-- Other EIP-6963 injected EVM wallets when detected
-
-## Mobile
-WalletConnect is the recommended connection method on iPhone and Android. The QR/deep-link modal is loaded only when requested.
-
-## Architecture
-- Static GitHub Pages deployment
-- Reown AppKit loaded lazily from an ESM CDN
-- Polygon Mainnet only
-- Public read-only SLX and POL balance analysis
-- Multiple public addresses can be saved locally; one wallet session is active at a time on the Starter plan
+## Fixes
+- Waits for Polygon Mainnet to be confirmed after wallet connection.
+- Refreshes Active Network, Polygon Ready and Last Connected immediately.
+- Displays known chain names instead of raw hexadecimal IDs.
+- Marks USD valuation as **Estimate** whenever DexScreener is unavailable.
+- Shows the fallback price used for the estimate.
+- Caps wallet readiness at **PROVISIONAL** while market data is in fallback mode.
+- Labels Diamond amounts as a **20% APR simulation**, not accrued on-chain rewards.
+- Updates export wording, footer, badge, manifest and service-worker cache.
 
 ## Security
-- No seed phrase or private key request
-- No transaction signature request
-- Reown Project ID is public by design and domain-allowlisted
-- No App ID or secret is required for this web deployment
+Read-only wallet analysis. No seed phrase, private key or transaction signature is requested.
 
 ## Deployment
-Upload all extracted files and folders into `spacelonx-site/nenette/`, replacing the existing V7.5 files.
+Upload all extracted files and folders into `spacelonx-site/nenette/`, replacing the current files.

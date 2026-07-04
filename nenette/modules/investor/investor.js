@@ -23,7 +23,7 @@ export async function renderInvestor(container) {
     <section class="card investor-command">
       <div class="section-title">
         <div>
-          <h2>Investor Intelligence V7.6</h2>
+          <h2>Investor Intelligence V7.6.2</h2>
           <p>Consolidated readiness score for SLX based on market, liquidity, blockchain, trust, product and AI memory.</p>
         </div>
         <span>${intel.riskLevel}</span>

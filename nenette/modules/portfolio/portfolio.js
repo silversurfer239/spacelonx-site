@@ -77,7 +77,7 @@ async function loadSaved(container) {
       <div class="metric"><span>Diamond Yearly</span><b>${fmt(totalDiamond)} SLX</b></div>
       <div class="metric"><span>Avg Health</span><b>${averageHealth}/100</b></div>
       <div class="metric"><span>Saved Wallets</span><b>${settings.savedWallets.length}</b></div>
-      <div class="metric"><span>Version</span><b>V7.6</b></div>
+      <div class="metric"><span>Version</span><b>V7.6.2</b></div>
     </section>
     <div class="form brief-actions">
       <button id="export-portfolio-json">Export JSON</button>
@@ -135,7 +135,7 @@ export function renderPortfolio(container) {
   container.innerHTML = `
     <section class="card">
       <div class="section-title">
-        <div><h2>Portfolio Intelligence V7.6</h2><p>Read wallets, save labels, aggregate SLX exposure and export a portfolio snapshot.</p></div>
+        <div><h2>Portfolio Intelligence V7.6.2</h2><p>Read wallets, save labels, aggregate SLX exposure and export a portfolio snapshot.</p></div>
         <span>PORTFOLIO REAL</span>
       </div>
       <div class="form">

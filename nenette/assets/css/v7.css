@@ -1034,3 +1034,8 @@ body::before {
   .wallet-provider-card button{grid-column:1/-1;width:100%;min-height:48px}
   .wallet-provider-grid{grid-template-columns:1fr}
 }
+
+
+/* V7.6.2 Data Integrity */
+.metric small{display:block;margin-top:6px;color:#94a3b8;font-size:11px;line-height:1.35;font-weight:600}
+.wallet-command .brief-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}

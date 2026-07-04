@@ -1,5 +1,5 @@
 {
-  "name": "Nénette AI V7.6 Multi-Wallet Provider",
+  "name": "Nénette AI V7.6.2 Data Integrity",
   "short_name": "Nénette AI",
   "description": "SpacelonX Web3 terminal with MetaMask, Rabby, Coinbase Wallet and WalletConnect QR through Reown AppKit.",
   "start_url": "./index.html",
