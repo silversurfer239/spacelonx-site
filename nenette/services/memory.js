@@ -106,7 +106,7 @@ export function clearMemory() {
 export function exportMemory() {
   return {
     exportedAt: now(),
-    version: "Nénette AI V7.6.3 On-Chain Price",
+    version: "Nénette AI V7.6.4 Liquidity & Exit",
     memory: loadMemory()
   };
 }

@@ -35,10 +35,10 @@ export async function renderDashboard(container) {
       </div>
 
       <div class="command-copy">
-        <div class="pill">● V7.6.3 ON-CHAIN PRICE</div>
+        <div class="pill">● V7.6.4 LIQUIDITY & EXIT</div>
         <h3>SpacelonX AI Strategic Terminal</h3>
         <p>
-          Nénette keeps the full Web3 terminal and adds Multi-Wallet, AI Memory, Investor Intelligence, strategic brief history and project status readiness.
+          Nénette combines Multi-Wallet, on-chain pricing, liquidity depth, exit simulation, AI Memory and Investor Intelligence.
         </p>
         <div class="hero-actions">
           <button data-target="terminal">Open Web3 Terminal</button>
@@ -78,7 +78,7 @@ export async function renderDashboard(container) {
 
     <section class="ultimate-kpis">
       <article class="ultimate-kpi gold"><small>SLX Price</small><strong>${usd(market.priceUsd)}</strong><p>${market.pair}</p></article>
-      <article class="ultimate-kpi blue"><small>Liquidity</small><strong>${usd(market.liquidityUsd)}</strong><p>${market.source}</p></article>
+      <article class="ultimate-kpi blue"><small>Liquidity</small><strong>${usd(market.liquidityUsd)}</strong><p>${Number(market.liquidityUsd || 0) < 5000 ? "Thin pool · exit simulation recommended" : market.source}</p></article>
       <article class="ultimate-kpi green"><small>Latest Block</small><strong>${blockchain ? fmt(blockchain.latestBlock, 0) : "N/A"}</strong><p>${blockchain ? shortTime(blockchain.updatedAt) : "RPC unavailable"}</p></article>
       <article class="ultimate-kpi violet"><small>LP Lock</small><strong>${holders?.lpLocked ? "100%" : "N/A"}</strong><p>${holders?.lpLocked ? new Date(holders.lpUnlockDate).toLocaleDateString() : "Pending"}</p></article>
     </section>
@@ -89,11 +89,11 @@ export async function renderDashboard(container) {
       </div>
       <div>
         <div class="section-title">
-          <div><h2>Nénette AI Full Terminal</h2><p>V7.6.3 summary with multi-wallet connection, memory and investor intelligence.</p></div>
+          <div><h2>Nénette AI Full Terminal</h2><p>V7.6.4 summary with multi-wallet connection, memory and investor intelligence.</p></div>
           <span>AI COMMAND</span>
         </div>
         <div class="brief-grid ultimate-brief">
-          <div><h4>Market</h4><p>${market.status === "Live API" ? "DexScreener live data is active." : market.status === "On-chain Pool" ? "QuickSwap reserve pricing is active." : "Fallback market mode is active."}</p></div>
+          <div><h4>Market</h4><p>${market.status === "Live API" ? "DexScreener live data is active." : market.status === "On-chain Pool" ? "QuickSwap reserve pricing and liquidity-depth analysis are active." : "Fallback market mode is active."}</p></div>
           <div><h4>Blockchain</h4><p>${blockchain?.contractDetected ? "SLX contract detected on Polygon." : "Blockchain check pending."}</p></div>
           <div><h4>Trust</h4><p>${holders?.lpLocked ? "LP lock is displayed and monitored." : "Indexer required for full holder metrics."}</p></div>
           <div><h4>Staking</h4><p>Bronze, Silver, Gold and Diamond simulations are ready.</p></div>

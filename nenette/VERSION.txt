@@ -1,17 +1,19 @@
-Nénette AI V7.6.3 — QuickSwap On-Chain Price Engine
-Build: V7.6.3
+Nénette AI V7.6.4 — Liquidity & Exit Simulator
+Build: V7.6.4
 Date: 2026-07-04
 
 Adds:
-- QuickSwap V2 reserve-based SLX spot price
-- Dynamic token0/token1 and decimals detection
-- Chainlink POL/USD conversion with CoinGecko backup
-- On-chain pool liquidity and FDV calculation
-- N/A labels for unavailable historical metrics
-- On-chain source details in Market and Wallet Center
+- Wallet exit simulations at 1%, 5%, 10%, 25% and 100%
+- Custom exit percentage calculator
+- Constant-product QuickSwap V2 output estimates
+- Estimated quote and USD proceeds
+- Execution-loss and post-trade price-impact metrics
+- Liquidity-aware wallet readiness score caps
+- Pool depth stress tests in Market Intelligence
+- Exit scenarios in wallet Markdown exports
 
-Preserves:
-- MetaMask, Rabby, Coinbase Wallet and WalletConnect
-- Polygon Mainnet confirmation
-- Fallback estimate labeling
-- Diamond simulation labeling
+Safety:
+- Read-only analysis
+- No sale transaction is created
+- No signature, seed phrase or private key is requested
+- Results exclude gas, MEV, routing, other pools and market movement

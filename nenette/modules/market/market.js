@@ -1,4 +1,5 @@
 import { getMarketData, getMarketScore, marketSignal } from "../../services/market.js";
+import { poolDepthMetrics } from "../../services/liquidity.js";
 import { usd, fmt, shortTime } from "../../services/format.js";
 
 function metricValue(market, key, formatter) {
@@ -6,6 +7,25 @@ function metricValue(market, key, formatter) {
     return "N/A";
   }
   return formatter(market[key]);
+}
+
+function depthTable(market) {
+  const rows = poolDepthMetrics(market);
+  if (!rows) return "";
+  return `
+    <div class="exit-table-wrap market-depth-table">
+      <table class="exit-table">
+        <thead><tr><th>Sell vs SLX reserve</th><th>SLX amount</th><th>Estimated received</th><th>Execution loss</th><th>Pool price impact</th></tr></thead>
+        <tbody>${rows.map(item => `
+          <tr>
+            <td><strong>${item.percent.toFixed(0)}%</strong></td>
+            <td>${fmt(item.amountSlx)} SLX</td>
+            <td>${fmt(item.outputQuote, 6)} ${item.quoteToken} · ${usd(item.outputUsd)}</td>
+            <td class="${item.executionLossPct >= 10 ? "risk-watch" : "risk-ok"}">${item.executionLossPct.toFixed(1)}%</td>
+            <td>${item.poolPriceImpactPct.toFixed(1)}%</td>
+          </tr>`).join("")}</tbody>
+      </table>
+    </div>`;
 }
 
 export async function renderMarket(container) {
@@ -44,12 +64,18 @@ export async function renderMarket(container) {
   container.innerHTML = `
     <section class="card">
       <div class="section-title">
-        <div><h2>Market Intelligence V7.6.3</h2><p>DexScreener first, QuickSwap V2 on-chain reserve pricing second, protected static fallback last.</p></div>
-        <span>ON-CHAIN PRICE</span>
+        <div><h2>Market Intelligence V7.6.4</h2><p>Live price hierarchy plus direct QuickSwap liquidity-depth stress testing.</p></div>
+        <span>LIQUIDITY & EXIT</span>
       </div>
       <div class="answer"><strong>Nénette signal:</strong> ${marketSignal(m)}</div>
       ${m.sourceWarning ? `<div class="answer"><strong>Oracle note:</strong> ${m.sourceWarning}</div>` : ""}
       <div class="data-grid">${data.map(x => `<div class="metric"><span>${x[0]}</span><b>${x[1]}</b></div>`).join("")}</div>
+      ${m.priceMode === "onchain" ? `
+        <section class="exit-simulator market-depth">
+          <div class="section-title"><div><h3>Pool Depth Stress Test</h3><p>Direct sale simulations equal to 1%, 5% and 10% of the pool's current SLX reserve.</p></div><span>READ ONLY</span></div>
+          ${depthTable(m)}
+          <div class="answer"><strong>Model limits:</strong> constant-product estimate with the configured fee assumption; gas, MEV, routing and other pools are excluded.</div>
+        </section>` : ""}
       <div class="mini-chart-panel">
         <iframe class="dex-frame small" src="${m.url}?embed=1&theme=dark&trades=0&info=0" title="SLX chart" loading="lazy"></iframe>
       </div>

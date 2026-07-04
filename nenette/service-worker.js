@@ -1,4 +1,4 @@
-const CACHE_NAME = "nenette-v7-6-3-onchain-price-v1";
+const CACHE_NAME = "nenette-v7-6-4-liquidity-exit-v1";
 const ASSETS = [
   "./",
   "./index.html",
@@ -11,6 +11,7 @@ const ASSETS = [
   "./services/multiwallet.js",
   "./services/blockchain.js",
   "./services/market.js",
+  "./services/liquidity.js",
   "./services/storage.js",
   "./services/memory.js",
   "./services/investor.js",

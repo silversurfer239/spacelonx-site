@@ -1,5 +1,7 @@
 export const CONFIG = {
-  version: "7.6.3-onchain-price",
+  version: "7.6.4-liquidity-exit",
+  swapFeeBps: 30,
+  exitPresets: [0.01, 0.05, 0.10, 0.25, 1],
   ticker: "SLX",
   chainName: "Polygon Mainnet",
   chainId: 137,

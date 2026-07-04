@@ -68,7 +68,7 @@ export function setLastConnectedWallet(address) {
 export function exportSettings() {
   return {
     exportedAt: new Date().toISOString(),
-    version: "Nénette AI V7.6.3 On-Chain Price",
+    version: "Nénette AI V7.6.4 Liquidity & Exit",
     settings: getSettings()
   };
 }

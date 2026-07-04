@@ -1,4 +1,5 @@
 import { ensurePolygon, getChainStatus, buildWalletSnapshot, walletHealth, snapshotToMarkdown } from "../../services/wallet.js";
+import { simulateSell } from "../../services/liquidity.js";
 import { discoverInjectedWallets, connectInjectedWallet, connectWalletConnect, getAppKitStatus } from "../../services/multiwallet.js";
 import { addWallet, setLastConnectedWallet, getSettings } from "../../services/storage.js";
 import { addEvent } from "../../services/memory.js";
@@ -63,6 +64,84 @@ function renderProviderCards(wallets) {
     </article>`;
 }
 
+function pct(value, decimals = 1) {
+  const number = Number(value || 0);
+  return `${number.toLocaleString(undefined, { maximumFractionDigits: decimals, minimumFractionDigits: decimals })}%`;
+}
+
+function renderExitRow(item) {
+  return `
+    <tr>
+      <td><strong>${item.percent < 1 ? item.percent.toFixed(2) : item.percent.toFixed(0)}%</strong></td>
+      <td>${fmt(item.amountSlx)} SLX</td>
+      <td>${usd(item.spotValueUsd)}</td>
+      <td>${fmt(item.outputQuote, 6)} ${item.quoteToken}</td>
+      <td>${usd(item.outputUsd)}</td>
+      <td class="${item.executionLossPct >= 25 ? "risk-high" : item.executionLossPct >= 10 ? "risk-watch" : "risk-ok"}">${pct(item.executionLossPct)}</td>
+      <td>${pct(item.poolPriceImpactPct)}</td>
+    </tr>`;
+}
+
+function renderCustomExitResult(item) {
+  return `
+    <div class="exit-result-grid">
+      <div class="metric"><span>Estimated received</span><b>${fmt(item.outputQuote, 6)} ${item.quoteToken}</b><small>${usd(item.outputUsd)}</small></div>
+      <div class="metric"><span>Spot valuation</span><b>${usd(item.spotValueUsd)}</b><small>Before pool impact</small></div>
+      <div class="metric"><span>Execution loss</span><b>${pct(item.executionLossPct)}</b><small>Fee + reserve impact</small></div>
+      <div class="metric"><span>Post-trade spot</span><b>${usd(item.postSpotPriceUsd)}</b><small>${pct(item.poolPriceImpactPct)} pool price impact</small></div>
+    </div>`;
+}
+
+function renderExitSimulator(snapshot) {
+  const analysis = snapshot.exitAnalysis;
+  if (!analysis?.available) {
+    return `
+      <section class="exit-simulator unavailable">
+        <div class="section-title"><div><h3>Liquidity & Exit Simulator</h3><p>Live QuickSwap reserves are required.</p></div><span>UNAVAILABLE</span></div>
+      </section>`;
+  }
+
+  const riskClass = analysis.status === "HIGH EXIT RISK" ? "exit-risk-high" : analysis.status === "ELEVATED EXIT RISK" ? "exit-risk-watch" : "exit-risk-ok";
+  return `
+    <section class="exit-simulator ${riskClass}">
+      <div class="section-title">
+        <div>
+          <h3>Liquidity & Exit Simulator</h3>
+          <p>Constant-product estimate for a direct SLX sale into the displayed QuickSwap V2 pool.</p>
+        </div>
+        <span>${analysis.status}</span>
+      </div>
+      <div class="data-grid exit-summary-grid">
+        <div class="metric"><span>Wallet Spot Value</span><b>${usd(analysis.walletSpotValueUsd)}</b><small>Not guaranteed executable value</small></div>
+        <div class="metric"><span>Total Pool Liquidity</span><b>${usd(analysis.poolLiquidityUsd)}</b><small>Both reserve sides</small></div>
+        <div class="metric"><span>Quote-side Reserve</span><b>${usd(analysis.quoteReserveUsd)}</b><small>Maximum theoretical side before market movement</small></div>
+        <div class="metric"><span>Wallet / Pool Liquidity</span><b>${pct(analysis.walletSpotToLiquidityRatio * 100)}</b><small>Spot-value comparison</small></div>
+        <div class="metric"><span>Wallet / SLX Reserve</span><b>${pct(analysis.walletToSlxReserveRatio * 100)}</b><small>Pool-depth comparison</small></div>
+        <div class="metric"><span>Fee Assumption</span><b>${(analysis.feeBps / 100).toFixed(2)}%</b><small>Configurable simulation input</small></div>
+      </div>
+      <div class="exit-table-wrap">
+        <table class="exit-table">
+          <thead><tr><th>Wallet sold</th><th>SLX amount</th><th>Spot value</th><th>Estimated quote</th><th>Estimated USD</th><th>Execution loss</th><th>Pool price impact</th></tr></thead>
+          <tbody>${analysis.scenarios.map(renderExitRow).join("")}</tbody>
+        </table>
+      </div>
+      <div class="custom-exit-panel">
+        <div>
+          <h4>Custom wallet sale</h4>
+          <p>Enter a percentage from 0.01% to 100%. This is a read-only estimate and does not create a transaction.</p>
+        </div>
+        <div class="form exit-form">
+          <input id="exit-percent" type="number" min="0.01" max="100" step="0.01" value="10" inputmode="decimal">
+          <button id="simulate-exit">Simulate Exit</button>
+        </div>
+        <div id="custom-exit-result">${renderCustomExitResult(analysis.scenarios.find(item => item.fraction === 0.10) || analysis.scenarios[0])}</div>
+      </div>
+      <div class="answer exit-disclaimer">
+        <strong>Model limits:</strong> direct-pool constant-product calculation only. It excludes gas, MEV, routing, other pools, price movement and any token transfer mechanics. Actual execution can differ materially.
+      </div>
+    </section>`;
+}
+
 function renderSnapshot(snapshot, connection = {}) {
   const health = walletHealth(snapshot);
   const isApi = snapshot.market.priceMode === "api";
@@ -103,21 +182,22 @@ function renderSnapshot(snapshot, connection = {}) {
         <div class="metric"><span>Diamond Simulation · Monthly</span><b>${fmt(snapshot.diamondMonthly)} SLX</b><small>Projection only</small></div>
       </div>
       <div class="brief-grid">
-        <article><h4>Wallet Readiness</h4>${health.flags.map(flag => `<p>• ${flag}</p>`).join("")}</article>
+        <article><h4>Wallet & Exit Readiness</h4>${health.flags.map(flag => `<p>• ${flag}</p>`).join("")}</article>
         <article>
           <h4>Data Integrity</h4>
           <p>• ${integrityText}</p>
-          <p>• Diamond values are simulations at ${(snapshot.diamondApr * 100).toFixed(0)}% APR.</p>
-          <p>• Simulated values are not staking rewards read from a smart contract.</p>
+          <p>• Exit estimates use current pool reserves and a ${(snapshot.exitAnalysis?.feeBps || 30) / 100}% fee assumption.</p>
+          <p>• Diamond values are simulations at ${(snapshot.diamondApr * 100).toFixed(0)}% APR, not accrued rewards.</p>
         </article>
         <article>
           <h4>Security</h4>
-          <p>• Read-only balance analysis.</p>
+          <p>• Read-only balance and liquidity analysis.</p>
           <p>• No seed phrase or private key is requested.</p>
           <p>• No transaction signature is requested.</p>
           <p>• Reown Project ID is restricted to the SpacelonX domain.</p>
         </article>
       </div>
+      ${renderExitSimulator(snapshot)}
       <div class="form brief-actions">
         <button id="copy-wallet-address">Copy Address</button>
         <button id="save-connected-wallet">Save Wallet</button>
@@ -125,6 +205,32 @@ function renderSnapshot(snapshot, connection = {}) {
         <a class="btn" target="_blank" rel="noreferrer" href="${snapshot.explorerUrl}">Open Polygonscan</a>
       </div>
     </section>`;
+}
+
+function bindExitSimulator(result, snapshot) {
+  const button = result.querySelector("#simulate-exit");
+  const input = result.querySelector("#exit-percent");
+  const output = result.querySelector("#custom-exit-result");
+  if (!button || !input || !output || !snapshot.exitAnalysis?.available) return;
+
+  const run = () => {
+    const percent = Number(input.value);
+    if (!Number.isFinite(percent) || percent < 0.01 || percent > 100) {
+      output.innerHTML = `<div class="answer"><strong>Invalid percentage:</strong> enter a value between 0.01 and 100.</div>`;
+      return;
+    }
+    try {
+      const scenario = simulateSell(snapshot.market, snapshot.slxNumber * percent / 100);
+      output.innerHTML = renderCustomExitResult(scenario);
+    } catch (error) {
+      output.innerHTML = `<div class="answer"><strong>Simulation error:</strong> ${error.message || error}</div>`;
+    }
+  };
+
+  button.addEventListener("click", run);
+  input.addEventListener("keydown", event => {
+    if (event.key === "Enter") run();
+  });
 }
 
 function bindSnapshotActions(result, snapshot, connection) {
@@ -138,8 +244,9 @@ function bindSnapshotActions(result, snapshot, connection) {
     event.currentTarget.textContent = "Saved";
   });
   result.querySelector("#export-wallet-md")?.addEventListener("click", () => {
-    downloadText("nenette-v763-wallet-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8");
+    downloadText("nenette-v764-wallet-exit-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8");
   });
+  bindExitSimulator(result, snapshot);
 }
 
 async function connectAndRead(container, walletId, wallets) {
@@ -197,12 +304,12 @@ export async function renderWalletCenter(container) {
     <section class="card wallet-center-card">
       <div class="section-title">
         <div>
-          <h2>Wallet Center V7.6.3</h2>
-          <p>Explicit MetaMask, Rabby, Coinbase Wallet and WalletConnect QR connections with mobile-ready Polygon portfolio reading.</p>
+          <h2>Wallet Center V7.6.4</h2>
+          <p>Multi-wallet Polygon reading with QuickSwap liquidity depth and wallet exit simulation.</p>
         </div>
-        <span>MULTI-WALLET</span>
+        <span>LIQUIDITY & EXIT</span>
       </div>
-      <div class="answer strategic-answer"><strong>One active wallet at a time:</strong> the Starter plan supports a wallet selector and many wallet brands, while saved public addresses remain available together in Portfolio.</div>
+      <div class="answer strategic-answer"><strong>Read-only analysis:</strong> Nénette estimates pool execution from current reserves. It never creates or signs a sale transaction.</div>
       <div id="connection-status"></div>
       <div id="wallet-provider-list" class="wallet-provider-grid"><section class="loading"><p>Detecting wallet providers...</p></section></div>
       <div class="manual-wallet-panel">

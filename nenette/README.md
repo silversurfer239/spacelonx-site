@@ -1,29 +1,36 @@
-# Nénette AI V7.6.3 — QuickSwap On-Chain Price Engine
+# Nénette AI V7.6.4 — Liquidity & Exit Simulator
 
-V7.6.3 keeps the V7.6.2 wallet, Polygon and data-integrity fixes and adds an independent live price path when DexScreener is unavailable.
+V7.6.4 keeps the complete V7.6.3 multi-wallet and on-chain price engine, then adds liquidity-aware wallet scoring and a read-only exit simulator.
 
-## Market source order
-1. DexScreener pair API.
-2. DexScreener token API.
-3. QuickSwap V2 pool reserves read directly on Polygon.
-4. Protected static fallback only when all live sources fail.
+## Added in V7.6.4
+- QuickSwap V2 constant-product exit estimates.
+- Preset simulations for 1%, 5%, 10%, 25% and 100% of a wallet's SLX balance.
+- Custom sale percentage from 0.01% to 100%.
+- Estimated POL/quote received and USD proceeds.
+- Execution loss versus current spot valuation.
+- Post-trade pool price impact.
+- Wallet value / pool liquidity and wallet / SLX reserve ratios.
+- Wallet readiness score capped when practical exit liquidity is weak.
+- Market-level pool depth stress tests.
+- Markdown export including exit scenarios and model assumptions.
 
-## On-chain calculation
-- Reads `token0`, `token1` and `getReserves` from the configured QuickSwap V2 pair.
-- Detects the SLX side and quote-token side dynamically.
-- Calculates the live SLX/quote spot ratio from normalized pool reserves.
-- Converts the quote asset to USD with Chainlink POL/USD, with CoinGecko as a secondary POL/USD reference.
-- Calculates pool liquidity and FDV from live reserve and supply reads.
-- Marks 1H, 6H, 24H volume and change as unavailable when only pool reserves are active.
+## Model
+The simulator applies a direct Uniswap V2 / QuickSwap V2 constant-product calculation to the current on-chain pool reserves. The configurable fee assumption is 0.30% (`swapFeeBps: 30`).
 
-## Data integrity
-- `On-chain Pool` is shown separately from `Live API`.
-- Pool spot price is not presented as a guaranteed execution price.
-- Static fallback values remain clearly marked as estimates.
-- Diamond values remain simulations, not accrued staking rewards.
+It does not create a transaction and excludes gas, MEV, routing, other pools, price movement and token-specific transfer mechanics. Results are estimates, not guaranteed execution quotes.
 
-## Security
-Read-only market and wallet analysis. No seed phrase, private key or transaction signature is requested.
+## Preserved
+- MetaMask, Rabby, Coinbase Wallet and WalletConnect.
+- Polygon Mainnet confirmation.
+- DexScreener → QuickSwap on-chain → fallback market hierarchy.
+- Chainlink POL/USD reference with CoinGecko backup.
+- Clear fallback valuation labels.
+- Diamond staking simulations clearly separated from on-chain rewards.
+- AI Memory and Investor Intelligence.
 
 ## Deployment
-Upload all extracted files and folders into `spacelonx-site/nenette/`, replacing the current V7.6.2 files.
+Upload all extracted files and folders into `spacelonx-site/nenette/`, replacing the current V7.6.3 files.
+
+Suggested commit message:
+
+`Deploy Nénette AI V7.6.4 Liquidity Exit Simulator`

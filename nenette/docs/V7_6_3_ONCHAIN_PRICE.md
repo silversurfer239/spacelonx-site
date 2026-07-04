@@ -1,4 +1,4 @@
-# Nénette AI V7.6.3 On-Chain Price
+# Nénette AI V7.6.4 Liquidity & Exit
 
 ## Purpose
 Provide a live SLX price and liquidity estimate even when DexScreener endpoints return no pair data.

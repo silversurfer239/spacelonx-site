@@ -1,6 +1,7 @@
 import { CONFIG } from "../config/config.js";
 import { readTokenBalance, readNativeBalance } from "./blockchain.js";
 import { getMarketData, isMarketPriceLive } from "./market.js";
+import { buildExitAnalysis } from "./liquidity.js";
 import { fmt, usd } from "./format.js";
 
 export function getWalletProvider() {
@@ -110,6 +111,7 @@ export async function buildWalletSnapshot(address) {
   const diamondYearly = slxNumber * diamondApr;
   const diamondMonthly = diamondYearly / 12;
   const diamondDaily = diamondYearly / 365;
+  const exitAnalysis = buildExitAnalysis(market, slxNumber, CONFIG.exitPresets);
 
   return {
     address,
@@ -127,6 +129,7 @@ export async function buildWalletSnapshot(address) {
     diamondYearly,
     diamondMonthly,
     diamondDaily,
+    exitAnalysis,
     generatedAt: new Date().toISOString(),
     explorerUrl: `https://polygonscan.com/address/${address}`,
     tokenUrl: `${CONFIG.polygonscanUrl}?a=${address}`
@@ -145,22 +148,43 @@ export function walletHealth(snapshot) {
     score += snapshot.market.priceMode === "onchain" ? 8 : 10;
     if (snapshot.slxValue > 10) score += 10;
     if (snapshot.market.priceMode === "onchain") {
-      flags.push("USD valuation uses the live QuickSwap pool spot price. Large trades can execute at a different price because of slippage.");
+      flags.push("USD valuation uses the live QuickSwap pool spot price. The exit simulator estimates slippage against current reserves.");
     }
   } else {
     score = Math.min(score, 75);
     flags.push("Live API and on-chain pool pricing are unavailable: the USD value uses the configured fallback price and is only an estimate.");
   }
 
+  if (snapshot.exitAnalysis?.available) {
+    score = Math.min(score, snapshot.exitAnalysis.scoreCap);
+    flags.push(...snapshot.exitAnalysis.flags.slice(0, 3));
+  }
+
   flags.push(`Diamond figures are a simulation at ${(snapshot.diamondApr * 100).toFixed(0)}% APR, not rewards read from a staking contract.`);
 
   const normalized = Math.max(0, Math.min(100, Math.round(score)));
+  let status;
+  if (!marketIsLive) status = "PROVISIONAL";
+  else if (snapshot.exitAnalysis?.status === "HIGH EXIT RISK") status = "HIGH EXIT RISK";
+  else if (snapshot.exitAnalysis?.status === "ELEVATED EXIT RISK") status = "EXIT WATCH";
+  else if (snapshot.exitAnalysis?.status === "LIQUIDITY WATCH") status = "LIQUIDITY WATCH";
+  else status = normalized >= 80 ? "READY" : normalized >= 60 ? "WATCH" : "LIMITED";
+
   return {
     score: normalized,
     flags,
-    status: marketIsLive ? (normalized >= 80 ? "READY" : normalized >= 60 ? "WATCH" : "LIMITED") : "PROVISIONAL",
-    provisional: !marketIsLive
+    status,
+    provisional: !marketIsLive,
+    exitRisk: snapshot.exitAnalysis?.status || "UNAVAILABLE"
   };
+}
+
+function exitRowsMarkdown(snapshot) {
+  if (!snapshot.exitAnalysis?.available) return "Exit simulation unavailable: live on-chain reserves are required.";
+  const rows = snapshot.exitAnalysis.scenarios.map(item =>
+    `| ${item.percent.toFixed(item.percent < 1 ? 2 : 0)}% | ${fmt(item.amountSlx)} | ${usd(item.spotValueUsd)} | ${fmt(item.outputQuote, 6)} ${item.quoteToken} | ${usd(item.outputUsd)} | ${item.executionLossPct.toFixed(1)}% |`
+  ).join("\n");
+  return `| Wallet sold | SLX amount | Spot value | Estimated quote | Estimated USD | Execution loss |\n|---:|---:|---:|---:|---:|---:|\n${rows}`;
 }
 
 export function snapshotToMarkdown(snapshot) {
@@ -170,5 +194,5 @@ export function snapshotToMarkdown(snapshot) {
     : snapshot.market.priceMode === "onchain"
       ? "On-chain QuickSwap spot value"
       : "Estimated value using fallback price";
-  return `# Nénette AI V7.6.3 Wallet Snapshot\n\nGenerated: ${new Date(snapshot.generatedAt).toLocaleString()}\nWallet: ${snapshot.address}\n\n## Balances\n- SLX: ${fmt(snapshot.slxNumber)} ${snapshot.slx.symbol}\n- POL: ${fmt(snapshot.polNumber, 6)} POL\n- ${valueLabel}: ${usd(snapshot.slxValue)}\n- Price source: ${snapshot.market.status} (${snapshot.market.source || "N/A"})\n\n## Diamond Simulation (${(snapshot.diamondApr * 100).toFixed(0)}% APR)\n- Yearly simulation: ${fmt(snapshot.diamondYearly)} SLX\n- Monthly simulation: ${fmt(snapshot.diamondMonthly)} SLX\n- Daily simulation: ${fmt(snapshot.diamondDaily)} SLX\n- These figures are projections only and are not on-chain accrued rewards.\n\n## Wallet Health\n- Score: ${health.score}/100\n- Status: ${health.status}\n${health.flags.map(flag => `- ${flag}`).join("\n")}\n\n## Sources\n- Market status: ${snapshot.market.status}\n- Market source: ${snapshot.market.source || "N/A"}\n- Pair address: ${snapshot.market.pairAddress || "N/A"}\n- Pool block: ${snapshot.market.blockNumber || "N/A"}\n- RPC source: ${snapshot.market.rpc || snapshot.slx.rpc || snapshot.pol.rpc || "N/A"}\n`;
+  return `# Nénette AI V7.6.4 Wallet & Exit Snapshot\n\nGenerated: ${new Date(snapshot.generatedAt).toLocaleString()}\nWallet: ${snapshot.address}\n\n## Balances\n- SLX: ${fmt(snapshot.slxNumber)} ${snapshot.slx.symbol}\n- POL: ${fmt(snapshot.polNumber, 6)} POL\n- ${valueLabel}: ${usd(snapshot.slxValue)}\n- Price source: ${snapshot.market.status} (${snapshot.market.source || "N/A"})\n\n## Liquidity & Exit Simulation\n- Status: ${snapshot.exitAnalysis?.status || "UNAVAILABLE"}\n- Pool liquidity: ${usd(snapshot.market.liquidityUsd)}\n- Quote-side reserve: ${snapshot.exitAnalysis?.available ? usd(snapshot.exitAnalysis.quoteReserveUsd) : "N/A"}\n- Fee assumption: ${((snapshot.exitAnalysis?.feeBps || CONFIG.swapFeeBps || 30) / 100).toFixed(2)}%\n\n${exitRowsMarkdown(snapshot)}\n\nThese estimates use a direct constant-product pool calculation and exclude gas, MEV, routing, price movement, transfer taxes and other pools. No transaction is created.\n\n## Diamond Simulation (${(snapshot.diamondApr * 100).toFixed(0)}% APR)\n- Yearly simulation: ${fmt(snapshot.diamondYearly)} SLX\n- Monthly simulation: ${fmt(snapshot.diamondMonthly)} SLX\n- Daily simulation: ${fmt(snapshot.diamondDaily)} SLX\n- These figures are projections only and are not on-chain accrued rewards.\n\n## Wallet Health\n- Score: ${health.score}/100\n- Status: ${health.status}\n${health.flags.map(flag => `- ${flag}`).join("\n")}\n\n## Sources\n- Market status: ${snapshot.market.status}\n- Market source: ${snapshot.market.source || "N/A"}\n- Pair address: ${snapshot.market.pairAddress || "N/A"}\n- Pool block: ${snapshot.market.blockNumber || "N/A"}\n- RPC source: ${snapshot.market.rpc || snapshot.slx.rpc || snapshot.pol.rpc || "N/A"}\n`;
 }
