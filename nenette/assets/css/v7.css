@@ -963,7 +963,7 @@ body::before {
   .memory-item button{width:100%}
 }
 
-/* V7.5 Wallet Connect additions */
+/* V7.6 Multi-Wallet Provider additions */
 .wallet-command .brief-actions,
 .wallet-center-card .brief-actions {
   margin-top: 18px;
@@ -990,4 +990,47 @@ body::before {
 @media(max-width:900px){
   .wallet-center-card .btn,
   .wallet-command .btn { width: 100%; }
+}
+
+
+/* V7.6 Multi-Wallet Provider */
+.wallet-provider-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+  margin:22px 0;
+}
+.wallet-provider-card{
+  display:grid;
+  grid-template-columns:54px 1fr auto;
+  align-items:center;
+  gap:14px;
+  padding:18px;
+  border:1px solid rgba(148,163,184,.20);
+  border-radius:22px;
+  background:linear-gradient(145deg,rgba(15,23,42,.78),rgba(8,12,28,.92));
+  min-height:132px;
+}
+.wallet-provider-card.detected{border-color:rgba(56,217,255,.42);box-shadow:0 0 28px rgba(56,217,255,.08)}
+.wallet-provider-card.not-detected{opacity:.68}
+.wallet-provider-icon{
+  width:54px;height:54px;border-radius:18px;display:grid;place-items:center;
+  background:rgba(56,217,255,.12);border:1px solid rgba(56,217,255,.32);font-weight:1000;color:#b9f3ff;overflow:hidden
+}
+.wallet-provider-icon img{width:100%;height:100%;object-fit:cover}
+.wallet-provider-copy h3{margin:0 0 5px;font-size:17px}
+.wallet-provider-copy p{margin:0 0 6px;color:#b7c5d9;font-size:13px;line-height:1.45}
+.wallet-provider-copy small{color:#6ee7b7;font-weight:800}
+.wallet-provider-card.not-detected small{color:#94a3b8}
+.wallet-provider-card button{white-space:nowrap}
+.wallet-provider-card button:disabled{cursor:not-allowed;opacity:.55}
+.walletconnect-card{background:linear-gradient(145deg,rgba(21,94,117,.18),rgba(8,12,28,.94))}
+.manual-wallet-panel{margin:22px 0;padding:20px;border:1px solid rgba(148,163,184,.16);border-radius:22px;background:rgba(15,23,42,.42)}
+.manual-wallet-panel h3{margin-top:0}
+.brief-header small{display:block;color:#7dd3fc;margin-top:6px;font-weight:800}
+@media(max-width:720px){
+  .wallet-provider-card{grid-template-columns:48px 1fr;align-items:start}
+  .wallet-provider-icon{width:48px;height:48px}
+  .wallet-provider-card button{grid-column:1/-1;width:100%;min-height:48px}
+  .wallet-provider-grid{grid-template-columns:1fr}
 }

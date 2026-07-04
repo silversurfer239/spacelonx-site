@@ -85,7 +85,7 @@ export async function generateStrategicBrief() {
   const globalScore = clamp((marketScore + chainScore + trust + productScore) / 4);
 
   const brief = {
-    version: "Nénette AI V7.5 Wallet Connect Strategic Brief",
+    version: "Nénette AI V7.6 Multi-Wallet Provider Strategic Brief",
     generatedAt: new Date().toISOString(),
     globalScore,
     riskLevel: riskFromScore(globalScore),
@@ -116,7 +116,7 @@ export async function generateStrategicBrief() {
     },
     riskFlags: buildFlags({ market, blockchain, holders }),
     actions: buildActions({ market, blockchain, holders, settings }),
-    nextBuild: "V7.6 should add optional backend/indexer support for holder analytics, whale movement detection and richer historical charts."
+    nextBuild: "V7.7 should add optional backend/indexer support for holder analytics, whale movement detection and richer historical charts."
   };
 
   return brief;

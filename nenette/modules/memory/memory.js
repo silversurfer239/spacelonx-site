@@ -20,7 +20,7 @@ function renderMemoryHTML(memory) {
   return `
     <section class="card">
       <div class="section-title">
-        <div><h2>AI Memory V7.5</h2><p>Private local memory stored in this browser only. It keeps strategic briefs, project decisions and notes.</p></div>
+        <div><h2>AI Memory V7.6</h2><p>Private local memory stored in this browser only. It keeps strategic briefs, project decisions and notes.</p></div>
         <span>LOCAL</span>
       </div>
       <div class="data-grid">
@@ -83,7 +83,7 @@ export function renderMemory(container) {
       button.addEventListener("click", () => { deleteBrief(button.dataset.deleteBrief); draw(); });
     });
 
-    container.querySelector("#export-memory").addEventListener("click", () => downloadJSON("nenette-v7-5-memory.json", exportMemory()));
+    container.querySelector("#export-memory").addEventListener("click", () => downloadJSON("nenette-v7-6-memory.json", exportMemory()));
     container.querySelector("#clear-memory").addEventListener("click", () => {
       if (confirm("Clear Nénette AI Memory on this browser?")) {
         clearMemory();

@@ -1,14 +1,18 @@
-Nénette AI V7.5 Wallet Connect
-Build: V7.5.0
-Date: 2026-07-03
-Base: V7.4.1 full multi-module terminal.
+Nénette AI V7.6 Multi-Wallet Provider
+Build: V7.6.0
+Date: 2026-07-04
+Base: V7.5 Wallet Connect full terminal.
 
 Adds:
-- Wallet Center
-- MetaMask/browser wallet connect
-- Polygon network switch
-- Live SLX/POL wallet reading
-- Wallet readiness score
-- Portfolio JSON/CSV export
-- Strategic Brief and Investor Intelligence wallet context
-Force deploy V7.5 retry
+- Explicit MetaMask provider selection
+- Explicit Rabby provider selection
+- Explicit Coinbase Wallet provider selection
+- WalletConnect QR via Reown AppKit
+- EIP-6963 multi-provider discovery
+- Mobile-ready wallet selector for iPhone and Android
+- Public SLX/POL portfolio reading
+- One active wallet at a time, multiple saved wallet addresses
+
+Reown Project ID: configured
+Allowed domain: silversurfer239.github.io
+Safety: read-only; no transaction signatures, seed phrases or private keys.

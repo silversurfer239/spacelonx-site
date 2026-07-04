@@ -77,7 +77,7 @@ async function loadSaved(container) {
       <div class="metric"><span>Diamond Yearly</span><b>${fmt(totalDiamond)} SLX</b></div>
       <div class="metric"><span>Avg Health</span><b>${averageHealth}/100</b></div>
       <div class="metric"><span>Saved Wallets</span><b>${settings.savedWallets.length}</b></div>
-      <div class="metric"><span>Version</span><b>V7.5</b></div>
+      <div class="metric"><span>Version</span><b>V7.6</b></div>
     </section>
     <div class="form brief-actions">
       <button id="export-portfolio-json">Export JSON</button>
@@ -88,10 +88,10 @@ async function loadSaved(container) {
     </section>`;
 
   result.querySelector("#export-portfolio-json").addEventListener("click", () => {
-    downloadText("nenette-v75-portfolio.json", JSON.stringify({ exportedAt: new Date().toISOString(), rows }, null, 2), "application/json;charset=utf-8");
+    downloadText("nenette-v76-portfolio.json", JSON.stringify({ exportedAt: new Date().toISOString(), rows }, null, 2), "application/json;charset=utf-8");
   });
   result.querySelector("#export-portfolio-csv").addEventListener("click", () => {
-    downloadText("nenette-v75-portfolio.csv", snapshotsToCsv(rows), "text/csv;charset=utf-8");
+    downloadText("nenette-v76-portfolio.csv", snapshotsToCsv(rows), "text/csv;charset=utf-8");
   });
   result.querySelectorAll("[data-remove]").forEach(button => {
     button.addEventListener("click", async () => {
@@ -103,7 +103,7 @@ async function loadSaved(container) {
   result.querySelectorAll("[data-export-one]").forEach(button => {
     button.addEventListener("click", () => {
       const item = rows.find(row => row.address.toLowerCase() === button.dataset.exportOne.toLowerCase());
-      if (item) downloadText("nenette-v75-wallet.json", JSON.stringify(item, null, 2), "application/json;charset=utf-8");
+      if (item) downloadText("nenette-v76-wallet.json", JSON.stringify(item, null, 2), "application/json;charset=utf-8");
     });
   });
 }
@@ -135,7 +135,7 @@ export function renderPortfolio(container) {
   container.innerHTML = `
     <section class="card">
       <div class="section-title">
-        <div><h2>Portfolio Intelligence V7.5</h2><p>Read wallets, save labels, aggregate SLX exposure and export a portfolio snapshot.</p></div>
+        <div><h2>Portfolio Intelligence V7.6</h2><p>Read wallets, save labels, aggregate SLX exposure and export a portfolio snapshot.</p></div>
         <span>PORTFOLIO REAL</span>
       </div>
       <div class="form">

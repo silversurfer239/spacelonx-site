@@ -1,4 +1,5 @@
-import { connectWallet, ensurePolygon, getChainStatus, getConnectedAccounts, walletAvailable, buildWalletSnapshot, walletHealth, snapshotToMarkdown } from "../../services/wallet.js";
+import { ensurePolygon, getChainStatus, buildWalletSnapshot, walletHealth, snapshotToMarkdown } from "../../services/wallet.js";
+import { discoverInjectedWallets, connectInjectedWallet, connectWalletConnect, getAppKitStatus } from "../../services/multiwallet.js";
 import { addWallet, setLastConnectedWallet, getSettings } from "../../services/storage.js";
 import { addEvent } from "../../services/memory.js";
 import { fmt, usd } from "../../services/format.js";
@@ -15,21 +16,67 @@ function downloadText(filename, content, type = "text/plain;charset=utf-8") {
   URL.revokeObjectURL(url);
 }
 
-function renderSnapshot(snapshot) {
+function walletIcon(wallet) {
+  if (wallet.icon) return `<img src="${wallet.icon}" alt="" referrerpolicy="no-referrer">`;
+  const initials = wallet.id === "metamask" ? "MM" : wallet.id === "rabby" ? "RB" : wallet.id === "coinbase" ? "CB" : "EV";
+  return `<span>${initials}</span>`;
+}
+
+function renderProviderCards(wallets) {
+  const byId = new Map(wallets.map(wallet => [wallet.id, wallet]));
+  const definitions = [
+    { id: "metamask", name: "MetaMask", text: "Connect the MetaMask browser extension.", mobile: "Use WalletConnect on iPhone." },
+    { id: "rabby", name: "Rabby Wallet", text: "Connect Rabby with explicit provider selection.", mobile: "Browser extension connection." },
+    { id: "coinbase", name: "Coinbase Wallet", text: "Connect the Coinbase Wallet browser provider.", mobile: "WalletConnect supports the mobile app." }
+  ];
+
+  const injected = definitions.map(def => {
+    const wallet = byId.get(def.id);
+    return `
+      <article class="wallet-provider-card ${wallet ? "detected" : "not-detected"}">
+        <div class="wallet-provider-icon">${walletIcon(wallet || def)}</div>
+        <div class="wallet-provider-copy">
+          <h3>${def.name}</h3>
+          <p>${def.text}</p>
+          <small>${wallet ? "Detected in this browser" : def.mobile}</small>
+        </div>
+        <button data-wallet-provider="${def.id}" ${wallet ? "" : "disabled"}>${wallet ? "Connect" : "Not detected"}</button>
+      </article>`;
+  }).join("");
+
+  const otherWallets = wallets.filter(wallet => !definitions.some(def => def.id === wallet.id)).map(wallet => `
+    <article class="wallet-provider-card detected">
+      <div class="wallet-provider-icon">${walletIcon(wallet)}</div>
+      <div class="wallet-provider-copy"><h3>${wallet.name}</h3><p>Detected EVM browser wallet.</p><small>Injected provider</small></div>
+      <button data-wallet-provider="${wallet.id}">Connect</button>
+    </article>`).join("");
+
+  return `${injected}${otherWallets}
+    <article class="wallet-provider-card walletconnect-card detected">
+      <div class="wallet-provider-icon"><span>WC</span></div>
+      <div class="wallet-provider-copy">
+        <h3>WalletConnect QR</h3>
+        <p>Connect a mobile wallet through Reown AppKit.</p>
+        <small>Recommended for iPhone and Android</small>
+      </div>
+      <button data-wallet-provider="walletconnect">Open QR</button>
+    </article>`;
+}
+
+function renderSnapshot(snapshot, connection = {}) {
   const health = walletHealth(snapshot);
   return `
     <section class="brief-shell wallet-command">
       <div class="brief-header">
         <div>
-          <h3>Connected Wallet Snapshot</h3>
+          <h3>${connection.walletName || "Wallet"} Snapshot</h3>
           <p>${snapshot.address}</p>
+          <small>${connection.method === "walletconnect" ? "Reown AppKit / WalletConnect" : connection.method === "manual" ? "Public address read" : "Injected browser provider"}</small>
         </div>
         <div class="brief-score ${health.score >= 80 ? "brief-low" : health.score >= 60 ? "brief-moderate" : "brief-elevated"}">
-          <strong>${health.score}</strong>
-          <span>${health.status}</span>
+          <strong>${health.score}</strong><span>${health.status}</span>
         </div>
       </div>
-
       <div class="data-grid">
         <div class="metric"><span>SLX Balance</span><b>${fmt(snapshot.slxNumber)} ${snapshot.slx.symbol}</b></div>
         <div class="metric"><span>SLX Value</span><b>${usd(snapshot.slxValue)}</b></div>
@@ -38,20 +85,16 @@ function renderSnapshot(snapshot) {
         <div class="metric"><span>Diamond Yearly</span><b>${fmt(snapshot.diamondYearly)} SLX</b></div>
         <div class="metric"><span>Diamond Monthly</span><b>${fmt(snapshot.diamondMonthly)} SLX</b></div>
       </div>
-
       <div class="brief-grid">
+        <article><h4>Wallet Readiness</h4>${health.flags.map(flag => `<p>• ${flag}</p>`).join("")}</article>
         <article>
-          <h4>Wallet Readiness</h4>
-          ${health.flags.map(flag => `<p>• ${flag}</p>`).join("")}
-        </article>
-        <article>
-          <h4>Security Reminder</h4>
-          <p>• Nénette V7.5 only reads public wallet balances.</p>
-          <p>• No private key or seed phrase is requested.</p>
-          <p>• Verify the SLX contract before any transaction.</p>
+          <h4>Security</h4>
+          <p>• Read-only balance analysis.</p>
+          <p>• No seed phrase or private key is requested.</p>
+          <p>• No transaction signature is requested.</p>
+          <p>• Reown Project ID is restricted to the SpacelonX domain.</p>
         </article>
       </div>
-
       <div class="form brief-actions">
         <button id="copy-wallet-address">Copy Address</button>
         <button id="save-connected-wallet">Save Wallet</button>
@@ -61,46 +104,33 @@ function renderSnapshot(snapshot) {
     </section>`;
 }
 
-async function showStatus(container) {
-  const result = container.querySelector("#wallet-center-result");
-  const providerDetected = walletAvailable();
-  const accounts = await getConnectedAccounts();
-  let chain = { chainName: "No wallet", isPolygon: false, chainId: "N/A" };
-  try { chain = await getChainStatus(); } catch {}
-  const settings = getSettings();
-
-  result.innerHTML = `
-    <section class="data-grid">
-      <div class="metric"><span>Browser Wallet</span><b>${providerDetected ? "Detected" : "Not detected"}</b></div>
-      <div class="metric"><span>Connected Account</span><b>${accounts?.[0] ? `${accounts[0].slice(0,6)}...${accounts[0].slice(-4)}` : "None"}</b></div>
-      <div class="metric"><span>Network</span><b>${chain.chainName}</b></div>
-      <div class="metric"><span>Polygon Ready</span><b>${chain.isPolygon ? "Yes" : "No"}</b></div>
-      <div class="metric"><span>Saved Wallets</span><b>${settings.savedWallets?.length || 0}</b></div>
-      <div class="metric"><span>Last Connected</span><b>${settings.lastConnectedWallet ? `${settings.lastConnectedWallet.slice(0,6)}...${settings.lastConnectedWallet.slice(-4)}` : "N/A"}</b></div>
-    </section>`;
+function bindSnapshotActions(result, snapshot, connection) {
+  result.querySelector("#copy-wallet-address")?.addEventListener("click", async event => {
+    await navigator.clipboard.writeText(snapshot.address);
+    event.currentTarget.textContent = "Copied";
+  });
+  result.querySelector("#save-connected-wallet")?.addEventListener("click", event => {
+    addWallet(snapshot.address, connection.walletName || "Connected Wallet");
+    addEvent("wallet", `${connection.walletName || "Wallet"} saved: ${snapshot.short}`);
+    event.currentTarget.textContent = "Saved";
+  });
+  result.querySelector("#export-wallet-md")?.addEventListener("click", () => {
+    downloadText("nenette-v76-wallet-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8");
+  });
 }
 
-async function connectAndRead(container) {
+async function connectAndRead(container, walletId) {
   const result = container.querySelector("#wallet-center-result");
-  result.innerHTML = `<section class="loading ultimate-loader"><div class="orb">W</div><div><h2>Connecting wallet...</h2><p>Requesting browser wallet access and switching to Polygon Mainnet if needed.</p></div></section>`;
-  const wallet = await connectWallet();
-  await ensurePolygon(wallet.provider);
-  setLastConnectedWallet(wallet.address);
-  const snapshot = await buildWalletSnapshot(wallet.address);
-  addEvent("wallet", `Wallet connected: ${snapshot.short}`);
-  result.innerHTML = renderSnapshot(snapshot);
+  const label = walletId === "walletconnect" ? "WalletConnect QR" : walletId === "metamask" ? "MetaMask" : walletId === "rabby" ? "Rabby" : walletId === "coinbase" ? "Coinbase Wallet" : "wallet";
+  result.innerHTML = `<section class="loading ultimate-loader"><div class="orb">W</div><div><h2>Connecting ${label}...</h2><p>${walletId === "walletconnect" ? "Loading Reown AppKit and waiting for mobile approval." : "Requesting browser wallet access and Polygon Mainnet."}</p></div></section>`;
 
-  result.querySelector("#copy-wallet-address").addEventListener("click", async () => {
-    await navigator.clipboard.writeText(snapshot.address);
-  });
-  result.querySelector("#save-connected-wallet").addEventListener("click", () => {
-    addWallet(snapshot.address, "Connected Wallet");
-    addEvent("wallet", `Wallet saved: ${snapshot.short}`);
-    result.querySelector("#save-connected-wallet").textContent = "Saved";
-  });
-  result.querySelector("#export-wallet-md").addEventListener("click", () => {
-    downloadText("nenette-v75-wallet-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8");
-  });
+  const connection = walletId === "walletconnect" ? await connectWalletConnect() : await connectInjectedWallet(walletId);
+  if (connection.provider && connection.method === "injected") await ensurePolygon(connection.provider);
+  setLastConnectedWallet(connection.address);
+  const snapshot = await buildWalletSnapshot(connection.address);
+  addEvent("wallet", `${connection.walletName} connected: ${snapshot.short}`);
+  result.innerHTML = renderSnapshot(snapshot, connection);
+  bindSnapshotActions(result, snapshot, connection);
 }
 
 async function readManual(container) {
@@ -112,14 +142,26 @@ async function readManual(container) {
   }
   result.innerHTML = `<section class="loading ultimate-loader"><div class="orb">SLX</div><div><h2>Reading wallet...</h2><p>Reading public SLX and POL balances on Polygon.</p></div></section>`;
   const snapshot = await buildWalletSnapshot(address);
-  result.innerHTML = renderSnapshot(snapshot);
-  result.querySelector("#copy-wallet-address").addEventListener("click", async () => navigator.clipboard.writeText(snapshot.address));
-  result.querySelector("#save-connected-wallet").addEventListener("click", () => {
-    addWallet(snapshot.address, "Manual Wallet");
-    addEvent("wallet", `Manual wallet saved: ${snapshot.short}`);
-    result.querySelector("#save-connected-wallet").textContent = "Saved";
-  });
-  result.querySelector("#export-wallet-md").addEventListener("click", () => downloadText("nenette-v75-wallet-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8"));
+  const connection = { walletName: "Public Wallet", method: "manual" };
+  result.innerHTML = renderSnapshot(snapshot, connection);
+  bindSnapshotActions(result, snapshot, connection);
+}
+
+async function renderConnectionStatus(container, wallets) {
+  const result = container.querySelector("#connection-status");
+  const settings = getSettings();
+  const appKit = getAppKitStatus();
+  let chain = { chainName: "No injected wallet", isPolygon: false };
+  try { chain = await getChainStatus(wallets[0]?.provider); } catch {}
+  result.innerHTML = `
+    <div class="data-grid">
+      <div class="metric"><span>Injected Wallets</span><b>${wallets.length}</b></div>
+      <div class="metric"><span>WalletConnect</span><b>${appKit.projectIdReady ? "Ready" : "Not configured"}</b></div>
+      <div class="metric"><span>Injected Network</span><b>${chain.chainName}</b></div>
+      <div class="metric"><span>Polygon Ready</span><b>${chain.isPolygon ? "Yes" : "Select after connect"}</b></div>
+      <div class="metric"><span>Saved Wallets</span><b>${settings.savedWallets?.length || 0}</b></div>
+      <div class="metric"><span>Last Connected</span><b>${settings.lastConnectedWallet ? `${settings.lastConnectedWallet.slice(0,6)}...${settings.lastConnectedWallet.slice(-4)}` : "N/A"}</b></div>
+    </div>`;
 }
 
 export async function renderWalletCenter(container) {
@@ -127,37 +169,35 @@ export async function renderWalletCenter(container) {
     <section class="card wallet-center-card">
       <div class="section-title">
         <div>
-          <h2>Wallet Center V7.5</h2>
-          <p>Connect MetaMask, switch to Polygon, read SLX/POL balances and export a wallet readiness snapshot.</p>
+          <h2>Wallet Center V7.6</h2>
+          <p>Explicit MetaMask, Rabby, Coinbase Wallet and WalletConnect QR connections with mobile-ready Polygon portfolio reading.</p>
         </div>
-        <span>WALLET CONNECT</span>
+        <span>MULTI-WALLET</span>
       </div>
-
-      <div class="form">
-        <button id="wallet-status">Wallet Status</button>
-        <button id="connect-read-wallet">Connect + Read</button>
-        <button id="switch-polygon">Switch Polygon</button>
-        <input id="manual-wallet" placeholder="Read public wallet 0x...">
-        <button id="read-manual-wallet">Read Address</button>
+      <div class="answer strategic-answer"><strong>One active wallet at a time:</strong> the Starter plan supports a wallet selector and many wallet brands, while saved public addresses remain available together in Portfolio.</div>
+      <div id="connection-status"></div>
+      <div id="wallet-provider-list" class="wallet-provider-grid"><section class="loading"><p>Detecting wallet providers...</p></section></div>
+      <div class="manual-wallet-panel">
+        <h3>Read any public Polygon address</h3>
+        <div class="form"><input id="manual-wallet" placeholder="0x..."><button id="read-manual-wallet">Read Address</button></div>
       </div>
-
-      <div class="answer strategic-answer">
-        <strong>Security:</strong> this module only reads public balances through Polygon RPC and your browser wallet. It never asks for a seed phrase or private key.
-      </div>
-
       <div id="wallet-center-result"></div>
     </section>`;
 
-  container.querySelector("#wallet-status").addEventListener("click", () => showStatus(container));
-  container.querySelector("#connect-read-wallet").addEventListener("click", async () => {
-    try { await connectAndRead(container); } catch (error) { container.querySelector("#wallet-center-result").innerHTML = `<div class="answer">Wallet error: ${error.message || error}</div>`; }
-  });
-  container.querySelector("#switch-polygon").addEventListener("click", async () => {
-    try { await ensurePolygon(); await showStatus(container); } catch (error) { container.querySelector("#wallet-center-result").innerHTML = `<div class="answer">Network error: ${error.message || error}</div>`; }
-  });
-  container.querySelector("#read-manual-wallet").addEventListener("click", async () => {
-    try { await readManual(container); } catch (error) { container.querySelector("#wallet-center-result").innerHTML = `<div class="answer">Read error: ${error.message || error}</div>`; }
+  const wallets = await discoverInjectedWallets();
+  const providerList = container.querySelector("#wallet-provider-list");
+  providerList.innerHTML = renderProviderCards(wallets);
+  await renderConnectionStatus(container, wallets);
+
+  providerList.querySelectorAll("[data-wallet-provider]").forEach(button => {
+    button.addEventListener("click", async () => {
+      try { await connectAndRead(container, button.dataset.walletProvider); }
+      catch (error) { container.querySelector("#wallet-center-result").innerHTML = `<div class="answer">Wallet error: ${error.message || error}</div>`; }
+    });
   });
 
-  await showStatus(container);
+  container.querySelector("#read-manual-wallet").addEventListener("click", async () => {
+    try { await readManual(container); }
+    catch (error) { container.querySelector("#wallet-center-result").innerHTML = `<div class="answer">Read error: ${error.message || error}</div>`; }
+  });
 }

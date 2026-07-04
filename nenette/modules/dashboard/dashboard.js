@@ -35,10 +35,10 @@ export async function renderDashboard(container) {
       </div>
 
       <div class="command-copy">
-        <div class="pill">● V7.5 WALLET CONNECT</div>
+        <div class="pill">● V7.6 MULTI-WALLET</div>
         <h3>SpacelonX AI Strategic Terminal</h3>
         <p>
-          Nénette keeps the full Web3 terminal and adds Wallet Connect, AI Memory, Investor Intelligence, strategic brief history and project status readiness.
+          Nénette keeps the full Web3 terminal and adds Multi-Wallet, AI Memory, Investor Intelligence, strategic brief history and project status readiness.
         </p>
         <div class="hero-actions">
           <button data-target="terminal">Open Web3 Terminal</button>
@@ -89,7 +89,7 @@ export async function renderDashboard(container) {
       </div>
       <div>
         <div class="section-title">
-          <div><h2>Nénette AI Full Terminal</h2><p>V7.5 summary with wallet connect, memory and investor intelligence.</p></div>
+          <div><h2>Nénette AI Full Terminal</h2><p>V7.6 summary with multi-wallet connection, memory and investor intelligence.</p></div>
           <span>AI COMMAND</span>
         </div>
         <div class="brief-grid ultimate-brief">

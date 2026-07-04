@@ -1,8 +1,12 @@
 export const CONFIG = {
-  version: "7.5.0-wallet-connect",
+  version: "7.6.0-multi-wallet",
   ticker: "SLX",
   chainName: "Polygon Mainnet",
   chainId: 137,
+  reownProjectId: "94d6600d7b6bc898f5870bbd2e6684e2",
+  appUrl: "https://silversurfer239.github.io",
+  appName: "SpacelonX Nénette AI",
+  appDescription: "Nénette AI multi-wallet Web3 intelligence terminal for the SpacelonX SLX ecosystem.",
   slxContract: "0xcAC47b268787a280816b50e7F9b679e81B8a179e",
   slxPair: "0x837c80c5f4f0165110a36ef0e10dd95f2579eed4",
   dexscreenerUrl: "https://dexscreener.com/polygon/0x837c80c5f4f0165110a36ef0e10dd95f2579eed4",
