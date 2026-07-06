@@ -35,7 +35,7 @@ export async function renderDashboard(container) {
       </div>
 
       <div class="command-copy">
-        <div class="pill">● V7.6.4 LIQUIDITY & EXIT</div>
+        <div class="pill">● V7.6.5 LIQUIDITY ACCURACY</div>
         <h3>SpacelonX AI Strategic Terminal</h3>
         <p>
           Nénette combines Multi-Wallet, on-chain pricing, liquidity depth, exit simulation, AI Memory and Investor Intelligence.
@@ -89,7 +89,7 @@ export async function renderDashboard(container) {
       </div>
       <div>
         <div class="section-title">
-          <div><h2>Nénette AI Full Terminal</h2><p>V7.6.4 summary with multi-wallet connection, memory and investor intelligence.</p></div>
+          <div><h2>Nénette AI Full Terminal</h2><p>V7.6.5 summary with multi-wallet connection, memory and investor intelligence.</p></div>
           <span>AI COMMAND</span>
         </div>
         <div class="brief-grid ultimate-brief">

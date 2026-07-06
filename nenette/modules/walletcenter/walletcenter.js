@@ -78,6 +78,7 @@ function renderExitRow(item) {
       <td>${fmt(item.outputQuote, 6)} ${item.quoteToken}</td>
       <td>${usd(item.outputUsd)}</td>
       <td class="${item.executionLossPct >= 25 ? "risk-high" : item.executionLossPct >= 10 ? "risk-watch" : "risk-ok"}">${pct(item.executionLossPct)}</td>
+      <td>${pct(item.recoveryPct)}</td>
       <td>${pct(item.poolPriceImpactPct)}</td>
     </tr>`;
 }
@@ -86,9 +87,10 @@ function renderCustomExitResult(item) {
   return `
     <div class="exit-result-grid">
       <div class="metric"><span>Estimated received</span><b>${fmt(item.outputQuote, 6)} ${item.quoteToken}</b><small>${usd(item.outputUsd)}</small></div>
-      <div class="metric"><span>Spot valuation</span><b>${usd(item.spotValueUsd)}</b><small>Before pool impact</small></div>
-      <div class="metric"><span>Execution loss</span><b>${pct(item.executionLossPct)}</b><small>Fee + reserve impact</small></div>
-      <div class="metric"><span>Post-trade spot</span><b>${usd(item.postSpotPriceUsd)}</b><small>${pct(item.poolPriceImpactPct)} pool price impact</small></div>
+      <div class="metric"><span>Spot valuation</span><b>${usd(item.spotValueUsd)}</b><small>Reference value before execution</small></div>
+      <div class="metric"><span>Recovery vs spot</span><b>${pct(item.recoveryPct)}</b><small>Estimated proceeds / spot valuation</small></div>
+      <div class="metric"><span>Execution shortfall</span><b>${pct(item.executionLossPct)}</b><small>Fee + reserve impact</small></div>
+      <div class="metric"><span>Post-trade pool spot</span><b>${usd(item.postSpotPriceUsd)}</b><small>${pct(item.poolPriceImpactPct)} pool spot-price change</small></div>
     </div>`;
 }
 
@@ -101,7 +103,7 @@ function renderExitSimulator(snapshot) {
       </section>`;
   }
 
-  const riskClass = analysis.status === "HIGH EXIT RISK" ? "exit-risk-high" : analysis.status === "ELEVATED EXIT RISK" ? "exit-risk-watch" : "exit-risk-ok";
+  const riskClass = ["EXTREME EXIT RISK", "HIGH EXIT RISK"].includes(analysis.status) ? "exit-risk-high" : analysis.status === "ELEVATED EXIT RISK" ? "exit-risk-watch" : "exit-risk-ok";
   return `
     <section class="exit-simulator ${riskClass}">
       <div class="section-title">
@@ -112,16 +114,18 @@ function renderExitSimulator(snapshot) {
         <span>${analysis.status}</span>
       </div>
       <div class="data-grid exit-summary-grid">
-        <div class="metric"><span>Wallet Spot Value</span><b>${usd(analysis.walletSpotValueUsd)}</b><small>Not guaranteed executable value</small></div>
-        <div class="metric"><span>Total Pool Liquidity</span><b>${usd(analysis.poolLiquidityUsd)}</b><small>Both reserve sides</small></div>
-        <div class="metric"><span>Quote-side Reserve</span><b>${usd(analysis.quoteReserveUsd)}</b><small>Maximum theoretical side before market movement</small></div>
-        <div class="metric"><span>Wallet / Pool Liquidity</span><b>${pct(analysis.walletSpotToLiquidityRatio * 100)}</b><small>Spot-value comparison</small></div>
+        <div class="metric"><span>Wallet Spot Valuation</span><b>${usd(analysis.walletSpotValueUsd)}</b><small>Reference value, not guaranteed proceeds</small></div>
+        <div class="metric"><span>Estimated Full-Wallet Exit</span><b>${usd(analysis.fullExitUsd)}</b><small>Direct-pool model at current reserves</small></div>
+        <div class="metric"><span>Full-Wallet Recovery</span><b>${pct(analysis.fullExitRecoveryPct)}</b><small>Estimated proceeds / spot valuation</small></div>
+        <div class="metric"><span>Total Pool Liquidity</span><b>${usd(analysis.poolLiquidityUsd)}</b><small>Both reserve sides at current spot</small></div>
+        <div class="metric"><span>Current Quote Reserve</span><b>${fmt(analysis.quoteReserveAmount, 6)} ${analysis.quoteToken}</b><small>${usd(analysis.quoteReserveUsd)} · any direct-swap output remains below this reserve</small></div>
+        <div class="metric"><span>Wallet / Pool Liquidity</span><b>${pct(analysis.walletSpotToLiquidityRatio * 100)}</b><small>Spot-valuation comparison</small></div>
         <div class="metric"><span>Wallet / SLX Reserve</span><b>${pct(analysis.walletToSlxReserveRatio * 100)}</b><small>Pool-depth comparison</small></div>
-        <div class="metric"><span>Fee Assumption</span><b>${(analysis.feeBps / 100).toFixed(2)}%</b><small>Configurable simulation input</small></div>
+        <div class="metric"><span>Fee Assumption</span><b>${(analysis.feeBps / 100).toFixed(2)}%</b><small>Applied to every simulation</small></div>
       </div>
       <div class="exit-table-wrap">
         <table class="exit-table">
-          <thead><tr><th>Wallet sold</th><th>SLX amount</th><th>Spot value</th><th>Estimated quote</th><th>Estimated USD</th><th>Execution loss</th><th>Pool price impact</th></tr></thead>
+          <thead><tr><th>Wallet sold</th><th>SLX amount</th><th>Spot valuation</th><th>Estimated quote</th><th>Estimated USD</th><th>Execution shortfall</th><th>Recovery</th><th>Pool spot-price change</th></tr></thead>
           <tbody>${analysis.scenarios.map(renderExitRow).join("")}</tbody>
         </table>
       </div>
@@ -137,7 +141,7 @@ function renderExitSimulator(snapshot) {
         <div id="custom-exit-result">${renderCustomExitResult(analysis.scenarios.find(item => item.fraction === 0.10) || analysis.scenarios[0])}</div>
       </div>
       <div class="answer exit-disclaimer">
-        <strong>Model limits:</strong> direct-pool constant-product calculation only. It excludes gas, MEV, routing, other pools, price movement and any token transfer mechanics. Actual execution can differ materially.
+        <strong>Model limits:</strong> direct-pool constant-product calculation only. The current quote reserve is a pool balance, not an amount withdrawable at a fixed price; the pool price changes with every trade, and direct-swap output always remains below that reserve. Gas, MEV, routing, other pools, market movement and token transfer mechanics are excluded. Actual execution can differ materially.
       </div>
     </section>`;
 }
@@ -187,6 +191,7 @@ function renderSnapshot(snapshot, connection = {}) {
           <h4>Data Integrity</h4>
           <p>• ${integrityText}</p>
           <p>• Exit estimates use current pool reserves and a ${(snapshot.exitAnalysis?.feeBps || 30) / 100}% fee assumption.</p>
+          <p>• The current quote reserve is a hard upper bound for direct pool output, not guaranteed proceeds at the current spot price.</p>
           <p>• Diamond values are simulations at ${(snapshot.diamondApr * 100).toFixed(0)}% APR, not accrued rewards.</p>
         </article>
         <article>
@@ -244,7 +249,7 @@ function bindSnapshotActions(result, snapshot, connection) {
     event.currentTarget.textContent = "Saved";
   });
   result.querySelector("#export-wallet-md")?.addEventListener("click", () => {
-    downloadText("nenette-v764-wallet-exit-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8");
+    downloadText("nenette-v765-liquidity-accuracy-snapshot.md", snapshotToMarkdown(snapshot), "text/markdown;charset=utf-8");
   });
   bindExitSimulator(result, snapshot);
 }
@@ -304,10 +309,10 @@ export async function renderWalletCenter(container) {
     <section class="card wallet-center-card">
       <div class="section-title">
         <div>
-          <h2>Wallet Center V7.6.4</h2>
-          <p>Multi-wallet Polygon reading with QuickSwap liquidity depth and wallet exit simulation.</p>
+          <h2>Wallet Center V7.6.5</h2>
+          <p>Multi-wallet Polygon reading with precise QuickSwap reserve terminology, liquidity depth and wallet exit simulation.</p>
         </div>
-        <span>LIQUIDITY & EXIT</span>
+        <span>LIQUIDITY ACCURACY</span>
       </div>
       <div class="answer strategic-answer"><strong>Read-only analysis:</strong> Nénette estimates pool execution from current reserves. It never creates or signs a sale transaction.</div>
       <div id="connection-status"></div>

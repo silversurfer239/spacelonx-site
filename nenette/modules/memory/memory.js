@@ -20,7 +20,7 @@ function renderMemoryHTML(memory) {
   return `
     <section class="card">
       <div class="section-title">
-        <div><h2>AI Memory V7.6.4</h2><p>Private local memory stored in this browser only. It keeps strategic briefs, project decisions and notes.</p></div>
+        <div><h2>AI Memory V7.6.5</h2><p>Private local memory stored in this browser only. It keeps strategic briefs, project decisions and notes.</p></div>
         <span>LOCAL</span>
       </div>
       <div class="data-grid">

@@ -15,13 +15,14 @@ function depthTable(market) {
   return `
     <div class="exit-table-wrap market-depth-table">
       <table class="exit-table">
-        <thead><tr><th>Sell vs SLX reserve</th><th>SLX amount</th><th>Estimated received</th><th>Execution loss</th><th>Pool price impact</th></tr></thead>
+        <thead><tr><th>Sell vs SLX reserve</th><th>SLX amount</th><th>Estimated received</th><th>Execution shortfall</th><th>Recovery</th><th>Pool spot-price change</th></tr></thead>
         <tbody>${rows.map(item => `
           <tr>
             <td><strong>${item.percent.toFixed(0)}%</strong></td>
             <td>${fmt(item.amountSlx)} SLX</td>
             <td>${fmt(item.outputQuote, 6)} ${item.quoteToken} · ${usd(item.outputUsd)}</td>
             <td class="${item.executionLossPct >= 10 ? "risk-watch" : "risk-ok"}">${item.executionLossPct.toFixed(1)}%</td>
+            <td>${item.recoveryPct.toFixed(1)}%</td>
             <td>${item.poolPriceImpactPct.toFixed(1)}%</td>
           </tr>`).join("")}</tbody>
       </table>
@@ -53,7 +54,7 @@ export async function renderMarket(container) {
   if (m.priceMode === "onchain") {
     data.push(
       ["SLX Pool Reserve", `${fmt(m.reserveSlx)} SLX`],
-      ["Quote Pool Reserve", `${fmt(m.reserveQuote, 6)} ${String(m.pair).split("/").pop().trim()}`],
+      ["Current Quote Reserve", `${fmt(m.reserveQuote, 6)} ${String(m.pair).split("/").pop().trim()}`],
       ["Quote USD", usd(m.quotePriceUsd)],
       ["Quote Oracle", m.quotePriceSource || "N/A"],
       ["Pool Block", fmt(m.blockNumber, 0)],
@@ -64,8 +65,8 @@ export async function renderMarket(container) {
   container.innerHTML = `
     <section class="card">
       <div class="section-title">
-        <div><h2>Market Intelligence V7.6.4</h2><p>Live price hierarchy plus direct QuickSwap liquidity-depth stress testing.</p></div>
-        <span>LIQUIDITY & EXIT</span>
+        <div><h2>Market Intelligence V7.6.5</h2><p>Live price hierarchy plus direct QuickSwap liquidity-depth stress testing.</p></div>
+        <span>LIQUIDITY ACCURACY</span>
       </div>
       <div class="answer"><strong>Nénette signal:</strong> ${marketSignal(m)}</div>
       ${m.sourceWarning ? `<div class="answer"><strong>Oracle note:</strong> ${m.sourceWarning}</div>` : ""}
@@ -74,7 +75,7 @@ export async function renderMarket(container) {
         <section class="exit-simulator market-depth">
           <div class="section-title"><div><h3>Pool Depth Stress Test</h3><p>Direct sale simulations equal to 1%, 5% and 10% of the pool's current SLX reserve.</p></div><span>READ ONLY</span></div>
           ${depthTable(m)}
-          <div class="answer"><strong>Model limits:</strong> constant-product estimate with the configured fee assumption; gas, MEV, routing and other pools are excluded.</div>
+          <div class="answer"><strong>Model limits:</strong> constant-product estimate with the configured fee assumption. The pool price changes from the first trade, and direct-swap output remains below the current quote reserve. Gas, MEV, routing, market movement and other pools are excluded.</div>
         </section>` : ""}
       <div class="mini-chart-panel">
         <iframe class="dex-frame small" src="${m.url}?embed=1&theme=dark&trades=0&info=0" title="SLX chart" loading="lazy"></iframe>

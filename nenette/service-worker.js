@@ -1,4 +1,4 @@
-const CACHE_NAME = "nenette-v7-6-4-liquidity-exit-v1";
+const CACHE_NAME = "nenette-v7-6-5-liquidity-accuracy-v1";
 const ASSETS = [
   "./",
   "./index.html",

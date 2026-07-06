@@ -1,7 +1,7 @@
 {
-  "name": "Nénette AI V7.6.4 Liquidity & Exit",
+  "name": "Nénette AI V7.6.5 Liquidity Accuracy Patch",
   "short_name": "Nénette AI",
-  "description": "SpacelonX Web3 terminal with multi-wallet access, QuickSwap on-chain pricing, liquidity depth and read-only exit simulation on Polygon.",
+  "description": "SpacelonX Web3 terminal with multi-wallet access, QuickSwap on-chain pricing, precise liquidity terminology and read-only exit simulation on Polygon.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

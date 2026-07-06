@@ -43,11 +43,13 @@ export function simulateSell(market, amountSlx, feeBps = Number(CONFIG.swapFeeBp
   const spotValueUsd = amountIn * spotPriceUsd;
   const averageExecutionPriceUsd = outputUsd / amountIn;
   const executionLossPct = spotValueUsd > 0 ? (1 - outputUsd / spotValueUsd) * 100 : 0;
+  const recoveryPct = spotValueUsd > 0 ? (outputUsd / spotValueUsd) * 100 : 0;
 
   const postReserveSlx = reserveSlx + amountIn;
   const postReserveQuote = Math.max(0, reserveQuote - outputQuote);
   const postSpotPriceUsd = postReserveSlx > 0 ? (postReserveQuote / postReserveSlx) * quotePriceUsd : 0;
   const poolPriceImpactPct = spotPriceUsd > 0 ? (1 - postSpotPriceUsd / spotPriceUsd) * 100 : 0;
+  const maxOutputUsd = reserveQuote * quotePriceUsd;
 
   return {
     amountSlx: amountIn,
@@ -58,13 +60,20 @@ export function simulateSell(market, amountSlx, feeBps = Number(CONFIG.swapFeeBp
     spotValueUsd,
     averageExecutionPriceUsd,
     executionLossPct: clamp(executionLossPct, 0, 100),
+    recoveryPct: clamp(recoveryPct, 0, 100),
     poolPriceImpactPct: clamp(poolPriceImpactPct, 0, 100),
     postSpotPriceUsd,
+    postReserveSlx,
+    postReserveQuote,
+    reserveUtilizationPct: clamp((outputQuote / reserveQuote) * 100, 0, 100),
+    maxOutputQuote: reserveQuote,
+    maxOutputUsd,
     walletToPoolReservePct: (amountIn / reserveSlx) * 100,
     quoteToken: String(market.pair || "SLX / POL").split("/").pop().trim(),
     assumptions: [
       "Direct constant-product swap against the displayed QuickSwap V2 pool.",
       `Fee assumption: ${(safeFeeBps / 100).toFixed(2)}%.`,
+      "Output is always lower than the pool's current quote reserve.",
       "Excludes gas, MEV, routing, price changes, transfer taxes and other pools."
     ]
   };
@@ -92,13 +101,19 @@ export function buildExitAnalysis(market, walletSlx, fractions = DEFAULT_EXIT_FR
   const ten = scenarios.find(item => item.fraction === 0.10) || scenarios[0];
   const walletSpotValueUsd = slxBalance * Number(market.priceUsd || 0);
   const poolLiquidityUsd = Number(market.liquidityUsd || 0);
-  const quoteReserveUsd = Number(market.reserveQuote || 0) * Number(market.quotePriceUsd || 0);
+  const quoteReserveAmount = Number(market.reserveQuote || 0);
+  const quotePriceUsd = Number(market.quotePriceUsd || 0);
+  const quoteReserveUsd = quoteReserveAmount * quotePriceUsd;
+  const quoteToken = String(market.pair || "SLX / POL").split("/").pop().trim();
   const walletSpotToLiquidityRatio = poolLiquidityUsd > 0 ? walletSpotValueUsd / poolLiquidityUsd : Infinity;
   const walletToSlxReserveRatio = Number(market.reserveSlx || 0) > 0 ? slxBalance / Number(market.reserveSlx) : Infinity;
 
   let status = "MANAGEABLE";
   let scoreCap = 90;
-  if (walletSpotToLiquidityRatio > 1 || full.executionLossPct >= 70 || ten.executionLossPct >= 25) {
+  if (walletToSlxReserveRatio >= 3 || full.executionLossPct >= 80 || ten.executionLossPct >= 30) {
+    status = "EXTREME EXIT RISK";
+    scoreCap = 45;
+  } else if (walletSpotToLiquidityRatio > 1 || full.executionLossPct >= 70 || ten.executionLossPct >= 25) {
     status = "HIGH EXIT RISK";
     scoreCap = 55;
   } else if (walletSpotToLiquidityRatio > 0.5 || full.executionLossPct >= 50 || ten.executionLossPct >= 15) {
@@ -110,10 +125,11 @@ export function buildExitAnalysis(market, walletSlx, fractions = DEFAULT_EXIT_FR
   }
 
   const flags = [
-    `Wallet spot value equals ${(walletSpotToLiquidityRatio * 100).toFixed(1)}% of total displayed pool liquidity.`,
+    `Wallet spot valuation equals ${(walletSpotToLiquidityRatio * 100).toFixed(1)}% of total displayed pool liquidity.`,
     `Wallet SLX balance equals ${(walletToSlxReserveRatio * 100).toFixed(1)}% of the pool's SLX reserve.`,
-    `A simulated sale of 10% of the wallet has an estimated ${ten.executionLossPct.toFixed(1)}% execution loss versus the current spot valuation.`,
-    `The pool currently contains about $${quoteReserveUsd.toLocaleString(undefined, { maximumFractionDigits: 2 })} of quote-side liquidity before fees and market movement.`
+    `A simulated sale of 10% of the wallet has an estimated ${ten.executionLossPct.toFixed(1)}% execution shortfall versus spot valuation.`,
+    `A simulated full-wallet sale recovers about ${full.recoveryPct.toFixed(1)}% of spot valuation (${full.outputUsd.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 2 })} estimated).`,
+    `The current quote reserve is about ${quoteReserveAmount.toLocaleString(undefined, { maximumFractionDigits: 6 })} ${quoteToken} (${quoteReserveUsd.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 2 })}); any single direct-swap output remains below this reserve.`
   ];
 
   return {
@@ -121,9 +137,18 @@ export function buildExitAnalysis(market, walletSlx, fractions = DEFAULT_EXIT_FR
     status,
     scoreCap,
     scenarios,
+    fullExit: full,
+    tenPercentExit: ten,
     walletSpotValueUsd,
     poolLiquidityUsd,
+    quoteReserveAmount,
     quoteReserveUsd,
+    quoteToken,
+    maxTheoreticalOutputQuote: quoteReserveAmount,
+    maxTheoreticalOutputUsd: quoteReserveUsd,
+    fullExitUsd: full.outputUsd,
+    fullExitRecoveryPct: full.recoveryPct,
+    fullExitShortfallPct: full.executionLossPct,
     walletSpotToLiquidityRatio,
     walletToSlxReserveRatio,
     feeBps: Number(CONFIG.swapFeeBps || 30),

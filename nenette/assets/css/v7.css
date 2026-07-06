@@ -1036,11 +1036,11 @@ body::before {
 }
 
 
-/* V7.6.4 Liquidity & Exit */
+/* V7.6.5 Liquidity Accuracy */
 .metric small{display:block;margin-top:6px;color:#94a3b8;font-size:11px;line-height:1.35;font-weight:600}
 .wallet-command .brief-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 
-/* V7.6.4 Liquidity & Exit Simulator */
+/* V7.6.5 Liquidity Accuracy Simulator */
 .exit-simulator{
   margin:24px 0 10px;
   padding:22px;

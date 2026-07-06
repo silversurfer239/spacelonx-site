@@ -1,5 +1,5 @@
 export const CONFIG = {
-  version: "7.6.4-liquidity-exit",
+  version: "7.6.5-liquidity-accuracy",
   swapFeeBps: 30,
   exitPresets: [0.01, 0.05, 0.10, 0.25, 1],
   ticker: "SLX",
