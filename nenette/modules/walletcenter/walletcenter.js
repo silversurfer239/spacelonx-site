@@ -309,7 +309,7 @@ export async function renderWalletCenter(container) {
     <section class="card wallet-center-card">
       <div class="section-title">
         <div>
-          <h2>Wallet Center V7.6.5</h2>
+          <h2>Wallet Center V8.0</h2>
           <p>Multi-wallet Polygon reading with precise QuickSwap reserve terminology, liquidity depth and wallet exit simulation.</p>
         </div>
         <span>LIQUIDITY ACCURACY</span>

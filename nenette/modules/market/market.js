@@ -65,7 +65,7 @@ export async function renderMarket(container) {
   container.innerHTML = `
     <section class="card">
       <div class="section-title">
-        <div><h2>Market Intelligence V7.6.5</h2><p>Live price hierarchy plus direct QuickSwap liquidity-depth stress testing.</p></div>
+        <div><h2>Market Intelligence V8.0</h2><p>Live price hierarchy plus direct QuickSwap liquidity-depth stress testing.</p></div>
         <span>LIQUIDITY ACCURACY</span>
       </div>
       <div class="answer"><strong>Nénette signal:</strong> ${marketSignal(m)}</div>

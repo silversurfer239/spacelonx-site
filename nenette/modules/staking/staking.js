@@ -7,33 +7,50 @@ export async function renderStaking(container) {
   const market = await getMarketData();
   const settings = getSettings();
   const cards = stakingPools.map(pool => `
-    <article class="staking-card ${pool.name.toLowerCase()}">
+    <button class="staking-card ${pool.name.toLowerCase()}" data-pool="${pool.name}" data-apr="${pool.apr}">
       <span>${pool.name}</span>
       <strong>${pool.apr}% APR</strong>
-      <p>${pool.lock} · ${pool.status}</p>
-    </article>
+      <p>${pool.lock}</p>
+      <small>SIMULATION</small>
+    </button>
   `).join("");
 
   container.innerHTML = `
-    <section class="card ultimate-module">
+    <section class="card ultimate-module v8-detail-page">
       <div class="section-title">
-        <div><h2>Staking Engine V7.2</h2><p>Reward simulator with yearly, monthly and daily projections.</p></div>
-        <span>STAKING+</span>
+        <div><h2>Staking Center V8.0</h2><p>Bronze, Silver, Gold and Diamond reward projections with explicit simulation status.</p></div>
+        <span>SIMULATION ONLY</span>
       </div>
+      <div class="answer strategic-answer"><strong>Contract status:</strong> no verified staking contract is connected. Stake, unstake and claim actions are disabled. All figures below are projections, not accrued on-chain rewards.</div>
       <div class="staking-grid">${cards}</div>
-      <div class="form">
-        <input id="stake-amount" placeholder="SLX amount">
-        <select id="stake-apr">${stakingPools.map(pool => `<option value="${pool.apr}" ${pool.name === settings.defaultPool ? "selected" : ""}>${pool.name} · ${pool.apr}%</option>`).join("")}</select>
-        <button id="estimate">Estimate</button>
+      <div class="form v8-staking-form">
+        <input id="stake-amount" inputmode="decimal" placeholder="SLX amount">
+        <select id="stake-apr">${stakingPools.map(pool => `<option value="${pool.apr}" data-name="${pool.name}" ${pool.name === settings.defaultPool ? "selected" : ""}>${pool.name} · ${pool.apr}% · ${pool.lock}</option>`).join("")}</select>
+        <button id="estimate">Simulate Rewards</button>
       </div>
-      <div id="staking-result"></div>
+      <div id="staking-result" class="v8-stake-result"><p>Enter an amount and select a tier.</p></div>
+      <div class="v8-disabled-actions"><button disabled>Stake</button><button disabled>Unstake</button><button disabled>Claim Rewards</button><small>Enabled only after verified smart-contract integration.</small></div>
     </section>`;
+
+  container.querySelectorAll("[data-pool]").forEach(card => {
+    card.addEventListener("click", () => {
+      const select = container.querySelector("#stake-apr");
+      const option = [...select.options].find(item => item.dataset.name === card.dataset.pool);
+      if (option) select.value = option.value;
+      container.querySelectorAll("[data-pool]").forEach(item => item.classList.toggle("selected", item === card));
+    });
+  });
 
   container.querySelector("#estimate").addEventListener("click", () => {
     const amount = Number(container.querySelector("#stake-amount").value);
-    const apr = Number(container.querySelector("#stake-apr").value);
-    const selectedText = container.querySelector("#stake-apr").selectedOptions[0].textContent;
-    const poolName = selectedText.split("·")[0].trim();
+    const select = container.querySelector("#stake-apr");
+    const apr = Number(select.value);
+    const poolName = select.selectedOptions[0]?.dataset.name || "Pool";
+    if (!(amount > 0)) {
+      container.querySelector("#staking-result").innerHTML = `<p class="v8-error">Enter a positive SLX amount.</p>`;
+      return;
+    }
+
     const s = getSettings();
     s.defaultPool = poolName;
     saveSettings(s);
@@ -44,15 +61,13 @@ export async function renderStaking(container) {
     const total = amount + yearly;
 
     container.querySelector("#staking-result").innerHTML = `
-      <div class="data-grid">
-        <div class="metric"><span>Pool</span><b>${poolName}</b></div>
-        <div class="metric"><span>APR</span><b>${apr}%</b></div>
-        <div class="metric"><span>Principal</span><b>${fmt(amount)} SLX</b></div>
-        <div class="metric"><span>Yearly Reward</span><b>${fmt(yearly)} SLX</b><p>${usd(yearly * market.priceUsd)}</p></div>
-        <div class="metric"><span>Monthly Reward</span><b>${fmt(monthly)} SLX</b><p>${usd(monthly * market.priceUsd)}</p></div>
-        <div class="metric"><span>Daily Reward</span><b>${fmt(daily)} SLX</b><p>${usd(daily * market.priceUsd)}</p></div>
-        <div class="metric"><span>Projected Total</span><b>${fmt(total)} SLX</b><p>${usd(total * market.priceUsd)}</p></div>
-        <div class="metric"><span>Status</span><b>Simulation only</b><p>No staking contract is called.</p></div>
-      </div>`;
+      <div><span>Tier</span><b>${poolName}</b></div>
+      <div><span>APR scenario</span><b>${apr}%</b></div>
+      <div><span>Principal</span><b>${fmt(amount)} SLX</b></div>
+      <div><span>Yearly projection</span><b>${fmt(yearly)} SLX</b><small>${usd(yearly * market.priceUsd)}</small></div>
+      <div><span>Monthly projection</span><b>${fmt(monthly)} SLX</b></div>
+      <div><span>Daily projection</span><b>${fmt(daily)} SLX</b></div>
+      <div><span>Projected total</span><b>${fmt(total)} SLX</b><small>${usd(total * market.priceUsd)}</small></div>
+      <div><span>Status</span><b>SIMULATION ONLY</b><small>No staking contract call.</small></div>`;
   });
 }

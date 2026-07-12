@@ -1,4 +1,4 @@
-const CACHE_NAME = "nenette-v7-6-5-liquidity-accuracy-v1";
+const CACHE_NAME = "nenette-v8-0-pure-v1";
 const ASSETS = [
   "./",
   "./index.html",
@@ -13,14 +13,18 @@ const ASSETS = [
   "./services/market.js",
   "./services/liquidity.js",
   "./services/storage.js",
+  "./services/staking.js",
   "./services/memory.js",
   "./services/investor.js",
   "./services/brief.js",
+  "./modules/dashboard/dashboard.js",
   "./modules/walletcenter/walletcenter.js",
   "./modules/market/market.js",
   "./modules/portfolio/portfolio.js",
-  "./modules/investor/investor.js",
-  "./modules/memory/memory.js"
+  "./modules/staking/staking.js",
+  "./modules/tokenomics/tokenomics.js",
+  "./modules/roadmap/roadmap.js",
+  "./modules/reports/reports.js"
 ];
 
 self.addEventListener("install", event => {

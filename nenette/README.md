@@ -1,40 +1,34 @@
-# Nénette AI V7.6.5 — Liquidity Accuracy Patch
+# Nénette AI V8.0 — Nénette Pure
 
-V7.6.5 keeps the complete V7.6.4 multi-wallet, on-chain price and exit simulator, then corrects liquidity terminology and makes the distinction between spot valuation, estimated exit proceeds and pool reserves explicit.
+Nénette Pure is the unified SpacelonX Intelligence Dashboard. It consolidates the V7 wallet, on-chain price, liquidity and exit-analysis engines into a single executive cockpit.
 
-## Added and corrected in V7.6.5
-- Replaces the ambiguous `Quote-side Reserve` label with `Current Quote Reserve`.
-- Removes the inaccurate wording `before market movement`.
-- States that pool price changes from the first trade.
-- States that any direct-swap output remains below the current quote reserve.
-- Displays the current quote reserve in both quote-token units and USD.
-- Adds estimated full-wallet exit proceeds.
-- Adds full-wallet recovery percentage versus spot valuation.
-- Adds recovery percentage to every preset and custom exit scenario.
-- Renames `execution loss` to `execution shortfall` for clearer interpretation.
-- Refines liquidity-risk scoring with an `EXTREME EXIT RISK` band for severe reserve imbalance or very low recovery.
-- Updates Markdown exports with the corrected terminology and full-exit metrics.
+## Core dashboard
+- Executive market, blockchain and trust overview
+- Live DexScreener or QuickSwap V2 reserve pricing
+- Wallet and portfolio snapshot
+- Liquidity depth and full-wallet exit recovery
+- Bronze, Silver, Gold and Diamond staking simulation
+- Tokenomics and vesting overview
+- LP lock, contract and Polygon status
+- Roadmap and project center
+- Nénette AI intelligence summary
+- JSON, Markdown and print/PDF reporting
 
-## Model
-The simulator applies a direct Uniswap V2 / QuickSwap V2 constant-product calculation to current on-chain pool reserves. The configured fee assumption is 0.30% (`swapFeeBps: 30`).
+## Wallets
+- MetaMask
+- Rabby Wallet
+- Coinbase Wallet
+- WalletConnect through Reown AppKit
 
-The current quote reserve is not an amount that can be withdrawn at the displayed spot price. It is the present quote-token balance of the pool. Every trade changes the reserve ratio and therefore the pool price. Direct-swap output is mathematically lower than the current quote reserve.
-
-The model does not create a transaction and excludes gas, MEV, routing, other pools, market movement and token-specific transfer mechanics. Results are estimates, not guaranteed execution quotes.
-
-## Preserved
-- MetaMask, Rabby, Coinbase Wallet and WalletConnect.
-- Polygon Mainnet confirmation.
-- DexScreener → QuickSwap on-chain → fallback market hierarchy.
-- Chainlink POL/USD reference with CoinGecko backup.
-- Preset simulations for 1%, 5%, 10%, 25% and 100%.
-- Custom sale percentage from 0.01% to 100%.
-- Diamond simulations clearly separated from on-chain rewards.
-- AI Memory and Investor Intelligence.
+## Staking status
+V8.0 includes a complete simulation interface. It does not call a staking contract. Stake, unstake and claim actions remain disabled until a verified contract is deployed and explicitly integrated.
 
 ## Deployment
-Upload all extracted files and folders into `spacelonx-site/nenette/`, replacing the current V7.6.4 files.
+Upload the complete extracted package into `spacelonx-site/nenette/`, replacing the previous version.
 
-Suggested commit message:
+Recommended commit message:
 
-`Deploy Nénette AI V7.6.5 Liquidity Accuracy Patch`
+`Deploy Nénette AI V8.0 Nénette Pure Dashboard`
+
+## Security
+Nénette is read-only for market, wallet and liquidity analysis. It never requests a seed phrase or private key and does not require a transaction signature for dashboard functions.

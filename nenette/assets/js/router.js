@@ -14,6 +14,9 @@ import { renderInvestor } from "../../modules/investor/investor.js";
 import { renderMemory } from "../../modules/memory/memory.js";
 import { renderEcosystem } from "../../modules/ecosystem/ecosystem.js";
 import { renderSettings } from "../../modules/settings/settings.js";
+import { renderTokenomics } from "../../modules/tokenomics/tokenomics.js";
+import { renderRoadmap } from "../../modules/roadmap/roadmap.js";
+import { renderReports } from "../../modules/reports/reports.js";
 
 const routes = {
   dashboard: renderDashboard,
@@ -24,14 +27,17 @@ const routes = {
   portfolio: renderPortfolio,
   walletcenter: renderWalletCenter,
   staking: renderStaking,
-  alerts: renderAlerts,
   security: renderSecurity,
+  alerts: renderAlerts,
   governance: renderGovernance,
   ai: renderAI,
   investor: renderInvestor,
   memory: renderMemory,
   ecosystem: renderEcosystem,
-  settings: renderSettings
+  settings: renderSettings,
+  tokenomics: renderTokenomics,
+  roadmap: renderRoadmap,
+  reports: renderReports
 };
 
 export async function navigate(route) {

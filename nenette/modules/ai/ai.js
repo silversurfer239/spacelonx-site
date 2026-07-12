@@ -84,7 +84,7 @@ export function renderAI(container) {
     <section class="card ai-brief-card">
       <div class="section-title">
         <div>
-          <h2>Nénette AI Strategic Brief V7.6.5</h2>
+          <h2>Nénette AI Strategic Brief V8.0</h2>
           <p>Local assistant + automated operational brief with AI Memory persistence.</p>
         </div>
         <span>AI BRIEF</span>

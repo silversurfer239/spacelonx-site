@@ -3,67 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Nénette AI V7.6.5 Liquidity Accuracy Patch</title>
+  <meta name="theme-color" content="#050816">
+  <title>Nénette AI V8.0 — SpacelonX Intelligence Dashboard</title>
   <link rel="stylesheet" href="./assets/css/v7.css">
   <link rel="manifest" href="./manifest.json">
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
 </head>
-<body>
+<body class="v8-body">
   <button id="mobile-menu" class="mobile-menu-btn">☰ Menu</button>
-  <div class="v7-badge ultimate-badge">V7.6.5 LIQUIDITY ACCURACY · EXIT MODEL</div>
+  <div class="v7-badge ultimate-badge v8-badge">V8.0 NÉNETTE PURE · SPACELONX COCKPIT</div>
   <div class="cosmos"></div>
 
-  <aside class="sidebar">
+  <aside class="sidebar v8-sidebar">
     <div class="brand">
-      <div class="orb">SLX</div>
+      <div class="orb">N</div>
       <div>
         <h1>Nénette AI</h1>
-        <p>V7.6.5 Liquidity Accuracy</p>
+        <p>V8.0 · Nénette Pure</p>
       </div>
     </div>
 
     <nav id="nav">
-      <button data-route="dashboard" class="active">⌁ Dashboard</button>
+      <div class="nav-label">COMMAND CENTER</div>
+      <button data-route="dashboard" class="active">⌁ Overview</button>
+      <button data-route="walletcenter">🔗 Wallet Center</button>
+      <button data-route="portfolio">💼 Portfolio</button>
+      <button data-route="market">📈 Market & Liquidity</button>
+      <button data-route="staking">💎 Staking</button>
+      <button data-route="tokenomics">◉ Tokenomics</button>
+      <button data-route="roadmap">🚀 Roadmap</button>
+      <button data-route="ai">🤖 Nénette Intelligence</button>
+      <button data-route="security">🛡 Trust & Security</button>
+      <button data-route="reports">▣ Reports</button>
+
+      <div class="nav-label">ADVANCED TOOLS</div>
       <button data-route="terminal">🛰 Web3 Terminal</button>
-      <button data-route="market">📈 Market</button>
       <button data-route="blockchain">⬢ Blockchain</button>
       <button data-route="holders">👥 Holders</button>
-      <button data-route="portfolio">💼 Portfolio</button>
-      <button data-route="walletcenter">🔗 Wallet Center</button>
-      <button data-route="staking">💎 Staking</button>
       <button data-route="alerts">🔔 Alerts</button>
-      <button data-route="security">🛡 Security</button>
-      <button data-route="governance">🗳 Governance</button>
-      <button data-route="ai">🤖 AI</button>
       <button data-route="investor">🏛 Investor Intelligence</button>
       <button data-route="memory">🧠 AI Memory</button>
-      <button data-route="ecosystem">🌌 Ecosystem</button>
+      <button data-route="ecosystem">🌌 Project Center</button>
       <button data-route="settings">⚙ Settings</button>
     </nav>
 
     <div class="status-pill"><span></span> Polygon Mainnet</div>
   </aside>
 
-  <main class="main">
-    <header class="topbar">
+  <main class="main v8-main">
+    <header class="topbar v8-topbar">
       <div>
-        <small>SpacelonX Web3 Intelligence</small>
-        <h2>Nénette AI Premium Terminal</h2>
-        <p>Full SpacelonX Web3 terminal with MetaMask, Rabby, Coinbase Wallet and WalletConnect QR, plus live Polygon portfolio reading, AI Memory and Investor Intelligence.</p>
+        <small>SpacelonX Intelligence Dashboard</small>
+        <h2>Nénette Pure</h2>
+        <p>Unified market, wallet, liquidity, staking, tokenomics, security, roadmap and AI command center.</p>
       </div>
       <div class="actions">
-        <button id="refresh">Refresh</button>
+        <button id="refresh">Refresh Data</button>
         <button id="wallet">Connect Wallet</button>
       </div>
     </header>
 
     <section id="view"></section>
 
-    <footer>Nénette AI V7.6.5 Liquidity Accuracy Patch · Independent Build · SpacelonX</footer>
+    <footer>Nénette AI V8.0 · Nénette Pure · SpacelonX Intelligence Dashboard</footer>
   </main>
 
   <script type="module" src="./assets/js/app.js"></script>
-
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js").catch(() => {});

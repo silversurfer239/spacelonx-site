@@ -1,19 +1,22 @@
-Nénette AI V7.6.5 — Liquidity Accuracy Patch
-Build: V7.6.5
-Date: 2026-07-06
+Nénette AI V8.0 — Nénette Pure
+Build: 8.0.0
+Product: SpacelonX Intelligence Dashboard
 
-Adds and corrects:
-- Precise Current Quote Reserve terminology
-- Explicit direct-output upper-bound explanation
-- Full-wallet estimated exit proceeds
-- Full-wallet recovery versus spot valuation
-- Recovery percentage in preset and custom scenarios
-- Execution shortfall terminology
-- EXTREME EXIT RISK scoring band
-- Updated data-integrity notes and Markdown export
+Foundation:
+- Unified executive dashboard
+- Live DexScreener / QuickSwap on-chain price hierarchy
+- MetaMask, Rabby, Coinbase Wallet and WalletConnect
+- Wallet and portfolio intelligence
+- Liquidity and exit simulation
+- Bronze, Silver, Gold and Diamond staking simulation
+- Tokenomics and vesting overview
+- LP lock and trust center
+- SpacelonX roadmap and project links
+- Nénette AI operational intelligence
+- JSON, Markdown and print/PDF reports
 
 Safety:
-- Read-only analysis
-- No sale transaction is created
-- No signature, seed phrase or private key is requested
-- Results exclude gas, MEV, routing, other pools and market movement
+- Read-only by default
+- No seed phrase or private key request
+- No transaction signature for analysis
+- Staking remains simulation until a verified staking contract is connected
